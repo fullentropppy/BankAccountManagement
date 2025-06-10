@@ -84,7 +84,7 @@ public class BankAccount {
 
         for (Transaction transaction : transactions) {
             // Учитываются только подтвержденные транзакции
-            if (transaction.getStatus() == OperationStatus.COMMITTED) {
+            if (transaction.getStatus().isCommitted()) {
                 if (transaction.getOperationType().isAddition()) {
                     balance += transaction.getAmount();
                 } else {

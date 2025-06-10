@@ -1,6 +1,7 @@
 package ru.gritsenkodaniil.bankaccountmanagement;
 
 public enum OperationStatus {
+    UNCOMMITTED("Не подтверждена"),
     COMMITTED("Подтверждена"),
     CANCELED("Отменена");
 
@@ -20,5 +21,13 @@ public enum OperationStatus {
 
     public String getTitle() {
         return title;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. GETTING DATA
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public boolean isCommitted() {
+        return this == COMMITTED;
     }
 }

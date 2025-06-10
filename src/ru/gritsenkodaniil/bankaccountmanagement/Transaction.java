@@ -3,21 +3,18 @@ package ru.gritsenkodaniil.bankaccountmanagement;
 import java.util.Date;
 
 public class Transaction {
-    private final Date date;
+    private final Date date = new Date();
     private final BankAccount holder;
     private final OperationType operationType;
     private final double amount;
     private final BankAccount beneficiary;
-
-    private OperationStatus status;
-    private String message;
+    private OperationStatus status = OperationStatus.UNCOMMITTED;
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
     public Transaction(BankAccount holder, OperationType operationType, double amount, BankAccount beneficiary) {
-        this.date = new Date();
         this.holder = holder;
         this.operationType = operationType;
         this.amount = amount;
@@ -52,35 +49,28 @@ public class Transaction {
         return status;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
     // METHODS
     // -----------------------------------------------------------------------------------------------------------------
 
     public void execute() {
         status = OperationStatus.COMMITTED;
-        message = "";
 
         // Проверка баланса на счете списания при операциях списания (списание, снятие наличных, перевод)
         if (!operationType.isAddition()) {
             double balance = holder.getBalance();
             if (balance < amount) {
                 status = OperationStatus.CANCELED;
-                message = "Недостаточно средств";
             }
         }
 
         // Зачисление средств на счет получателя при операциях списания (списание, перевод)
-        if (status == OperationStatus.COMMITTED && operationType.hasBeneficiary()) {
+        if (status.isCommitted() && operationType.hasBeneficiary()) {
             OperationStatus creditStatus = beneficiary.credit(amount, holder);
 
             // Отмена транзакции при ошибке внутри операции
-            if (creditStatus == OperationStatus.CANCELED) {
+            if (!creditStatus.isCommitted()) {
                 status = OperationStatus.CANCELED;
-                message = "Не удалось зачислить средства получателю";
             }
         }
 

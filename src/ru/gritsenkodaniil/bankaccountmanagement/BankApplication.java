@@ -43,6 +43,6 @@ public class BankApplication {
     }
 
     public static void printDivider() {
-        System.out.println("\n");
+        System.out.println();
     }
 }

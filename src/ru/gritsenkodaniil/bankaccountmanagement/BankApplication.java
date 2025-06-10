@@ -3,9 +3,17 @@ package ru.gritsenkodaniil.bankaccountmanagement;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Главный класс банковского приложения для управления счетами.
+ * Содержит методы для инициализации счетов, выполнения операций и вывода информации.
+ */
 public class BankApplication {
     private static Map<String, BankAccount> accounts = new HashMap<>();
 
+    /**
+     * Главный метод приложения.
+     * @param args аргументы командной строки
+     */
     public static void main(String[] args) {
         // Создание счетов
         initializeAccounts();
@@ -21,6 +29,9 @@ public class BankApplication {
     // METHODS. INITIALIZING, PERFORMING, PRINTING
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Инициализирует счета банка.
+     */
     private static void initializeAccounts() {
         addAccount("store", 50501944, "Магазин");
         addAccount("ivanovI", 94867303, "Иванов И");
@@ -28,6 +39,9 @@ public class BankApplication {
         addAccount("petrovP", 86107026, "Петров П");
     }
 
+    /**
+     * Выполняет операции над счетами.
+     */
     private static void performOperations() {
         BankAccount store = accounts.get("store");
         BankAccount ivanovI = accounts.get("ivanovI");
@@ -47,6 +61,9 @@ public class BankApplication {
         petrovP.transfer(5000, ivanovI);
     }
 
+    /**
+     * Выводит информацию о всех счетах.
+     */
     private static void printAccountsInfo() {
         for (BankAccount account : accounts.values()) {
             account.printTransactions();
@@ -59,6 +76,12 @@ public class BankApplication {
     // METHODS. MISC
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Добавляет новый счет в систему.
+     * @param accountKey ключ счета
+     * @param accountNumber номер счета
+     * @param ownerName имя владельца
+     */
     private static void addAccount(String accountKey, long accountNumber, String ownerName) {
         BankAccount account = new BankAccount(accountNumber, ownerName);
         accounts.put(accountKey, account);

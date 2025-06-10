@@ -1,5 +1,8 @@
 package ru.gritsenkodaniil.bankaccountmanagement;
 
+/**
+ * Перечисление статусов операций.
+ */
 public enum OperationStatus {
     UNCOMMITTED("Не подтверждена"),
     COMMITTED("Подтверждена"),
@@ -11,6 +14,10 @@ public enum OperationStatus {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Создает новый статус операции.
+     * @param title название статуса
+     */
     OperationStatus(String title) {
         this.title = title;
     }
@@ -19,6 +26,10 @@ public enum OperationStatus {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Возвращает название статуса.
+     * @return название
+     */
     public String getTitle() {
         return title;
     }
@@ -27,6 +38,10 @@ public enum OperationStatus {
     // METHODS. GETTING DATA
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Проверяет, подтверждена ли операция.
+     * @return true если подтверждена, иначе false
+     */
     public boolean isCommitted() {
         return this == COMMITTED;
     }

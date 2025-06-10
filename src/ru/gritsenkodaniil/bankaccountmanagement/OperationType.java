@@ -1,5 +1,8 @@
 package ru.gritsenkodaniil.bankaccountmanagement;
 
+/**
+ * Перечисление типов операций.
+ */
 public enum OperationType {
     DEPOSIT("Внутренний перевод"),
     CREDIT("Поступление"),
@@ -13,6 +16,10 @@ public enum OperationType {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Создает новый тип операции.
+     * @param title название типа
+     */
     OperationType(String title) {
         this.title = title;
     }
@@ -21,6 +28,10 @@ public enum OperationType {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Возвращает название типа операции.
+     * @return название
+     */
     public String getTitle() {
         return title;
     }
@@ -29,10 +40,18 @@ public enum OperationType {
     // METHODS. GETTING DATA
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Проверяет, требует ли операция указания бенефициара.
+     * @return true если требуется, иначе false
+     */
     public boolean hasBeneficiary() {
         return this == DEBIT || this == TRANSFER;
     }
 
+    /**
+     * Проверяет, является ли операция пополнением счета.
+     * @return true если пополнение, иначе false
+     */
     public boolean isAddition() {
         return this == DEPOSIT || this == CREDIT;
     }

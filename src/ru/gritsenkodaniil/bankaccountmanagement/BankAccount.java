@@ -6,7 +6,16 @@ import java.util.ArrayList;
 public class BankAccount {
     private final long accountNumber;
     private String holderName;
-    private ArrayList<Transaction> transactions = new ArrayList<>();
+    private final ArrayList<Transaction> transactions = new ArrayList<>();
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // OVERRIDDEN
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return MessageFormat.format("{0} (№{1})", holderName, Long.toString(accountNumber));
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -30,7 +39,7 @@ public class BankAccount {
     }
 
     public ArrayList<Transaction> getTransactions() {
-        return transactions;
+        return new ArrayList<>(transactions);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -102,45 +111,49 @@ public class BankAccount {
 
     public void printBalance() {
         double balance = getBalance();
-        String message = MessageFormat.format(
-                "Владелец: {0} ({1}), баланс: {2}", holderName, accountNumber, balance
-        );
+        String message = MessageFormat.format("Владелец: {0}, баланс: {1}", this, balance);
         System.out.println(message);
     }
 
     public void printTransactions() {
-        String title = MessageFormat.format(
-                "Владелец: {0} ({1}), транзакции: ", holderName, accountNumber
-        );
+        String title = MessageFormat.format("Владелец: {0}, транзакции: ", this);
         System.out.println(title);
 
         int i = 1;
 
         for (Transaction transaction : transactions) {
-            String successView = transaction.getStatus().getTitle();
-            String operationView = transaction.getOperationType().getTitle();
-            String extOperationViewTemplate = "";
-
-            if (transaction.getOperationType() == OperationType.CREDIT) {
-                extOperationViewTemplate = "{0} (от: {1})";
-            } else if (transaction.getOperationType() == OperationType.DEBIT) {
-                extOperationViewTemplate = "{0} (получатель: {1})";
-            } else if (transaction.getOperationType() == OperationType.TRANSFER) {
-                extOperationViewTemplate = "{0} (кому: {1})";
-            }
-
-            if (!extOperationViewTemplate.isBlank()) {
-                operationView = MessageFormat.format(
-                        extOperationViewTemplate,
-                        operationView, transaction.getBeneficiary().getHolderName());
-            }
+            //String successView = transaction.getStatus().getTitle();
+            String operationView = transactionOperationView(transaction);
 
             String transactionInfo = MessageFormat.format(
-                    "   {0} - {1} @ {2}, операция: {3}, сумма {4}",
-                    i, successView, transaction.getDate(), operationView, transaction.getAmount()
+                    "   {0} - {1}, операция: {2}, сумма {3}",
+                    i, transaction, operationView, transaction.getAmount()
             );
             System.out.println(transactionInfo);
             i++;
         }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. MISC
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private String transactionOperationView(Transaction transaction) {
+        String operationView = transaction.getOperationType().getTitle();
+
+        String extOperationViewTemplate = switch (transaction.getOperationType()) {
+            case CREDIT -> "{0} (от: {1})";
+            case DEBIT -> "{0} (получатель: {1})";
+            case TRANSFER -> "{0} (кому: {1})";
+            default -> "";
+        };
+
+        if (!extOperationViewTemplate.isBlank()) {
+            operationView = MessageFormat.format(
+                    extOperationViewTemplate,
+                    operationView, transaction.getBeneficiary());
+        }
+
+        return operationView;
     }
 }

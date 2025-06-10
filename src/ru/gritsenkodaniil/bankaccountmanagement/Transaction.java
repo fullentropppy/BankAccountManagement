@@ -1,14 +1,28 @@
 package ru.gritsenkodaniil.bankaccountmanagement;
 
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 public class Transaction {
-    private final Date date = new Date();
+    private final LocalDateTime date = LocalDateTime.now();
     private final BankAccount holder;
     private final OperationType operationType;
     private final double amount;
     private final BankAccount beneficiary;
     private OperationStatus status = OperationStatus.UNCOMMITTED;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // OVERRIDDEN
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public String toString() {
+        return MessageFormat.format(
+                "№{0} от {1} ({2})",
+                Long.toString(hashCode()), getDateFormatted(), status.getTitle());
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
@@ -25,8 +39,12 @@ public class Transaction {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    public Date getDate() {
-        return date;
+    public LocalDateTime getDate() {
+        return LocalDateTime.from(date);
+    }
+
+    public String getDateFormatted() {
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
     public BankAccount getHolder() {
@@ -54,27 +72,25 @@ public class Transaction {
     // -----------------------------------------------------------------------------------------------------------------
 
     public void execute() {
-        status = OperationStatus.COMMITTED;
-
-        // Проверка баланса на счете списания при операциях списания (списание, снятие наличных, перевод)
-        if (!operationType.isAddition()) {
-            double balance = holder.getBalance();
-            if (balance < amount) {
-                status = OperationStatus.CANCELED;
-            }
+        if (!checkBalance()) {
+            status = OperationStatus.CANCELED;
+        } else if (operationType.hasBeneficiary() && !processBeneficiary()) {
+            status = OperationStatus.CANCELED;
+        } else {
+            status = OperationStatus.COMMITTED;
         }
-
-        // Зачисление средств на счет получателя при операциях списания (списание, перевод)
-        if (status.isCommitted() && operationType.hasBeneficiary()) {
-            OperationStatus creditStatus = beneficiary.credit(amount, holder);
-
-            // Отмена транзакции при ошибке внутри операции
-            if (!creditStatus.isCommitted()) {
-                status = OperationStatus.CANCELED;
-            }
-        }
-
-        // Добавление транзакции в список транзакций счета
         holder.addTransaction(this);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. MISC
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private boolean checkBalance() {
+        return operationType.isAddition() || holder.getBalance() >= amount;
+    }
+
+    private boolean processBeneficiary() {
+        return beneficiary.credit(amount, holder).isCommitted();
     }
 }

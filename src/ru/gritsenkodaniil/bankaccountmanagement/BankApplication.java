@@ -15,13 +15,8 @@ public class BankApplication {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        // Создание счетов
         initializeAccounts();
-
-        // Выполнение операций
         performOperations();
-
-        // Вывод инфо
         printAccountsInfo();
     }
 

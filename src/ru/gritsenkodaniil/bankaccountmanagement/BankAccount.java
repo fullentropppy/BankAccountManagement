@@ -200,7 +200,6 @@ public class BankAccount {
         int i = 1;
 
         for (Transaction transaction : transactions) {
-            //String successView = transaction.getStatus().getTitle();
             String operationView = transactionOperationView(transaction);
 
             String transactionInfo = MessageFormat.format(

@@ -1,23 +1,48 @@
 package ru.gritsenkodaniil.bankaccountmanagement;
 
-import java.util.Date;
+import java.text.MessageFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
+/**
+ * Класс, представляющий банковскую транзакцию.
+ * Содержит информацию о дате, типе операции, сумме, участниках и статусе.
+ */
 public class Transaction {
-    private final Date date;
+    private final LocalDateTime date = LocalDateTime.now();
     private final BankAccount holder;
     private final OperationType operationType;
     private final double amount;
     private final BankAccount beneficiary;
+    private OperationStatus status = OperationStatus.UNCOMMITTED;
 
-    private OperationStatus status;
-    private String message;
+    // -----------------------------------------------------------------------------------------------------------------
+    // OVERRIDDEN
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Возвращает строковое представление транзакции.
+     * @return строка в формате "№ХэшКода от Дата (Статус)"
+     */
+    @Override
+    public String toString() {
+        return MessageFormat.format(
+                "№{0} от {1} ({2})",
+                Long.toString(hashCode()), getDateFormatted(), status.getTitle());
+    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Создает новую транзакцию.
+     * @param holder владелец счета
+     * @param operationType тип операции
+     * @param amount сумма
+     * @param beneficiary бенефициар (может быть null)
+     */
     public Transaction(BankAccount holder, OperationType operationType, double amount, BankAccount beneficiary) {
-        this.date = new Date();
         this.holder = holder;
         this.operationType = operationType;
         this.amount = amount;
@@ -28,63 +53,67 @@ public class Transaction {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    public Date getDate() {
-        return date;
+    /**
+     * Возвращает дату транзакции.
+     * @return дата транзакции
+     */
+    public LocalDateTime getDate() {
+        return LocalDateTime.from(date);
     }
 
+    /**
+     * Возвращает отформатированную дату транзакции.
+     * @return строка с датой в формате "yyyy-MM-dd HH:mm:ss"
+     */
+    public String getDateFormatted() {
+        return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
+
+    /**
+     * Возвращает владельца счета.
+     * @return владелец счета
+     */
     public BankAccount getHolder() {
         return holder;
     }
 
+    /**
+     * Возвращает тип операции.
+     * @return тип операции
+     */
     public OperationType getOperationType() {
         return operationType;
     }
 
+    /**
+     * Возвращает сумму транзакции.
+     * @return сумма
+     */
     public double getAmount() {
         return amount;
     }
 
+    /**
+     * Возвращает бенефициара.
+     * @return бенефициар (может быть null)
+     */
     public BankAccount getBeneficiary() {
         return beneficiary;
     }
 
+    /**
+     * Возвращает статус транзакции.
+     * @return статус
+     */
     public OperationStatus getStatus() {
         return status;
     }
 
-    public String getMessage() {
-        return message;
-    }
-
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS
+    // SETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    public void execute() {
-        status = OperationStatus.COMMITTED;
-        message = "";
-
-        // Проверка баланса на счете списания при операциях списания (списание, снятие наличных, перевод)
-        if (!operationType.isAddition()) {
-            double balance = holder.getBalance();
-            if (balance < amount) {
-                status = OperationStatus.CANCELED;
-                message = "Недостаточно средств";
-            }
-        }
-
-        // Зачисление средств на счет получателя при операциях списания (списание, перевод)
-        if (status == OperationStatus.COMMITTED && operationType.hasBeneficiary()) {
-            OperationStatus creditStatus = beneficiary.credit(amount, holder);
-
-            // Отмена транзакции при ошибке внутри операции
-            if (creditStatus == OperationStatus.CANCELED) {
-                status = OperationStatus.CANCELED;
-                message = "Не удалось зачислить средства получателю";
-            }
-        }
-
-        // Добавление транзакции в список транзакций счета
-        holder.addTransaction(this);
+    public void setStatus(OperationStatus status) {
+        this.status = status;
     }
 }

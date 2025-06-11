@@ -110,41 +110,10 @@ public class Transaction {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS
+    // SETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Выполняет транзакцию.
-     * Проверяет баланс и обрабатывает бенефициара при необходимости.
-     */
-    public void execute() {
-        if (!checkBalance()) {
-            status = OperationStatus.CANCELED;
-        } else if (operationType.hasBeneficiary() && !processBeneficiary()) {
-            status = OperationStatus.CANCELED;
-        } else {
-            status = OperationStatus.COMMITTED;
-        }
-        holder.addTransaction(this);
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. MISC
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Проверяет достаточность средств на счете.
-     * @return true если средств достаточно или операция на пополнение, иначе false
-     */
-    private boolean checkBalance() {
-        return operationType.isAddition() || holder.getBalance() >= amount;
-    }
-
-    /**
-     * Обрабатывает операцию с бенефициаром.
-     * @return true если операция успешна, иначе false
-     */
-    private boolean processBeneficiary() {
-        return beneficiary.credit(amount, holder).isCommitted();
+    public void setStatus(OperationStatus status) {
+        this.status = status;
     }
 }

@@ -5,12 +5,16 @@ import java.util.ArrayList;
 
 /**
  * Класс, представляющий банковский счет.
- * Содержит информацию о владельце, номере счета и списке транзакций.
+ * Содержит информацию о владельце, номере счета, балансе и списке транзакций.
  */
 public class BankAccount {
     private final long accountNumber;
     private String holderName;
     private final ArrayList<Transaction> transactions = new ArrayList<>();
+
+    // Кэширование баланса
+    private double cachedBalance;
+    boolean balanceIsValid;
 
     // -----------------------------------------------------------------------------------------------------------------
     // OVERRIDDEN
@@ -84,72 +88,10 @@ public class BankAccount {
      * @param transaction транзакция для добавления
      */
     public void addTransaction(Transaction transaction) {
-        this.transactions.add(transaction);
-    }
+        transactions.add(transaction);
 
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. OPERATIONS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Выполняет транзакцию.
-     * @param operationType тип операции
-     * @param amount сумма
-     * @param beneficiary бенефициар (может быть null)
-     * @return статус выполнения операции
-     */
-    private OperationStatus executeTransaction(OperationType operationType, double amount, BankAccount beneficiary) {
-        Transaction transaction = new Transaction(this, operationType, amount, beneficiary);
-        transaction.execute();
-        return transaction.getStatus();
-    }
-
-    /**
-     * Выполняет операцию пополнения счета.
-     * @param amount сумма пополнения
-     * @return статус выполнения операции
-     */
-    public OperationStatus deposit(double amount) {
-        return executeTransaction(OperationType.DEPOSIT, amount, null);
-    }
-
-    /**
-     * Выполняет операцию зачисления средств от отправителя.
-     * @param amount сумма
-     * @param sender отправитель средств
-     * @return статус выполнения операции
-     */
-    public OperationStatus credit(double amount, BankAccount sender) {
-        return executeTransaction(OperationType.CREDIT, amount, sender);
-    }
-
-    /**
-     * Выполняет операцию списания средств в пользу бенефициара.
-     * @param amount сумма
-     * @param beneficiary бенефициар
-     * @return статус выполнения операции
-     */
-    public OperationStatus debit(double amount, BankAccount beneficiary ) {
-        return executeTransaction(OperationType.DEBIT, amount, beneficiary);
-    }
-
-    /**
-     * Выполняет операцию снятия наличных.
-     * @param amount сумма
-     * @return статус выполнения операции
-     */
-    public OperationStatus withdrawal(double amount) {
-        return executeTransaction(OperationType.WITHDRAW, amount, null);
-    }
-
-    /**
-     * Выполняет операцию перевода средств.
-     * @param amount сумма
-     * @param receiver получатель
-     * @return статус выполнения операции
-     */
-    public OperationStatus transfer(double amount, BankAccount receiver) {
-        return executeTransaction(OperationType.TRANSFER, amount, receiver);
+        // При обновлении списка транзакций требуется пересчет кэша баланса
+        balanceIsValid = false;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -157,21 +99,26 @@ public class BankAccount {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Рассчитывает текущий баланс счета.
+     * Возвращает текущий баланс счета.
      * @return текущий баланс
      */
     public double getBalance() {
         double balance = 0;
 
-        for (Transaction transaction : transactions) {
-            // Учитываются только подтвержденные транзакции
-            if (transaction.getStatus().isCommitted()) {
-                if (transaction.getOperationType().isAddition()) {
-                    balance += transaction.getAmount();
-                } else {
-                    balance -= transaction.getAmount();
+        if (balanceIsValid) {
+            // Если данные актуальны, используется кэшированный баланс
+            balance = cachedBalance;
+        } else {
+            // Если данные неактуальны, баланс пересчитывается
+            for (Transaction transaction : transactions) {
+                // Учитываются только подтвержденные транзакции
+                if (transaction.getStatus().isCommitted()) {
+                    double transactionAmount = transaction.getAmount();
+                    balance += transaction.getOperationType().isAddition() ? transactionAmount : -transactionAmount;
                 }
             }
+            cachedBalance = balance;
+            balanceIsValid = true;
         }
 
         return balance;

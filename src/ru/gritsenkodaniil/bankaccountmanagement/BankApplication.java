@@ -8,7 +8,7 @@ import java.util.Map;
  * Содержит методы для инициализации счетов, выполнения операций и вывода информации.
  */
 public class BankApplication {
-    private static Map<String, BankAccount> accounts = new HashMap<>();
+    private static final Map<String, BankAccount> accounts = new HashMap<>();
 
     /**
      * Главный метод приложения.
@@ -38,22 +38,27 @@ public class BankApplication {
      * Выполняет операции над счетами.
      */
     private static void performOperations() {
+        // Создание счетов
         BankAccount store = accounts.get("store");
         BankAccount ivanovI = accounts.get("ivanovI");
         BankAccount sidorovS = accounts.get("sidorovS");
         BankAccount petrovP = accounts.get("petrovP");
 
-        ivanovI.deposit(50000);
-        ivanovI.debit(599.25, store);
-        ivanovI.transfer(10000, sidorovS);
+        // Создание обработчика операций
+        TransactionProcessor transactionProcessor = new TransactionProcessor();
 
-        sidorovS.withdrawal(1000);
-        sidorovS.transfer(2000, petrovP);
-        sidorovS.withdrawal(8000);
+        // Выполнение операций через обработчик
+        transactionProcessor.deposit(ivanovI, 50000);
+        transactionProcessor.debit(ivanovI, 599.25, store);
+        transactionProcessor.transfer(ivanovI, 10000, sidorovS);
 
-        petrovP.transfer(5000, ivanovI);
-        petrovP.deposit(5000);
-        petrovP.transfer(5000, ivanovI);
+        transactionProcessor.withdrawal(sidorovS, 1000);
+        transactionProcessor.transfer(sidorovS, 2000, petrovP);
+        transactionProcessor.withdrawal(sidorovS, 8000);
+
+        transactionProcessor.transfer(petrovP, 5000, ivanovI);
+        transactionProcessor.deposit(petrovP, 5000);
+        transactionProcessor.transfer(petrovP, 5000, ivanovI);
     }
 
     /**

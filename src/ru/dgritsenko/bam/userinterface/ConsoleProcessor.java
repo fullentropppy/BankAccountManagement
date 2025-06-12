@@ -54,9 +54,6 @@ public class ConsoleProcessor {
     }
 
     private void processTestPage() {
-        clearText();
-        printHeader();
-
         Test.processPredefinedSet();
 
         // Ожидание ввода перед закрытием
@@ -179,7 +176,7 @@ public class ConsoleProcessor {
                 new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
             } else {
                 Runtime.getRuntime().exec("clear");
-                }
-        } catch (IOException | InterruptedException ex) {}
+            }
+        } catch (IOException | InterruptedException _) {}
     }
 }

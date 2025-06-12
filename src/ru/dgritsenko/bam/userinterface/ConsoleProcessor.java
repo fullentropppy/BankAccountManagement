@@ -3,12 +3,14 @@ package ru.dgritsenko.bam.userinterface;
 import ru.dgritsenko.bam.bank.Account;
 import ru.dgritsenko.bam.test.Test;
 
+import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class ConsoleProcessor {
-    public static final ArrayList<Account> accounts = new ArrayList<>();
+    private final ArrayList<Account> accounts = new ArrayList<>();
+    private Page currentPage;
 
     public void initialize() {
         showPage(Page.MAIN);
@@ -52,7 +54,14 @@ public class ConsoleProcessor {
     }
 
     private void processTestPage() {
+        clearText();
+        printHeader();
+
         Test.processPredefinedSet();
+
+        // Ожидание ввода перед закрытием
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -132,13 +141,10 @@ public class ConsoleProcessor {
     // -----------------------------------------------------------------------------------------------------------------
 
     private void showPage(Page page) {
-        // Очистка консоли
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
+        currentPage = page;
 
-        // Вывод заголовка
-        String header = MessageFormat.format("*** Банковское приложение / {0} ***", page);
-        System.out.println(header);
+        clearText();
+        printHeader();
 
         // Вывод конкретной страницы
         if (page == Page.MAIN) {
@@ -160,5 +166,20 @@ public class ConsoleProcessor {
         } else if (page == Page.EXIT) {
             processExitPage();
         }
+    }
+
+    private void printHeader() {
+        String header = MessageFormat.format("*** Банковское приложение / {0} ***\n", currentPage);
+        System.out.println(header);
+    }
+
+    private void clearText() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                Runtime.getRuntime().exec("clear");
+                }
+        } catch (IOException | InterruptedException ex) {}
     }
 }

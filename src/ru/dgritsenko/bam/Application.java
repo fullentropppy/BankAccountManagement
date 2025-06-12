@@ -2,9 +2,6 @@ package ru.dgritsenko.bam;
 
 import ru.dgritsenko.bam.userinterface.ConsoleProcessor;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
  * Главный класс банковского приложения для управления счетами.
  * Содержит методы для инициализации счетов, выполнения операций и вывода информации.

@@ -1,4 +1,4 @@
-package ru.gritsenkodaniil.bankaccountmanagement;
+package ru.dgritsenko.bam.bank;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Класс, представляющий банковский счет.
  * Содержит информацию о владельце, номере счета, балансе и списке транзакций.
  */
-public class BankAccount {
+public class Account {
     private final long accountNumber;
     private String holderName;
     private final ArrayList<Transaction> transactions;
@@ -38,7 +38,7 @@ public class BankAccount {
      * @param accountNumber номер счета
      * @param ownerName имя владельца
      */
-    public BankAccount(long accountNumber, String ownerName) {
+    public Account(long accountNumber, String ownerName) {
         this.transactions = new ArrayList<>();
         this.accountNumber = accountNumber;
         this.holderName = ownerName;
@@ -142,8 +142,10 @@ public class BankAccount {
      * Выводит список всех транзакций по счету.
      */
     public void printTransactions() {
-        String title = MessageFormat.format("Владелец: {0}, транзакции: ", this);
-        System.out.println(title);
+        StringBuilder messages = new StringBuilder();
+
+        String title = MessageFormat.format("Владелец: {0}, транзакции:\n", this);
+        messages.append(title);
 
         int i = 1;
 
@@ -151,12 +153,15 @@ public class BankAccount {
             String operationView = transactionOperationView(transaction);
 
             String transactionInfo = MessageFormat.format(
-                    "   {0} - {1}, операция: {2}, сумма {3}",
+                    "   {0} - {1}, операция: {2}, сумма {3}\n",
                     i, transaction, operationView, transaction.getAmount()
             );
-            System.out.println(transactionInfo);
+            messages.append(transactionInfo);
             i++;
         }
+
+        String message = messages.toString();
+        System.out.println(message);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

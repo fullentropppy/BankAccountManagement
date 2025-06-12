@@ -1,4 +1,4 @@
-package ru.gritsenkodaniil.bankaccountmanagement;
+package ru.dgritsenko.bam.bank;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
@@ -10,10 +10,10 @@ import java.time.format.DateTimeFormatter;
  */
 public class Transaction {
     private final LocalDateTime date;
-    private final BankAccount holder;
+    private final Account holder;
     private final OperationType operationType;
     private final double amount;
-    private final BankAccount beneficiary;
+    private final Account beneficiary;
     private OperationStatus status;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ public class Transaction {
      * @param amount сумма
      * @param beneficiary бенефициар (может быть null)
      */
-    public Transaction(BankAccount holder, OperationType operationType, double amount, BankAccount beneficiary) {
+    public Transaction(Account holder, OperationType operationType, double amount, Account beneficiary) {
         this.date = LocalDateTime.now();
         this.holder = holder;
         this.operationType = operationType;
@@ -75,7 +75,7 @@ public class Transaction {
      * Возвращает владельца счета.
      * @return владелец счета
      */
-    public BankAccount getHolder() {
+    public Account getHolder() {
         return holder;
     }
 
@@ -99,7 +99,7 @@ public class Transaction {
      * Возвращает бенефициара.
      * @return бенефициар (может быть null)
      */
-    public BankAccount getBeneficiary() {
+    public Account getBeneficiary() {
         return beneficiary;
     }
 

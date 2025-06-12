@@ -1,14 +1,12 @@
-package ru.gritsenkodaniil.bankaccountmanagement;
+package ru.dgritsenko.bam.bank;
 
 /**
- * Перечисление типов операций.
+ * Перечисление статусов операций.
  */
-public enum OperationType {
-    DEPOSIT("Пополнение"),
-    CREDIT("Поступление"),
-    DEBIT("Списание"),
-    WITHDRAW("Снятие наличных"),
-    TRANSFER("Перевод");
+public enum OperationStatus {
+    UNCOMMITTED("Не подтверждена"),
+    COMMITTED("Подтверждена"),
+    CANCELED("Отменена");
 
     private final String title;
 
@@ -17,7 +15,7 @@ public enum OperationType {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Возвращает строковое представление типа операции.
+     * Возвращает строковое представление статуса операции.
      * @return title
      */
     @Override
@@ -30,10 +28,10 @@ public enum OperationType {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Создает новый тип операции.
-     * @param title название типа
+     * Создает новый статус операции.
+     * @param title название статуса
      */
-    OperationType(String title) {
+    OperationStatus(String title) {
         this.title = title;
     }
 
@@ -42,7 +40,7 @@ public enum OperationType {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Возвращает название типа операции.
+     * Возвращает название статуса.
      * @return название
      */
     public String getTitle() {
@@ -54,18 +52,10 @@ public enum OperationType {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Проверяет, требует ли операция указания бенефициара.
-     * @return true если требуется, иначе false
+     * Проверяет, подтверждена ли операция.
+     * @return true если подтверждена, иначе false
      */
-    public boolean hasBeneficiary() {
-        return this == DEBIT || this == TRANSFER;
-    }
-
-    /**
-     * Проверяет, является ли операция пополнением счета.
-     * @return true если пополнение, иначе false
-     */
-    public boolean isAddition() {
-        return this == DEPOSIT || this == CREDIT;
+    public boolean isCommitted() {
+        return this == COMMITTED;
     }
 }

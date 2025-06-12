@@ -1,20 +1,19 @@
-package ru.gritsenkodaniil.bankaccountmanagement;
+package ru.dgritsenko.bam.test;
+
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.bank.TransactionProcessor;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Главный класс банковского приложения для управления счетами.
- * Содержит методы для инициализации счетов, выполнения операций и вывода информации.
- */
-public class BankApplication {
-    private static final Map<String, BankAccount> accounts = new HashMap<>();
+public class Test {
+    private static final Map<String, Account> accounts = new HashMap<>();
 
-    /**
-     * Главный метод приложения.
-     * @param args аргументы командной строки
-     */
     public static void main(String[] args) {
+        processPredefinedSet();
+    }
+
+    public static void processPredefinedSet() {
         initializeAccounts();
         performOperations();
         printAccountsInfo();
@@ -39,10 +38,10 @@ public class BankApplication {
      */
     private static void performOperations() {
         // Создание счетов
-        BankAccount store = accounts.get("store");
-        BankAccount ivanovI = accounts.get("ivanovI");
-        BankAccount sidorovS = accounts.get("sidorovS");
-        BankAccount petrovP = accounts.get("petrovP");
+        Account store = accounts.get("store");
+        Account ivanovI = accounts.get("ivanovI");
+        Account sidorovS = accounts.get("sidorovS");
+        Account petrovP = accounts.get("petrovP");
 
         // Создание обработчика операций
         TransactionProcessor transactionProcessor = new TransactionProcessor();
@@ -65,7 +64,7 @@ public class BankApplication {
      * Выводит информацию о всех счетах.
      */
     private static void printAccountsInfo() {
-        for (BankAccount account : accounts.values()) {
+        for (Account account : accounts.values()) {
             account.printTransactions();
             account.printBalance();
             System.out.println();
@@ -83,7 +82,7 @@ public class BankApplication {
      * @param ownerName имя владельца
      */
     private static void addAccount(String accountKey, long accountNumber, String ownerName) {
-        BankAccount account = new BankAccount(accountNumber, ownerName);
+        Account account = new Account(accountNumber, ownerName);
         accounts.put(accountKey, account);
     }
 }

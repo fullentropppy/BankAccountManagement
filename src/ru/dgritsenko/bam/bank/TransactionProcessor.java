@@ -1,4 +1,4 @@
-package ru.gritsenkodaniil.bankaccountmanagement;
+package ru.dgritsenko.bam.bank;
 
 /**
  * Класс, обрабатывающий банковские операции (пополнение, списание, переводы).
@@ -16,7 +16,7 @@ public class TransactionProcessor {
      * @param amount сумма пополнения
      * @return статус выполнения операции
      */
-    public OperationStatus deposit(BankAccount holder, double amount) {
+    public OperationStatus deposit(Account holder, double amount) {
         return processIncreasing(holder, OperationType.DEPOSIT, amount, null);
     }
 
@@ -27,7 +27,7 @@ public class TransactionProcessor {
      * @param beneficiary отправитель средств
      * @return статус выполнения операции
      */
-    public OperationStatus credit(BankAccount holder, double amount, BankAccount beneficiary) {
+    public OperationStatus credit(Account holder, double amount, Account beneficiary) {
         return processIncreasing(holder, OperationType.CREDIT, amount, beneficiary);
     }
 
@@ -38,7 +38,7 @@ public class TransactionProcessor {
      * @param beneficiary бенефициар
      * @return статус выполнения операции
      */
-    public OperationStatus debit(BankAccount holder, double amount, BankAccount beneficiary ) {
+    public OperationStatus debit(Account holder, double amount, Account beneficiary ) {
         return processReducing(holder, OperationType.DEBIT, amount, beneficiary);
     }
 
@@ -48,7 +48,7 @@ public class TransactionProcessor {
      * @param amount сумма
      * @return статус выполнения операции
      */
-    public OperationStatus withdrawal(BankAccount holder, double amount) {
+    public OperationStatus withdrawal(Account holder, double amount) {
         return processReducing(holder, OperationType.WITHDRAW, amount, null);
     }
 
@@ -59,7 +59,7 @@ public class TransactionProcessor {
      * @param receiver получатель
      * @return статус выполнения операции
      */
-    public OperationStatus transfer(BankAccount holder, double amount, BankAccount receiver) {
+    public OperationStatus transfer(Account holder, double amount, Account receiver) {
         return processReducing(holder, OperationType.TRANSFER, amount, receiver);
     }
 
@@ -74,7 +74,7 @@ public class TransactionProcessor {
      * @param amount сумма операции
      * @return статус выполнения операции
      */
-    private OperationStatus processIncreasing(BankAccount holder, OperationType operationType, double amount, BankAccount beneficiary) {
+    private OperationStatus processIncreasing(Account holder, OperationType operationType, double amount, Account beneficiary) {
         // Обработка транзакции
         Transaction transaction = new Transaction(holder, operationType, amount, beneficiary);
         transaction.setStatus(OperationStatus.COMMITTED); // Проверки не требуются, транзакция успешна
@@ -93,7 +93,7 @@ public class TransactionProcessor {
      * @param beneficiary бенефициар
      * @return статус выполнения операции
      */
-    private OperationStatus processReducing(BankAccount holder, OperationType operationType, double amount, BankAccount beneficiary) {
+    private OperationStatus processReducing(Account holder, OperationType operationType, double amount, Account beneficiary) {
         OperationStatus status;
 
         // Обработка транзакции

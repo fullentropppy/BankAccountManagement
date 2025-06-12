@@ -10,7 +10,7 @@ import java.util.ArrayList;
 public class BankAccount {
     private final long accountNumber;
     private String holderName;
-    private final ArrayList<Transaction> transactions = new ArrayList<>();
+    private final ArrayList<Transaction> transactions;
 
     // Кэширование баланса
     private double cachedBalance;
@@ -39,6 +39,7 @@ public class BankAccount {
      * @param ownerName имя владельца
      */
     public BankAccount(long accountNumber, String ownerName) {
+        this.transactions = new ArrayList<>();
         this.accountNumber = accountNumber;
         this.holderName = ownerName;
     }

@@ -9,12 +9,12 @@ import java.time.format.DateTimeFormatter;
  * Содержит информацию о дате, типе операции, сумме, участниках и статусе.
  */
 public class Transaction {
-    private final LocalDateTime date = LocalDateTime.now();
+    private final LocalDateTime date;
     private final BankAccount holder;
     private final OperationType operationType;
     private final double amount;
     private final BankAccount beneficiary;
-    private OperationStatus status = OperationStatus.UNCOMMITTED;
+    private OperationStatus status;
 
     // -----------------------------------------------------------------------------------------------------------------
     // OVERRIDDEN
@@ -43,10 +43,12 @@ public class Transaction {
      * @param beneficiary бенефициар (может быть null)
      */
     public Transaction(BankAccount holder, OperationType operationType, double amount, BankAccount beneficiary) {
+        this.date = LocalDateTime.now();
         this.holder = holder;
         this.operationType = operationType;
         this.amount = amount;
         this.beneficiary = beneficiary; // может быть null если бенефициар не предполагается
+        this.status = OperationStatus.UNCOMMITTED;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

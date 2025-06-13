@@ -27,10 +27,10 @@ public class Test {
      * Инициализирует счета банка.
      */
     private static void initializeAccounts() {
-        addAccount("store", 50501944, "Магазин");
-        addAccount("ivanovI", 94867303, "Иванов И");
-        addAccount("sidorovS", 70019471, "Сидоров С");
-        addAccount("petrovP", 86107026, "Петров П");
+        addAccount("store", "Магазин");
+        addAccount("ivanovI", "Иванов И");
+        addAccount("sidorovS", "Сидоров С");
+        addAccount("petrovP", "Петров П");
     }
 
     /**
@@ -81,8 +81,8 @@ public class Test {
      * @param accountNumber номер счета
      * @param ownerName имя владельца
      */
-    private static void addAccount(String accountKey, long accountNumber, String ownerName) {
-        Account account = new Account(accountNumber, ownerName);
+    private static void addAccount(String accountKey, String ownerName) {
+        Account account = new Account(ownerName);
         accounts.put(accountKey, account);
     }
 }

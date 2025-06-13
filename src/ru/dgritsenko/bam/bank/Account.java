@@ -2,6 +2,7 @@ package ru.dgritsenko.bam.bank;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Класс, представляющий банковский счет.
@@ -38,10 +39,12 @@ public class Account {
      * @param accountNumber номер счета
      * @param ownerName имя владельца
      */
-    public Account(long accountNumber, String ownerName) {
+    public Account(String holderName) {
+        Random random = new Random();
+
         this.transactions = new ArrayList<>();
-        this.accountNumber = accountNumber;
-        this.holderName = ownerName;
+        this.accountNumber = random.nextInt(999999999);
+        this.holderName = holderName;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

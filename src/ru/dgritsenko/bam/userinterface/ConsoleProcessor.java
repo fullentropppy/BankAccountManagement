@@ -1,6 +1,7 @@
 package ru.dgritsenko.bam.userinterface;
 
 import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.bank.OperationType;
 import ru.dgritsenko.bam.test.Test;
 
 import java.io.IOException;
@@ -11,6 +12,9 @@ import java.util.Scanner;
 public class ConsoleProcessor {
     private final ArrayList<Account> accounts = new ArrayList<>();
     private Page currentPage;
+    private Account holder;
+    private Account beneficiary;
+    private OperationType holderOperation;
 
     public void initialize() {
         showPage(Page.MAIN);
@@ -68,10 +72,9 @@ public class ConsoleProcessor {
     private void processAccountsPage() {
         String pageMessage =
                 """
-                1 - Создание
-                2 - Операции
-                3 - Список
-                4 - Главное меню
+                1 - Создание счета
+                2 - Список счетов
+                3 - Главное меню
                 """;
         System.out.println(pageMessage);
 
@@ -83,8 +86,7 @@ public class ConsoleProcessor {
 
         Page nextPage = switch (option) {
             case 1 -> Page.ACCOUNTS_CREATING;
-            case 2 -> Page.ACCOUNTS_OPERATION;
-            case 3 -> Page.ACCOUNTS_LIST;
+            case 2 -> Page.ACCOUNTS_LIST;
             default -> Page.MAIN;
         };
 
@@ -92,15 +94,97 @@ public class ConsoleProcessor {
     }
 
     private void processAccountCreatingPage() {
+        String actionMessage = "> введите ФИО владельца: ";
+        System.out.print(actionMessage);
 
+        Scanner holderNameScanner = new Scanner(System.in);
+        String holderName = holderNameScanner.nextLine();
+
+        holder = new Account(holderName);
+        accounts.add(holder);
+
+        clearText();
+
+        String pageMessage = MessageFormat.format(
+                """
+                Создан счет на имя {0}
+                
+                1 - Операции со счетом
+                2 - Список счетов
+                3 - Главное меню
+                """,
+                holder
+        );
+        System.out.println(pageMessage);
+
+        actionMessage = "> введите номер действия: ";
+        System.out.print(actionMessage);
+
+        Scanner optionScanner = new Scanner(System.in);
+        int option = optionScanner.nextInt();
+
+        Page nextPage = switch (option) {
+            case 1 -> Page.ACCOUNTS_OPERATIONS;
+            case 2 -> Page.ACCOUNTS_LIST;
+            default -> Page.MAIN;
+        };
+
+        showPage(nextPage);
     }
 
-    private void processAccountOperationPage() {
+    private void processAccountOperationsPage() {
+        String pageMessage = MessageFormat.format(
+                """
+                Счет {0}, баланс: {1}
+                1 - Пополнить
+                2 - Оплатить
+                3 - Снять наличные
+                4 - Перевести
+                5 - Список транзакций
+                6 - Главное меню
+                """,
+                holder, holder.getBalance()
+        );
+        System.out.println(pageMessage);
+
+        String actionMessage = "> введите номер действия: ";
+        System.out.print(actionMessage);
+
+        Scanner scanner = new Scanner(System.in);
+        int option = scanner.nextInt();
+
+        Page nextPage = Page.MAIN;
+        holderOperation = null;
+
+        if (option == 1) {
+            nextPage = Page.ACCOUNTS_OPERATIONS_SELECTED;
+            holderOperation = OperationType.DEPOSIT;
+        } else if (option == 2) {
+            nextPage = Page.ACCOUNTS_OPERATIONS_SELECTED;
+            holderOperation = OperationType.DEBIT;
+        } else if (option == 3) {
+            nextPage = Page.ACCOUNTS_OPERATIONS_SELECTED;
+            holderOperation = OperationType.WITHDRAW;
+        } else if (option == 4) {
+            nextPage = Page.ACCOUNTS_OPERATIONS_SELECTED;
+            holderOperation = OperationType.TRANSFER;
+        } else if (option == 5) {
+            nextPage = Page.TRANSACTIONS_LIST;
+        }
+
+        showPage(nextPage);
+    }
+
+    private void processAccountOperationsSelectedPage() {
 
     }
 
     private void processAccountsListPage() {
+        holder = getAccountFromPrintedList();
 
+        if (holder != null) {
+            showPage(Page.ACCOUNTS_OPERATIONS);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -134,7 +218,7 @@ public class ConsoleProcessor {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. MISC
+    // METHODS. PAGES PROCESSING. MISC
     // -----------------------------------------------------------------------------------------------------------------
 
     private void showPage(Page page) {
@@ -150,8 +234,10 @@ public class ConsoleProcessor {
             processAccountsPage();
         } else if (page == Page.ACCOUNTS_CREATING) {
             processAccountCreatingPage();
-        } else if (page == Page.ACCOUNTS_OPERATION) {
-            processAccountOperationPage();
+        } else if (page == Page.ACCOUNTS_OPERATIONS) {
+            processAccountOperationsPage();
+        } else if (page == Page.ACCOUNTS_OPERATIONS_SELECTED) {
+            processAccountOperationsSelectedPage();
         } else if (page == Page.ACCOUNTS_LIST) {
             processAccountsListPage();
         } else if (page == Page.TRANSACTIONS) {
@@ -178,5 +264,43 @@ public class ConsoleProcessor {
                 Runtime.getRuntime().exec("clear");
             }
         } catch (IOException | InterruptedException _) {}
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. MISC
+    // -----------------------------------------------------------------------------------------------------------------
+
+    private Account getAccountFromPrintedList() {
+        Account chosenAccount = null;
+
+        if (accounts.isEmpty()) {
+            showPage(Page.ACCOUNTS);
+            return chosenAccount;
+        }
+
+        StringBuilder accountsListMessages = new StringBuilder();
+
+        int i = 1;
+
+        for (Account account : accounts) {
+            String accountOption = MessageFormat.format("{0} - {1}\n", i, account);
+            accountsListMessages.append(accountOption);
+            i++;
+        }
+
+        String accountsListMessage = accountsListMessages.toString();
+        System.out.println(accountsListMessage);
+
+        String actionMessage = "> введите номер счета в списке: ";
+        System.out.print(actionMessage);
+
+        Scanner scanner = new Scanner(System.in);
+        int option = scanner.nextInt();
+
+        if (option <= accounts.size()) {
+            chosenAccount = accounts.get(option - 1);
+        }
+
+        return chosenAccount;
     }
 }

@@ -2,6 +2,7 @@ package ru.dgritsenko.bam.userinterface;
 
 import ru.dgritsenko.bam.bank.Account;
 import ru.dgritsenko.bam.bank.OperationType;
+import ru.dgritsenko.bam.bank.TransactionProcessor;
 import ru.dgritsenko.bam.test.Test;
 
 import java.io.IOException;
@@ -36,13 +37,7 @@ public class ConsoleProcessor {
                 """;
         System.out.println(pageMessage);
 
-        String actionMessage = "> введите номер действия: ";
-        System.out.print(actionMessage);
-
-        Scanner scanner = new Scanner(System.in);
-        int option = scanner.nextInt();
-
-        Page nextPage = switch (option) {
+        Page nextPage = switch (getOption(ChoosingOption.DEFAULT)) {
             case 1 -> Page.ACCOUNTS;
             case 2 -> Page.TRANSACTIONS;
             case 3 -> Page.EXIT;
@@ -78,13 +73,7 @@ public class ConsoleProcessor {
                 """;
         System.out.println(pageMessage);
 
-        String actionMessage = "> введите номер действия: ";
-        System.out.print(actionMessage);
-
-        Scanner scanner = new Scanner(System.in);
-        int option = scanner.nextInt();
-
-        Page nextPage = switch (option) {
+        Page nextPage = switch (getOption(ChoosingOption.DEFAULT)) {
             case 1 -> Page.ACCOUNTS_CREATING;
             case 2 -> Page.ACCOUNTS_LIST;
             default -> Page.MAIN;
@@ -110,22 +99,18 @@ public class ConsoleProcessor {
                 Создан счет на имя {0}
                 
                 1 - Операции со счетом
-                2 - Список счетов
-                3 - Главное меню
+                2 - Создать новый счет
+                3 - Список счетов
+                4 - Главное меню
                 """,
                 holder
         );
         System.out.println(pageMessage);
 
-        actionMessage = "> введите номер действия: ";
-        System.out.print(actionMessage);
-
-        Scanner optionScanner = new Scanner(System.in);
-        int option = optionScanner.nextInt();
-
-        Page nextPage = switch (option) {
+        Page nextPage = switch (getOption(ChoosingOption.DEFAULT)) {
             case 1 -> Page.ACCOUNTS_OPERATIONS;
-            case 2 -> Page.ACCOUNTS_LIST;
+            case 2 -> Page.ACCOUNTS_CREATING;
+            case 3 -> Page.ACCOUNTS_LIST;
             default -> Page.MAIN;
         };
 
@@ -147,11 +132,7 @@ public class ConsoleProcessor {
         );
         System.out.println(pageMessage);
 
-        String actionMessage = "> введите номер действия: ";
-        System.out.print(actionMessage);
-
-        Scanner scanner = new Scanner(System.in);
-        int option = scanner.nextInt();
+        int option = getOption(ChoosingOption.DEFAULT);
 
         Page nextPage = Page.MAIN;
         holderOperation = null;
@@ -176,7 +157,30 @@ public class ConsoleProcessor {
     }
 
     private void processAccountOperationsSelectedPage() {
+        String pageMessage = MessageFormat.format("Счет {0}, баланс: {1}", holder, holder.getBalance());
+        System.out.println(pageMessage);
 
+        String actionMessage = "> введите сумму операции: ";
+        System.out.print(actionMessage);
+
+        Scanner scannerAmmount = new Scanner(System.in);
+        Double amount = scannerAmmount.nextDouble();
+
+        if (holderOperation == OperationType.DEBIT || holderOperation == OperationType.TRANSFER) {
+            Account beneficiary = getAccountFromPrintedList();
+        }
+
+        if (holderOperation == OperationType.DEPOSIT) {
+            TransactionProcessor.deposit(holder, amount);
+        } else if (holderOperation == OperationType.DEBIT) {
+            TransactionProcessor.debit(holder, amount, beneficiary);
+        } else if (holderOperation == OperationType.WITHDRAW) {
+            TransactionProcessor.withdrawal(holder, amount);
+        } else if (holderOperation == OperationType.TRANSFER) {
+            TransactionProcessor.transfer(holder, amount, beneficiary);
+        }
+
+        showPage(Page.ACCOUNTS_OPERATIONS);
     }
 
     private void processAccountsListPage() {
@@ -199,13 +203,7 @@ public class ConsoleProcessor {
                 """;
         System.out.println(pageMessage);
 
-        String actionMessage = "> введите номер действия: ";
-        System.out.print(actionMessage);
-
-        Scanner scanner = new Scanner(System.in);
-        int option = scanner.nextInt();
-
-        Page nextPage = switch (option) {
+        Page nextPage = switch (getOption(ChoosingOption.DEFAULT)) {
             case 1 -> Page.TRANSACTIONS_LIST;
             default -> Page.MAIN;
         };
@@ -252,7 +250,13 @@ public class ConsoleProcessor {
     }
 
     private void printHeader() {
-        String header = MessageFormat.format("*** Банковское приложение / {0} ***\n", currentPage);
+        String header;
+
+        if (currentPage == Page.ACCOUNTS_OPERATIONS_SELECTED) {
+            header = MessageFormat.format("*** Банковское приложение / {0}: {1} ***\n", currentPage, holderOperation);
+        } else {
+            header = MessageFormat.format("*** Банковское приложение / {0} ***\n", currentPage);
+        }
         System.out.println(header);
     }
 
@@ -270,12 +274,17 @@ public class ConsoleProcessor {
     // METHODS. MISC
     // -----------------------------------------------------------------------------------------------------------------
 
-    private Account getAccountFromPrintedList() {
-        Account chosenAccount = null;
+    private int getOption(ChoosingOption choosingOption) {
+        System.out.print(choosingOption);
 
+        Scanner scanner = new Scanner(System.in);
+
+        return scanner.nextInt();
+    }
+
+    private void printAccountList(boolean addGoMainMenu) {
         if (accounts.isEmpty()) {
-            showPage(Page.ACCOUNTS);
-            return chosenAccount;
+            return;
         }
 
         StringBuilder accountsListMessages = new StringBuilder();
@@ -288,16 +297,32 @@ public class ConsoleProcessor {
             i++;
         }
 
+        if (addGoMainMenu) {
+            String mainMenuOption = MessageFormat.format("{0} - Главное меню\n", i);
+            accountsListMessages.append(mainMenuOption);
+        }
+
         String accountsListMessage = accountsListMessages.toString();
         System.out.println(accountsListMessage);
+    }
 
-        String actionMessage = "> введите номер счета в списке: ";
-        System.out.print(actionMessage);
+    private Account getAccountFromPrintedList() {
+        Account chosenAccount = null;
 
-        Scanner scanner = new Scanner(System.in);
-        int option = scanner.nextInt();
+        if (accounts.isEmpty()) {
+            showPage(Page.ACCOUNTS);
+            return chosenAccount;
+        }
 
-        if (option <= accounts.size()) {
+        printAccountList(true);
+
+        int option = getOption(ChoosingOption.ACCOUNT);
+
+        int optionsAmount = accounts.size() + 1;
+
+        if (option == optionsAmount) {
+            
+        } else if (option <= accounts.size()) {
             chosenAccount = accounts.get(option - 1);
         }
 

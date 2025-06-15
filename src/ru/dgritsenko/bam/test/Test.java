@@ -43,21 +43,18 @@ public class Test {
         Account sidorovS = accounts.get("sidorovS");
         Account petrovP = accounts.get("petrovP");
 
-        // Создание обработчика операций
-        TransactionProcessor transactionProcessor = new TransactionProcessor();
-
         // Выполнение операций через обработчик
-        transactionProcessor.deposit(ivanovI, 50000);
-        transactionProcessor.debit(ivanovI, 599.25, store);
-        transactionProcessor.transfer(ivanovI, 10000, sidorovS);
+        TransactionProcessor.deposit(ivanovI, 50000);
+        TransactionProcessor.debit(ivanovI, 599.25, store);
+        TransactionProcessor.transfer(ivanovI, 10000, sidorovS);
 
-        transactionProcessor.withdrawal(sidorovS, 1000);
-        transactionProcessor.transfer(sidorovS, 2000, petrovP);
-        transactionProcessor.withdrawal(sidorovS, 8000);
+        TransactionProcessor.withdrawal(sidorovS, 1000);
+        TransactionProcessor.transfer(sidorovS, 2000, petrovP);
+        TransactionProcessor.withdrawal(sidorovS, 8000);
 
-        transactionProcessor.transfer(petrovP, 5000, ivanovI);
-        transactionProcessor.deposit(petrovP, 5000);
-        transactionProcessor.transfer(petrovP, 5000, ivanovI);
+        TransactionProcessor.transfer(petrovP, 5000, ivanovI);
+        TransactionProcessor.deposit(petrovP, 5000);
+        TransactionProcessor.transfer(petrovP, 5000, ivanovI);
     }
 
     /**

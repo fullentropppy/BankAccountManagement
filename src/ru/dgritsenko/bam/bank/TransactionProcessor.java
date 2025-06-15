@@ -5,7 +5,6 @@ package ru.dgritsenko.bam.bank;
  * Создает транзакции, проверяет условия их выполнения и обновляет состояние счетов.
  */
 public class TransactionProcessor {
-
     // -----------------------------------------------------------------------------------------------------------------
     // METHODS. OPERATIONS
     // -----------------------------------------------------------------------------------------------------------------
@@ -16,7 +15,7 @@ public class TransactionProcessor {
      * @param amount сумма пополнения
      * @return статус выполнения операции
      */
-    public OperationStatus deposit(Account holder, double amount) {
+    public static OperationStatus deposit(Account holder, double amount) {
         return processIncreasing(holder, OperationType.DEPOSIT, amount, null);
     }
 
@@ -27,7 +26,7 @@ public class TransactionProcessor {
      * @param beneficiary отправитель средств
      * @return статус выполнения операции
      */
-    public OperationStatus credit(Account holder, double amount, Account beneficiary) {
+    public static OperationStatus credit(Account holder, double amount, Account beneficiary) {
         return processIncreasing(holder, OperationType.CREDIT, amount, beneficiary);
     }
 
@@ -38,7 +37,7 @@ public class TransactionProcessor {
      * @param beneficiary бенефициар
      * @return статус выполнения операции
      */
-    public OperationStatus debit(Account holder, double amount, Account beneficiary ) {
+    public static OperationStatus debit(Account holder, double amount, Account beneficiary ) {
         return processReducing(holder, OperationType.DEBIT, amount, beneficiary);
     }
 
@@ -48,7 +47,7 @@ public class TransactionProcessor {
      * @param amount сумма
      * @return статус выполнения операции
      */
-    public OperationStatus withdrawal(Account holder, double amount) {
+    public static OperationStatus withdrawal(Account holder, double amount) {
         return processReducing(holder, OperationType.WITHDRAW, amount, null);
     }
 
@@ -59,7 +58,7 @@ public class TransactionProcessor {
      * @param receiver получатель
      * @return статус выполнения операции
      */
-    public OperationStatus transfer(Account holder, double amount, Account receiver) {
+    public static OperationStatus transfer(Account holder, double amount, Account receiver) {
         return processReducing(holder, OperationType.TRANSFER, amount, receiver);
     }
 
@@ -74,7 +73,7 @@ public class TransactionProcessor {
      * @param amount сумма операции
      * @return статус выполнения операции
      */
-    private OperationStatus processIncreasing(Account holder, OperationType operationType, double amount, Account beneficiary) {
+    private static OperationStatus processIncreasing(Account holder, OperationType operationType, double amount, Account beneficiary) {
         // Обработка транзакции
         Transaction transaction = new Transaction(holder, operationType, amount, beneficiary);
         transaction.setStatus(OperationStatus.COMMITTED); // Проверки не требуются, транзакция успешна
@@ -93,7 +92,7 @@ public class TransactionProcessor {
      * @param beneficiary бенефициар
      * @return статус выполнения операции
      */
-    private OperationStatus processReducing(Account holder, OperationType operationType, double amount, Account beneficiary) {
+    private static OperationStatus processReducing(Account holder, OperationType operationType, double amount, Account beneficiary) {
         OperationStatus status;
 
         // Обработка транзакции

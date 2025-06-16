@@ -28,7 +28,7 @@ public class Transaction {
     public String toString() {
         return MessageFormat.format(
                 "№{0} от {1} ({2})",
-                Long.toString(hashCode()), getDateFormatted(), status.getTitle());
+                Long.toString(hashCode()), getDateFormatted(), status);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

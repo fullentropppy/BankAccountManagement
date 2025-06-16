@@ -37,7 +37,7 @@ public class ConsoleProcessor {
                 """;
         System.out.println(pageMessage);
 
-        Page nextPage = switch (getOption(ChoosingOption.DEFAULT)) {
+        Page nextPage = switch (getOptionInt(ChoosingOption.DEFAULT)) {
             case 1 -> Page.ACCOUNTS;
             case 2 -> Page.TRANSACTIONS;
             case 3 -> Page.EXIT;
@@ -54,10 +54,7 @@ public class ConsoleProcessor {
 
     private void processTestPage() {
         Test.processPredefinedSet();
-
-        // Ожидание ввода перед закрытием
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine();
+        waitForExit();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -73,7 +70,7 @@ public class ConsoleProcessor {
                 """;
         System.out.println(pageMessage);
 
-        Page nextPage = switch (getOption(ChoosingOption.DEFAULT)) {
+        Page nextPage = switch (getOptionInt(ChoosingOption.DEFAULT)) {
             case 1 -> Page.ACCOUNTS_CREATING;
             case 2 -> Page.ACCOUNTS_LIST;
             default -> Page.MAIN;
@@ -107,7 +104,7 @@ public class ConsoleProcessor {
         );
         System.out.println(pageMessage);
 
-        Page nextPage = switch (getOption(ChoosingOption.DEFAULT)) {
+        Page nextPage = switch (getOptionInt(ChoosingOption.DEFAULT)) {
             case 1 -> Page.ACCOUNTS_OPERATIONS;
             case 2 -> Page.ACCOUNTS_CREATING;
             case 3 -> Page.ACCOUNTS_LIST;
@@ -132,7 +129,7 @@ public class ConsoleProcessor {
         );
         System.out.println(pageMessage);
 
-        int option = getOption(ChoosingOption.DEFAULT);
+        int option = getOptionInt(ChoosingOption.DEFAULT);
 
         Page nextPage = Page.MAIN;
         holderOperation = null;
@@ -160,14 +157,10 @@ public class ConsoleProcessor {
         String pageMessage = MessageFormat.format("Счет {0}, баланс: {1}", holder, holder.getBalance());
         System.out.println(pageMessage);
 
-        String actionMessage = "> введите сумму операции: ";
-        System.out.print(actionMessage);
-
-        Scanner scannerAmmount = new Scanner(System.in);
-        Double amount = scannerAmmount.nextDouble();
+        Double amount = getOptionDouble(ChoosingOption.OPERATION_AMOUNT);
 
         if (holderOperation == OperationType.DEBIT || holderOperation == OperationType.TRANSFER) {
-            Account beneficiary = getAccountFromPrintedList();
+            Account beneficiary = getAccount();
         }
 
         if (holderOperation == OperationType.DEPOSIT) {
@@ -184,7 +177,7 @@ public class ConsoleProcessor {
     }
 
     private void processAccountsListPage() {
-        holder = getAccountFromPrintedList();
+        holder = getAccount();
 
         if (holder != null) {
             showPage(Page.ACCOUNTS_OPERATIONS);
@@ -203,7 +196,7 @@ public class ConsoleProcessor {
                 """;
         System.out.println(pageMessage);
 
-        Page nextPage = switch (getOption(ChoosingOption.DEFAULT)) {
+        Page nextPage = switch (getOptionInt(ChoosingOption.DEFAULT)) {
             case 1 -> Page.TRANSACTIONS_LIST;
             default -> Page.MAIN;
         };
@@ -274,7 +267,15 @@ public class ConsoleProcessor {
     // METHODS. MISC
     // -----------------------------------------------------------------------------------------------------------------
 
-    private int getOption(ChoosingOption choosingOption) {
+    private int getOptionInt(ChoosingOption choosingOption) {
+        System.out.print(choosingOption);
+
+        Scanner scanner = new Scanner(System.in);
+
+        return scanner.nextInt();
+    }
+
+    private double getOptionDouble(ChoosingOption choosingOption) {
         System.out.print(choosingOption);
 
         Scanner scanner = new Scanner(System.in);
@@ -306,7 +307,7 @@ public class ConsoleProcessor {
         System.out.println(accountsListMessage);
     }
 
-    private Account getAccountFromPrintedList() {
+    private Account getAccount() {
         Account chosenAccount = null;
 
         if (accounts.isEmpty()) {
@@ -314,18 +315,17 @@ public class ConsoleProcessor {
             return chosenAccount;
         }
 
-        printAccountList(true);
+        int option = getOptionInt(ChoosingOption.ACCOUNT);
 
-        int option = getOption(ChoosingOption.ACCOUNT);
-
-        int optionsAmount = accounts.size() + 1;
-
-        if (option == optionsAmount) {
-            
-        } else if (option <= accounts.size()) {
+        if (option <= accounts.size()) {
             chosenAccount = accounts.get(option - 1);
         }
 
         return chosenAccount;
+    }
+
+    private void waitForExit() {
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 }

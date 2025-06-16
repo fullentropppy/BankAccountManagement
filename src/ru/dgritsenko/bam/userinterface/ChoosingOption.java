@@ -3,8 +3,9 @@ package ru.dgritsenko.bam.userinterface;
 import java.text.MessageFormat;
 
 public enum ChoosingOption {
-    DEFAULT("номер действия"),
-    ACCOUNT("номер счета в списке");
+    DEFAULT("Введите номер действия"),
+    ACCOUNT("Введите номер счета в списке"),
+    OPERATION_AMOUNT("Введите сумму операции");
 
     private final String title;
 
@@ -30,7 +31,7 @@ public enum ChoosingOption {
      * @param title заголовок опции
      */
     ChoosingOption(String title) {
-        this.title = MessageFormat.format("> введите {0}: ", title);
+        this.title = MessageFormat.format("> {0}: ", title);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

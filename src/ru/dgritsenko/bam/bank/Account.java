@@ -15,7 +15,7 @@ public class Account {
 
     // Кэширование баланса
     private double cachedBalance;
-    boolean balanceIsValid;
+    private boolean balanceIsValid;
 
     // -----------------------------------------------------------------------------------------------------------------
     // OVERRIDDEN
@@ -148,7 +148,7 @@ public class Account {
         String message;
 
         if (transactions.isEmpty()) {
-            message = MessageFormat.format("Владелец: {0}, список транзакций пуст", this);
+            message = MessageFormat.format("Владелец: {0}, список транзакций пуст...", this);
         } else {
             StringBuilder messages = new StringBuilder();
 

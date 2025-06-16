@@ -110,8 +110,7 @@ public class ConsoleProcessor {
                 \t1. Создать еще
                 \t2. Операции
                 \t3. Список счетов
-                \t4. Меню счетов
-                \t5. Главное меню
+                \t4. Главное меню
                 """,
                 account);
 
@@ -130,8 +129,6 @@ public class ConsoleProcessor {
         } else if (option == 3) {
             showAccountListPage();
         } else if (option == 4) {
-            showAccountListPage();
-        } else if (option == 5) {
             showMainPage();
         } else {
             // обработка ошибки ввода
@@ -212,9 +209,11 @@ public class ConsoleProcessor {
                 \t2. Оплатить
                 \t3. Перевести
                 \t4. Снять наличные
-                \t5. Список счетов
-                \t6. Меню счетов
-                \t7. Главное меню
+                
+                \t5. Транзакции счета
+                \t6. Список счетов
+                \t7. Меню счетов
+                \t8. Главное меню
                 """;
         System.out.println(pageMenu);
 
@@ -225,7 +224,17 @@ public class ConsoleProcessor {
         int option = optionScanner.nextInt();
 
         if (option == 1) {
-            pageActionMessage = "\n> Введите сумму пополнения: ";
+            clearText();
+
+            mainPageHeader = MessageFormat.format("""
+                    ====================================================================================================
+                    \tБанковское приложение / Операции со счетом: {0}, баланс: {1}
+                    ====================================================================================================
+                    """,
+                    account, account.getBalance());
+            System.out.println(mainPageHeader);
+
+            pageActionMessage = "> Введите сумму пополнения: ";
             System.out.print(pageActionMessage);
 
             Scanner amountScanner = new Scanner(System.in);
@@ -244,13 +253,23 @@ public class ConsoleProcessor {
 
             showAccountOperationPage(account);
         } else if (option == 2) {
+            clearText();
+
+            mainPageHeader = MessageFormat.format("""
+                    ====================================================================================================
+                    \tБанковское приложение / Операции со счетом: {0}, баланс: {1}
+                    ====================================================================================================
+                    """,
+                    account, account.getBalance());
+            System.out.println(mainPageHeader);
+
             StringBuilder beneficiaryMenu = new StringBuilder();
 
             int i = 1;
 
             for (Account beneficiary : accounts) {
                 if (!(account == beneficiary)) {
-                    String accountOptionTemplate = (i == 1) ? "\n\t{0}. {1}" : "\n\t{0}. {1}";
+                    String accountOptionTemplate = (i == 1) ? "\t{0}. {1}" : "\n\t{0}. {1}";
                     String accountOption = MessageFormat.format(accountOptionTemplate, i, beneficiary);
                     beneficiaryMenu.append(accountOption);
                     i++;
@@ -258,7 +277,7 @@ public class ConsoleProcessor {
             }
 
             if (beneficiaryMenu.isEmpty()) {
-                String missingMessage = "\n\tСписок получателей пуст...";
+                String missingMessage = "\tСписок получателей пуст...";
                 System.out.println(missingMessage);
 
                 pageActionMessage = "\n> Нажмите Enter для продолжения...";
@@ -275,7 +294,7 @@ public class ConsoleProcessor {
                 String pageText = beneficiaryMenu.toString();
                 System.out.println(pageText);
 
-                pageActionMessage = "\n> Введите номер получателя: ";
+                pageActionMessage = "\n> Введите номер получателя оплаты: ";
                 System.out.print(pageActionMessage);
 
                 Scanner scanner = new Scanner(System.in);
@@ -284,7 +303,7 @@ public class ConsoleProcessor {
                 int optionsAmount = accounts.size();
 
                 if (option > 0 && option < optionsAmount) {
-                    Account beneficiary = accounts.get(option - 1);
+                    Account beneficiary = accounts.get(option - 1); // Если пропущен текущий счет, индекс сдвигается, поправить!
 
                     pageActionMessage = "\n> Введите сумму оплаты: ";
                     System.out.print(pageActionMessage);
@@ -311,13 +330,23 @@ public class ConsoleProcessor {
                 }
             }
         } else if (option == 3) {
+            clearText();
+
+            mainPageHeader = MessageFormat.format("""
+                    ====================================================================================================
+                    \tБанковское приложение / Операции со счетом: {0}, баланс: {1}
+                    ====================================================================================================
+                    """,
+                    account, account.getBalance());
+            System.out.println(mainPageHeader);
+
             StringBuilder beneficiaryMenu = new StringBuilder();
 
             int i = 1;
 
             for (Account beneficiary : accounts) {
                 if (!(account == beneficiary)) {
-                    String accountOptionTemplate = (i == 1) ? "\n\t{0}. {1}" : "\n\t{0}. {1}";
+                    String accountOptionTemplate = (i == 1) ? "\t{0}. {1}" : "\n\t{0}. {1}";
                     String accountOption = MessageFormat.format(accountOptionTemplate, i, beneficiary);
                     beneficiaryMenu.append(accountOption);
                     i++;
@@ -325,7 +354,7 @@ public class ConsoleProcessor {
             }
 
             if (beneficiaryMenu.isEmpty()) {
-                String missingMessage = "\n\tСписок получателей пуст...";
+                String missingMessage = "\tСписок получателей пуст...";
                 System.out.println(missingMessage);
 
                 pageActionMessage = "\n> Нажмите Enter для продолжения...";
@@ -342,7 +371,7 @@ public class ConsoleProcessor {
                 String pageText = beneficiaryMenu.toString();
                 System.out.println(pageText);
 
-                pageActionMessage = "\n> Введите номер получателя: ";
+                pageActionMessage = "\n> Введите номер получателя перевода: ";
                 System.out.print(pageActionMessage);
 
                 Scanner scanner = new Scanner(System.in);
@@ -378,7 +407,17 @@ public class ConsoleProcessor {
                 }
             }
         } else if (option == 4) {
-            pageActionMessage = "\n> Введите сумму наличных: ";
+            clearText();
+
+            mainPageHeader = MessageFormat.format("""
+                    ====================================================================================================
+                    \tБанковское приложение / Операции со счетом: {0}, баланс: {1}
+                    ====================================================================================================
+                    """,
+                    account, account.getBalance());
+            System.out.println(mainPageHeader);
+
+            pageActionMessage = "> Введите сумму снимаемых наличных: ";
             System.out.print(pageActionMessage);
 
             Scanner amountScanner = new Scanner(System.in);
@@ -396,11 +435,31 @@ public class ConsoleProcessor {
             scanner.nextLine();
 
             showAccountOperationPage(account);
-        } else if (option == 5) {
-            showAccountListPage();
+        } else if (option ==5 ) {
+            clearText();
+
+            mainPageHeader = """
+                    ====================================================================================================
+                    \tБанковское приложение / Транзакции счета
+                    ====================================================================================================
+                    """;
+            System.out.println(mainPageHeader);
+
+            account.printTransactions();
+            System.out.println();
+
+            pageActionMessage = "> Нажмите Enter для возврата в меню операций со счетом...";
+            System.out.print(pageActionMessage);
+
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine();
+
+            showAccountOperationPage(account);
         } else if (option == 6) {
-            showAccountPage();
+            showAccountListPage();
         } else if (option == 7) {
+            showAccountPage();
+        } else if (option == 8) {
             showMainPage();
         } else {
             // обработка ошибки ввода
@@ -439,7 +498,7 @@ public class ConsoleProcessor {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. MISC
+    // METHODS. CONSOLE
     // -----------------------------------------------------------------------------------------------------------------
 
     private void clearText() {

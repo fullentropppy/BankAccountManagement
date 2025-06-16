@@ -1,6 +1,6 @@
 package ru.dgritsenko.bam.main;
 
-import ru.dgritsenko.bam.userinterfacenew.ConsoleProcessor;
+import ru.dgritsenko.bam.userinterface.ConsoleProcessor;
 
 public class Application {
     /**

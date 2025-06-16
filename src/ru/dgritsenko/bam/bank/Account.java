@@ -145,25 +145,34 @@ public class Account {
      * Выводит список всех транзакций по счету.
      */
     public void printTransactions() {
-        StringBuilder messages = new StringBuilder();
+        String message;
 
-        String title = MessageFormat.format("Владелец: {0}, транзакции:\n", this);
-        messages.append(title);
+        if (transactions.isEmpty()) {
+            message = MessageFormat.format("Владелец: {0}, список транзакций пуст", this);
+        } else {
+            StringBuilder messages = new StringBuilder();
 
-        int i = 1;
+            String title = MessageFormat.format("Владелец: {0}, транзакции:\n", this);
+            messages.append(title);
 
-        for (Transaction transaction : transactions) {
-            String operationView = transactionOperationView(transaction);
+            int i = 1;
 
-            String transactionInfo = MessageFormat.format(
-                    "   {0} - {1}, операция: {2}, сумма {3}\n",
-                    i, transaction, operationView, transaction.getAmount()
-            );
-            messages.append(transactionInfo);
-            i++;
+            for (Transaction transaction : transactions) {
+                String operationView = transactionOperationView(transaction);
+
+                String transactionInfoTemplate = (i == 1)
+                        ? "\t{0} - {1}, операция: {2}, сумма {3}"
+                        : "\n\t{0} - {1}, операция: {2}, сумма {3}";
+                String transactionInfo = MessageFormat.format(transactionInfoTemplate,
+                        i, transaction, operationView, transaction.getAmount()
+                );
+                messages.append(transactionInfo);
+                i++;
+            }
+
+            message = messages.toString();
         }
 
-        String message = messages.toString();
         System.out.println(message);
     }
 

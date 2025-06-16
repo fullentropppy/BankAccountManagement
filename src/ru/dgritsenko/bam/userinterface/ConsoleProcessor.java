@@ -1,9 +1,8 @@
 package ru.dgritsenko.bam.userinterface;
 
 import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.bank.OperationType;
+import ru.dgritsenko.bam.bank.OperationStatus;
 import ru.dgritsenko.bam.bank.TransactionProcessor;
-import ru.dgritsenko.bam.test.Test;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -12,246 +11,436 @@ import java.util.Scanner;
 
 public class ConsoleProcessor {
     private final ArrayList<Account> accounts = new ArrayList<>();
-    private Page currentPage;
-    private Account holder;
-    private Account beneficiary;
-    private OperationType holderOperation;
 
     public void initialize() {
-        showPage(Page.MAIN);
+        showMainPage();
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. PAGES PROCESSING
-    // -----------------------------------------------------------------------------------------------------------------
+    private void showMainPage() {
+        clearText();
 
-    private void processMainPage() {
-        String pageMessage =
-                """
-                Основное:
-                1 - Счета
-                2 - Транзакции
-                3 - Выйти
-                Дополнительно:
-                4 - Тестирование
+        String mainPageHeader = """
+                ====================================================================================================
+                \tБанковское приложение / Главное меню
+                ====================================================================================================
                 """;
-        System.out.println(pageMessage);
+        System.out.println(mainPageHeader);
 
-        Page nextPage = switch (getOptionInt(ChoosingOption.DEFAULT)) {
-            case 1 -> Page.ACCOUNTS;
-            case 2 -> Page.TRANSACTIONS;
-            case 3 -> Page.EXIT;
-            case 4 -> Page.TEST;
-            default -> Page.MAIN;
-        };
-
-        showPage(nextPage);
-    }
-
-    private void processExitPage() {
-        System.exit(0);
-    }
-
-    private void processTestPage() {
-        Test.processPredefinedSet();
-        waitForExit();
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. PAGES PROCESSING. ACCOUNTS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    private void processAccountsPage() {
-        String pageMessage =
-                """
-                1 - Создание счета
-                2 - Список счетов
-                3 - Главное меню
+        String pageMenu = """
+                \t1. Счета
+                \t2. Транзакции
+                \t3. Выход
                 """;
-        System.out.println(pageMessage);
+        System.out.println(pageMenu);
 
-        Page nextPage = switch (getOptionInt(ChoosingOption.DEFAULT)) {
-            case 1 -> Page.ACCOUNTS_CREATING;
-            case 2 -> Page.ACCOUNTS_LIST;
-            default -> Page.MAIN;
-        };
+        String pageActionMessage = "> Введите номер пункта: ";
+        System.out.print(pageActionMessage);
 
-        showPage(nextPage);
+        Scanner scanner = new Scanner(System.in);
+        int option = scanner.nextInt();
+
+        if (option == 1) {
+            showAccountPage();
+        } else if (option == 2) {
+            showTransactionPage();
+        } else if (option == 3) {
+            System.exit(0);
+        } else {
+            // обработка ошибки ввода
+        }
     }
 
-    private void processAccountCreatingPage() {
-        String actionMessage = "> введите ФИО владельца: ";
-        System.out.print(actionMessage);
+    private void showAccountPage() {
+        clearText();
+
+        String mainPageHeader = """
+                ====================================================================================================
+                \tБанковское приложение / Меню счетов
+                ====================================================================================================
+                """;
+        System.out.println(mainPageHeader);
+
+        String pageMenu = """
+                \t1. Создать
+                \t2. Список
+                \t3. Главное меню
+                """;
+        System.out.println(pageMenu);
+
+        String pageActionMessage = "> Введите номер пункта: ";
+        System.out.print(pageActionMessage);
+
+        Scanner scanner = new Scanner(System.in);
+        int option = scanner.nextInt();
+
+        if (option == 1) {
+            showAccountCreatingPage();
+        } else if (option == 2) {
+            showAccountListPage();
+        } else if (option == 3) {
+            showMainPage();
+        } else {
+            // обработка ошибки ввода
+        }
+    }
+
+    private void showAccountCreatingPage() {
+        clearText();
+
+        String mainPageHeader = """
+                ====================================================================================================
+                \tБанковское приложение / Создание счета
+                ====================================================================================================
+                """;
+        System.out.print(mainPageHeader);
+
+        String pageActionMessage = "\n> Введите ФИО владельца нового счета: ";
+        System.out.print(pageActionMessage);
 
         Scanner holderNameScanner = new Scanner(System.in);
         String holderName = holderNameScanner.nextLine();
 
-        holder = new Account(holderName);
-        accounts.add(holder);
+        Account account = new Account(holderName);
+        accounts.add(account);
 
-        clearText();
-
-        String pageMessage = MessageFormat.format(
-                """
-                Создан счет на имя {0}
+        String pageMenu = MessageFormat.format("""
                 
-                1 - Операции со счетом
-                2 - Создать новый счет
-                3 - Список счетов
-                4 - Главное меню
+                \tСоздан новый счет: {0}
+                
+                \t1. Создать еще
+                \t2. Операции
+                \t3. Список счетов
+                \t4. Меню счетов
+                \t5. Главное меню
                 """,
-                holder
-        );
-        System.out.println(pageMessage);
+                account);
 
-        Page nextPage = switch (getOptionInt(ChoosingOption.DEFAULT)) {
-            case 1 -> Page.ACCOUNTS_OPERATIONS;
-            case 2 -> Page.ACCOUNTS_CREATING;
-            case 3 -> Page.ACCOUNTS_LIST;
-            default -> Page.MAIN;
-        };
+        System.out.println(pageMenu);
 
-        showPage(nextPage);
-    }
+        pageActionMessage = "> Введите номер пункта: ";
+        System.out.print(pageActionMessage);
 
-    private void processAccountOperationsPage() {
-        String pageMessage = MessageFormat.format(
-                """
-                Счет {0}, баланс: {1}
-                1 - Пополнить
-                2 - Оплатить
-                3 - Снять наличные
-                4 - Перевести
-                5 - Список транзакций
-                6 - Главное меню
-                """,
-                holder, holder.getBalance()
-        );
-        System.out.println(pageMessage);
-
-        int option = getOptionInt(ChoosingOption.DEFAULT);
-
-        Page nextPage = Page.MAIN;
-        holderOperation = null;
+        Scanner optionScanner = new Scanner(System.in);
+        int option = optionScanner.nextInt();
 
         if (option == 1) {
-            nextPage = Page.ACCOUNTS_OPERATIONS_SELECTED;
-            holderOperation = OperationType.DEPOSIT;
+            showAccountCreatingPage();
         } else if (option == 2) {
-            nextPage = Page.ACCOUNTS_OPERATIONS_SELECTED;
-            holderOperation = OperationType.DEBIT;
+            showAccountOperationPage(account);
         } else if (option == 3) {
-            nextPage = Page.ACCOUNTS_OPERATIONS_SELECTED;
-            holderOperation = OperationType.WITHDRAW;
+            showAccountListPage();
         } else if (option == 4) {
-            nextPage = Page.ACCOUNTS_OPERATIONS_SELECTED;
-            holderOperation = OperationType.TRANSFER;
+            showAccountListPage();
         } else if (option == 5) {
-            nextPage = Page.TRANSACTIONS_LIST;
-        }
-
-        showPage(nextPage);
-    }
-
-    private void processAccountOperationsSelectedPage() {
-        String pageMessage = MessageFormat.format("Счет {0}, баланс: {1}", holder, holder.getBalance());
-        System.out.println(pageMessage);
-
-        Double amount = getOptionDouble(ChoosingOption.OPERATION_AMOUNT);
-
-        if (holderOperation == OperationType.DEBIT || holderOperation == OperationType.TRANSFER) {
-            Account beneficiary = getAccount();
-        }
-
-        if (holderOperation == OperationType.DEPOSIT) {
-            TransactionProcessor.deposit(holder, amount);
-        } else if (holderOperation == OperationType.DEBIT) {
-            TransactionProcessor.debit(holder, amount, beneficiary);
-        } else if (holderOperation == OperationType.WITHDRAW) {
-            TransactionProcessor.withdrawal(holder, amount);
-        } else if (holderOperation == OperationType.TRANSFER) {
-            TransactionProcessor.transfer(holder, amount, beneficiary);
-        }
-
-        showPage(Page.ACCOUNTS_OPERATIONS);
-    }
-
-    private void processAccountsListPage() {
-        holder = getAccount();
-
-        if (holder != null) {
-            showPage(Page.ACCOUNTS_OPERATIONS);
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. PAGES PROCESSING. TRANSACTIONS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    private void processTransactionsPage() {
-        String pageMessage =
-                """
-                1 - Список
-                2 - Главное меню
-                """;
-        System.out.println(pageMessage);
-
-        Page nextPage = switch (getOptionInt(ChoosingOption.DEFAULT)) {
-            case 1 -> Page.TRANSACTIONS_LIST;
-            default -> Page.MAIN;
-        };
-
-        showPage(nextPage);
-    }
-
-    private void processTransactionsListPage() {
-
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. PAGES PROCESSING. MISC
-    // -----------------------------------------------------------------------------------------------------------------
-
-    private void showPage(Page page) {
-        currentPage = page;
-
-        clearText();
-        printHeader();
-
-        // Вывод конкретной страницы
-        if (page == Page.MAIN) {
-            processMainPage();
-        } else if (page == Page.ACCOUNTS) {
-            processAccountsPage();
-        } else if (page == Page.ACCOUNTS_CREATING) {
-            processAccountCreatingPage();
-        } else if (page == Page.ACCOUNTS_OPERATIONS) {
-            processAccountOperationsPage();
-        } else if (page == Page.ACCOUNTS_OPERATIONS_SELECTED) {
-            processAccountOperationsSelectedPage();
-        } else if (page == Page.ACCOUNTS_LIST) {
-            processAccountsListPage();
-        } else if (page == Page.TRANSACTIONS) {
-            processTransactionsPage();
-        } else if (page == Page.TRANSACTIONS_LIST) {
-            processTransactionsListPage();
-        } else if (page == Page.TEST) {
-            processTestPage();
-        } else if (page == Page.EXIT) {
-            processExitPage();
-        }
-    }
-
-    private void printHeader() {
-        String header;
-
-        if (currentPage == Page.ACCOUNTS_OPERATIONS_SELECTED) {
-            header = MessageFormat.format("*** Банковское приложение / {0}: {1} ***\n", currentPage, holderOperation);
+            showMainPage();
         } else {
-            header = MessageFormat.format("*** Банковское приложение / {0} ***\n", currentPage);
+            // обработка ошибки ввода
         }
-        System.out.println(header);
     }
+
+    private void showAccountListPage() {
+        clearText();
+
+        String mainPageHeader = """
+                ====================================================================================================
+                \tБанковское приложение / Список счетов
+                ====================================================================================================
+                """;
+        System.out.println(mainPageHeader);
+
+        StringBuilder pageMenu = new StringBuilder();
+
+        int i = 1;
+
+        for (Account account : accounts) {
+            String accountOptionTemplate = (i == 1) ? "\t{0}. {1}" : "\n\t{0}. {1}";
+            String accountOption = MessageFormat.format(accountOptionTemplate, i, account);
+            pageMenu.append(accountOption);
+            i++;
+        }
+
+        if (pageMenu.isEmpty()) {
+            String missingMessage = "\tСписок счетов пуст...";
+            System.out.println(missingMessage);
+
+            String pageActionMessage = "\n> Нажмите Enter для возврата в меню счетов...";
+            System.out.print(pageActionMessage);
+
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine();
+
+            showAccountPage();
+        } else {
+            String goToMainMenuOption = MessageFormat.format("\n\n\t{0}. Главное меню", i);
+            pageMenu.append(goToMainMenuOption);
+
+            String pageText = pageMenu.toString();
+            System.out.println(pageText);
+
+            String pageActionMessage = "\n> Введите номер пункта: ";
+            System.out.print(pageActionMessage);
+
+            Scanner scanner = new Scanner(System.in);
+            int option = scanner.nextInt();
+
+            int optionsAmount = accounts.size() + 1;
+
+            if (option > 0 && option < optionsAmount) {
+                Account account = accounts.get(option - 1);
+                showAccountOperationPage(account);
+            } else if (option == optionsAmount) {
+                showMainPage();
+            } else {
+                // обработка ошибки ввода
+            }
+        }
+    }
+
+    private void showAccountOperationPage(Account account) {
+        clearText();
+
+        String mainPageHeader = MessageFormat.format("""
+                ====================================================================================================
+                \tБанковское приложение / Операции со счетом: {0}, баланс: {1}
+                ====================================================================================================
+                """,
+                account, account.getBalance());
+        System.out.println(mainPageHeader);
+
+        String pageMenu = """
+                \t1. Пополнить
+                \t2. Оплатить
+                \t3. Перевести
+                \t4. Снять наличные
+                \t5. Список счетов
+                \t6. Меню счетов
+                \t7. Главное меню
+                """;
+        System.out.println(pageMenu);
+
+        String pageActionMessage = "> Введите номер пункта: ";
+        System.out.print(pageActionMessage);
+
+        Scanner optionScanner = new Scanner(System.in);
+        int option = optionScanner.nextInt();
+
+        if (option == 1) {
+            pageActionMessage = "\n> Введите сумму пополнения: ";
+            System.out.print(pageActionMessage);
+
+            Scanner amountScanner = new Scanner(System.in);
+            double amount = amountScanner.nextInt();
+
+            OperationStatus result = TransactionProcessor.deposit(account, amount);
+
+            String resultMessage = MessageFormat.format("\nСтатус транзакции пополнения: {0}", result);
+            System.out.println(resultMessage);
+
+            pageActionMessage = "\n> Нажмите Enter для продолжения...";
+            System.out.print(pageActionMessage);
+
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine();
+
+            showAccountOperationPage(account);
+        } else if (option == 2) {
+            StringBuilder beneficiaryMenu = new StringBuilder();
+
+            int i = 1;
+
+            for (Account beneficiary : accounts) {
+                if (!(account == beneficiary)) {
+                    String accountOptionTemplate = (i == 1) ? "\n\t{0}. {1}" : "\n\t{0}. {1}";
+                    String accountOption = MessageFormat.format(accountOptionTemplate, i, beneficiary);
+                    beneficiaryMenu.append(accountOption);
+                    i++;
+                }
+            }
+
+            if (beneficiaryMenu.isEmpty()) {
+                String missingMessage = "\n\tСписок получателей пуст...";
+                System.out.println(missingMessage);
+
+                pageActionMessage = "\n> Нажмите Enter для продолжения...";
+                System.out.print(pageActionMessage);
+
+                Scanner scanner = new Scanner(System.in);
+                scanner.nextLine();
+
+                showAccountOperationPage(account);
+            } else {
+                String canselationOption = MessageFormat.format("\n\n\t{0}. Отмена", i);
+                beneficiaryMenu.append(canselationOption);
+
+                String pageText = beneficiaryMenu.toString();
+                System.out.println(pageText);
+
+                pageActionMessage = "\n> Введите номер получателя: ";
+                System.out.print(pageActionMessage);
+
+                Scanner scanner = new Scanner(System.in);
+                option = scanner.nextInt();
+
+                int optionsAmount = accounts.size();
+
+                if (option > 0 && option < optionsAmount) {
+                    Account beneficiary = accounts.get(option - 1);
+
+                    pageActionMessage = "\n> Введите сумму оплаты: ";
+                    System.out.print(pageActionMessage);
+
+                    Scanner amountScanner = new Scanner(System.in);
+                    double amount = amountScanner.nextInt();
+
+                    OperationStatus result = TransactionProcessor.debit(account, amount, beneficiary);
+
+                    String resultMessage = MessageFormat.format("\nСтатус транзакции оплаты: {0}", result);
+                    System.out.println(resultMessage);
+
+                    pageActionMessage = "\n> Нажмите Enter для продолжения...";
+                    System.out.print(pageActionMessage);
+
+                    Scanner continuationScanner = new Scanner(System.in);
+                    continuationScanner.nextLine();
+
+                    showAccountOperationPage(account);
+                } else if (option == optionsAmount) {
+                    showAccountOperationPage(account);
+                } else {
+                    // обработка ошибки ввода
+                }
+            }
+        } else if (option == 3) {
+            StringBuilder beneficiaryMenu = new StringBuilder();
+
+            int i = 1;
+
+            for (Account beneficiary : accounts) {
+                if (!(account == beneficiary)) {
+                    String accountOptionTemplate = (i == 1) ? "\n\t{0}. {1}" : "\n\t{0}. {1}";
+                    String accountOption = MessageFormat.format(accountOptionTemplate, i, beneficiary);
+                    beneficiaryMenu.append(accountOption);
+                    i++;
+                }
+            }
+
+            if (beneficiaryMenu.isEmpty()) {
+                String missingMessage = "\n\tСписок получателей пуст...";
+                System.out.println(missingMessage);
+
+                pageActionMessage = "\n> Нажмите Enter для продолжения...";
+                System.out.print(pageActionMessage);
+
+                Scanner scanner = new Scanner(System.in);
+                scanner.nextLine();
+
+                showAccountOperationPage(account);
+            } else {
+                String canselationOption = MessageFormat.format("\n\n\t{0}. Отмена", i);
+                beneficiaryMenu.append(canselationOption);
+
+                String pageText = beneficiaryMenu.toString();
+                System.out.println(pageText);
+
+                pageActionMessage = "\n> Введите номер получателя: ";
+                System.out.print(pageActionMessage);
+
+                Scanner scanner = new Scanner(System.in);
+                option = scanner.nextInt();
+
+                int optionsAmount = accounts.size();
+
+                if (option > 0 && option < optionsAmount) {
+                    Account beneficiary = accounts.get(option - 1); // Если пропущен текущий счет, индекс сдвигается, поправить!
+
+                    pageActionMessage = "\n> Введите сумму перевода: ";
+                    System.out.print(pageActionMessage);
+
+                    Scanner amountScanner = new Scanner(System.in);
+                    double amount = amountScanner.nextInt();
+
+                    OperationStatus result = TransactionProcessor.debit(account, amount, beneficiary);
+
+                    String resultMessage = MessageFormat.format("\nСтатус транзакции переводы: {0}", result);
+                    System.out.println(resultMessage);
+
+                    pageActionMessage = "\n> Нажмите Enter для продолжения...";
+                    System.out.print(pageActionMessage);
+
+                    Scanner continuationScanner = new Scanner(System.in);
+                    continuationScanner.nextLine();
+
+                    showAccountOperationPage(account);
+                } else if (option == optionsAmount) {
+                    showAccountOperationPage(account);
+                } else {
+                    // обработка ошибки ввода
+                }
+            }
+        } else if (option == 4) {
+            pageActionMessage = "\n> Введите сумму наличных: ";
+            System.out.print(pageActionMessage);
+
+            Scanner amountScanner = new Scanner(System.in);
+            double amount = amountScanner.nextInt();
+
+            OperationStatus result = TransactionProcessor.withdrawal(account, amount);
+
+            String resultMessage = MessageFormat.format("\nСтатус транзакции снятия наличных: {0}", result);
+            System.out.println(resultMessage);
+
+            pageActionMessage = "\n> Нажмите Enter для продолжения...";
+            System.out.print(pageActionMessage);
+
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine();
+
+            showAccountOperationPage(account);
+        } else if (option == 5) {
+            showAccountListPage();
+        } else if (option == 6) {
+            showAccountPage();
+        } else if (option == 7) {
+            showMainPage();
+        } else {
+            // обработка ошибки ввода
+        }
+    }
+
+    private void showTransactionPage() {
+        clearText();
+
+        String mainPageHeader = """
+                ====================================================================================================
+                \tБанковское приложение / Транзакции
+                ====================================================================================================
+                """;
+        System.out.println(mainPageHeader);
+
+        StringBuilder accountsData = new StringBuilder();
+
+        if (accounts.isEmpty()) {
+            String message = "\tСписок транзакций пуст...\n";
+            System.out.println(message);
+        } else {
+            for (Account account : accounts) {
+                account.printTransactions();
+                System.out.println();
+            }
+        }
+
+        String pageActionMessage = "> Нажмите Enter для возврата в главное меню...";
+        System.out.print(pageActionMessage);
+
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
+
+        showMainPage();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. MISC
+    // -----------------------------------------------------------------------------------------------------------------
 
     private void clearText() {
         try {
@@ -261,71 +450,5 @@ public class ConsoleProcessor {
                 Runtime.getRuntime().exec("clear");
             }
         } catch (IOException | InterruptedException _) {}
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. MISC
-    // -----------------------------------------------------------------------------------------------------------------
-
-    private int getOptionInt(ChoosingOption choosingOption) {
-        System.out.print(choosingOption);
-
-        Scanner scanner = new Scanner(System.in);
-
-        return scanner.nextInt();
-    }
-
-    private double getOptionDouble(ChoosingOption choosingOption) {
-        System.out.print(choosingOption);
-
-        Scanner scanner = new Scanner(System.in);
-
-        return scanner.nextInt();
-    }
-
-    private void printAccountList(boolean addGoMainMenu) {
-        if (accounts.isEmpty()) {
-            return;
-        }
-
-        StringBuilder accountsListMessages = new StringBuilder();
-
-        int i = 1;
-
-        for (Account account : accounts) {
-            String accountOption = MessageFormat.format("{0} - {1}\n", i, account);
-            accountsListMessages.append(accountOption);
-            i++;
-        }
-
-        if (addGoMainMenu) {
-            String mainMenuOption = MessageFormat.format("{0} - Главное меню\n", i);
-            accountsListMessages.append(mainMenuOption);
-        }
-
-        String accountsListMessage = accountsListMessages.toString();
-        System.out.println(accountsListMessage);
-    }
-
-    private Account getAccount() {
-        Account chosenAccount = null;
-
-        if (accounts.isEmpty()) {
-            showPage(Page.ACCOUNTS);
-            return chosenAccount;
-        }
-
-        int option = getOptionInt(ChoosingOption.ACCOUNT);
-
-        if (option <= accounts.size()) {
-            chosenAccount = accounts.get(option - 1);
-        }
-
-        return chosenAccount;
-    }
-
-    private void waitForExit() {
-        Scanner scanner = new Scanner(System.in);
-        scanner.nextLine();
     }
 }

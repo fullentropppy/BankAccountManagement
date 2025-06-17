@@ -13,6 +13,10 @@ public class Test {
         processPredefinedSet();
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. PROCESSING
+    // -----------------------------------------------------------------------------------------------------------------
+
     public static void processPredefinedSet() {
         initializeAccounts();
         performOperations();
@@ -23,9 +27,6 @@ public class Test {
     // METHODS. INITIALIZING, PERFORMING, PRINTING
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Инициализирует счета банка.
-     */
     private static void initializeAccounts() {
         addAccount("store", "Магазин");
         addAccount("ivanovI", "Иванов И");
@@ -33,33 +34,27 @@ public class Test {
         addAccount("petrovP", "Петров П");
     }
 
-    /**
-     * Выполняет операции над счетами.
-     */
     private static void performOperations() {
         // Создание счетов
         Account store = accounts.get("store");
-        Account ivanovI = accounts.get("ivanovI");
-        Account sidorovS = accounts.get("sidorovS");
-        Account petrovP = accounts.get("petrovP");
+        Account ivanov = accounts.get("ivanov");
+        Account sidorov = accounts.get("sidorov");
+        Account petrov = accounts.get("petrov");
 
         // Выполнение операций через обработчик
-        TransactionProcessor.deposit(ivanovI, 50000);
-        TransactionProcessor.debit(ivanovI, 599.25, store);
-        TransactionProcessor.transfer(ivanovI, 10000, sidorovS);
+        TransactionProcessor.deposit(ivanov, 50000);
+        TransactionProcessor.debit(ivanov, 599.25, store);
+        TransactionProcessor.transfer(ivanov, 10000, sidorov);
 
-        TransactionProcessor.withdrawal(sidorovS, 1000);
-        TransactionProcessor.transfer(sidorovS, 2000, petrovP);
-        TransactionProcessor.withdrawal(sidorovS, 8000);
+        TransactionProcessor.withdrawal(sidorov, 1000);
+        TransactionProcessor.transfer(sidorov, 2000, petrov);
+        TransactionProcessor.withdrawal(sidorov, 8000);
 
-        TransactionProcessor.transfer(petrovP, 5000, ivanovI);
-        TransactionProcessor.deposit(petrovP, 5000);
-        TransactionProcessor.transfer(petrovP, 5000, ivanovI);
+        TransactionProcessor.transfer(petrov, 5000, ivanov);
+        TransactionProcessor.deposit(petrov, 5000);
+        TransactionProcessor.transfer(petrov, 5000, ivanov);
     }
 
-    /**
-     * Выводит информацию о всех счетах.
-     */
     private static void printAccountsInfo() {
         for (Account account : accounts.values()) {
             account.printTransactions();
@@ -72,14 +67,8 @@ public class Test {
     // METHODS. MISC
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Добавляет новый счет в систему.
-     * @param accountKey ключ счета
-     * @param accountNumber номер счета
-     * @param ownerName имя владельца
-     */
-    private static void addAccount(String accountKey, String ownerName) {
-        Account account = new Account(ownerName);
+    private static void addAccount(String accountKey, String holderName) {
+        Account account = new Account(holderName);
         accounts.put(accountKey, account);
     }
 }

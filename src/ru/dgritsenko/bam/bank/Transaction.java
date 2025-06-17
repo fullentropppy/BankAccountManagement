@@ -3,111 +3,75 @@ package ru.dgritsenko.bam.bank;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.UUID;
 
-/**
- * Класс, представляющий банковскую транзакцию.
- * Содержит информацию о дате, типе операции, сумме, участниках и статусе.
- */
 public class Transaction {
+    private final UUID uuid;
     private final LocalDateTime date;
-    private final Account holder;
-    private final OperationType operationType;
+    private final Account fromAccount;
+    private final TransactionType transactionType;
     private final double amount;
-    private final Account beneficiary;
-    private OperationStatus status;
+    private final Account toAccount;
+    private TransactionStatus status;
 
     // -----------------------------------------------------------------------------------------------------------------
     // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает строковое представление транзакции.
-     * @return строка в формате "№ХэшКода от Дата (Статус)"
-     */
     @Override
     public String toString() {
         return MessageFormat.format(
-                "№{0} от {1} ({2})",
-                Long.toString(hashCode()), getDateFormatted(), status);
+                "{0} от {1} ({2})",
+                uuid, getDateFormatted(), status);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Создает новую транзакцию.
-     * @param holder владелец счета
-     * @param operationType тип операции
-     * @param amount сумма
-     * @param beneficiary бенефициар (может быть null)
-     */
-    public Transaction(Account holder, OperationType operationType, double amount, Account beneficiary) {
+    public Transaction(Account fromAccount, TransactionType transactionType, double amount, Account toAccount) {
+        this.uuid = UUID.randomUUID();
         this.date = LocalDateTime.now();
-        this.holder = holder;
-        this.operationType = operationType;
+        this.fromAccount = fromAccount;
+        this.transactionType = transactionType;
         this.amount = amount;
-        this.beneficiary = beneficiary; // может быть null если бенефициар не предполагается
-        this.status = OperationStatus.UNCOMMITTED;
+        this.toAccount = toAccount; // может быть null если бенефициар не предполагается
+        this.status = TransactionStatus.UNCOMMITTED;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает дату транзакции.
-     * @return дата транзакции
-     */
+    public UUID getUuid() {
+        return uuid;
+    }
+
     public LocalDateTime getDate() {
         return LocalDateTime.from(date);
     }
 
-    /**
-     * Возвращает отформатированную дату транзакции.
-     * @return строка с датой в формате "yyyy-MM-dd HH:mm:ss"
-     */
     public String getDateFormatted() {
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    /**
-     * Возвращает владельца счета.
-     * @return владелец счета
-     */
-    public Account getHolder() {
-        return holder;
+    public Account getFromAccount() {
+        return fromAccount;
     }
 
-    /**
-     * Возвращает тип операции.
-     * @return тип операции
-     */
-    public OperationType getOperationType() {
-        return operationType;
+    public TransactionType getOperationType() {
+        return transactionType;
     }
 
-    /**
-     * Возвращает сумму транзакции.
-     * @return сумма
-     */
     public double getAmount() {
         return amount;
     }
 
-    /**
-     * Возвращает бенефициара.
-     * @return бенефициар (может быть null)
-     */
-    public Account getBeneficiary() {
-        return beneficiary;
+    public Account getToAccount() {
+        return toAccount;
     }
 
-    /**
-     * Возвращает статус транзакции.
-     * @return статус
-     */
-    public OperationStatus getStatus() {
+    public TransactionStatus getStatus() {
         return status;
     }
 
@@ -115,7 +79,7 @@ public class Transaction {
     // SETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    public void setStatus(OperationStatus status) {
+    public void setStatus(TransactionStatus status) {
         this.status = status;
     }
 }

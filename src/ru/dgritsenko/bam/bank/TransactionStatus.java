@@ -1,9 +1,6 @@
 package ru.dgritsenko.bam.bank;
 
-/**
- * Перечисление статусов операций.
- */
-public enum OperationStatus {
+public enum TransactionStatus {
     UNCOMMITTED("Не подтверждена"),
     COMMITTED("Подтверждена"),
     CANCELED("Отменена");
@@ -14,10 +11,6 @@ public enum OperationStatus {
     // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает строковое представление статуса операции.
-     * @return title
-     */
     @Override
     public String toString() {
         return getTitle();
@@ -27,11 +20,7 @@ public enum OperationStatus {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Создает новый статус операции.
-     * @param title название статуса
-     */
-    OperationStatus(String title) {
+    TransactionStatus(String title) {
         this.title = title;
     }
 
@@ -39,10 +28,6 @@ public enum OperationStatus {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает название статуса.
-     * @return название
-     */
     public String getTitle() {
         return title;
     }
@@ -51,10 +36,6 @@ public enum OperationStatus {
     // METHODS. GETTING DATA
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Проверяет, подтверждена ли операция.
-     * @return true если подтверждена, иначе false
-     */
     public boolean isCommitted() {
         return this == COMMITTED;
     }

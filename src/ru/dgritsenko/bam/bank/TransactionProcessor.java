@@ -1,117 +1,75 @@
 package ru.dgritsenko.bam.bank;
 
-/**
- * Класс, обрабатывающий банковские операции (пополнение, списание, переводы).
- * Создает транзакции, проверяет условия их выполнения и обновляет состояние счетов.
- */
 public class TransactionProcessor {
     // -----------------------------------------------------------------------------------------------------------------
     // METHODS. OPERATIONS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Выполняет операцию пополнения счета.
-     * @param holder владелец счета
-     * @param amount сумма пополнения
-     * @return статус выполнения операции
-     */
-    public static OperationStatus deposit(Account holder, double amount) {
-        return processIncreasing(holder, OperationType.DEPOSIT, amount, null);
+    public static TransactionStatus deposit(Account fromAccount, double amount) {
+        return processIncreasing(fromAccount, TransactionType.DEPOSIT, amount, null);
     }
 
-    /**
-     * Выполняет операцию зачисления средств от отправителя.
-     * @param holder владелец счета
-     * @param amount сумма
-     * @param beneficiary отправитель средств
-     * @return статус выполнения операции
-     */
-    public static OperationStatus credit(Account holder, double amount, Account beneficiary) {
-        return processIncreasing(holder, OperationType.CREDIT, amount, beneficiary);
+    public static TransactionStatus credit(Account fromAccount, double amount, Account toAccount) {
+        return processIncreasing(fromAccount, TransactionType.CREDIT, amount, toAccount);
     }
 
-    /**
-     * Выполняет операцию списания средств в пользу бенефициара.
-     * @param holder владелец счета
-     * @param amount сумма
-     * @param beneficiary бенефициар
-     * @return статус выполнения операции
-     */
-    public static OperationStatus debit(Account holder, double amount, Account beneficiary ) {
-        return processReducing(holder, OperationType.DEBIT, amount, beneficiary);
+    public static TransactionStatus debit(Account fromAccount, double amount, Account toAccount ) {
+        return processReducing(fromAccount, TransactionType.DEBIT, amount, toAccount);
     }
 
-    /**
-     * Выполняет операцию снятия наличных.
-     * @param holder владелец счета
-     * @param amount сумма
-     * @return статус выполнения операции
-     */
-    public static OperationStatus withdrawal(Account holder, double amount) {
-        return processReducing(holder, OperationType.WITHDRAW, amount, null);
+    public static TransactionStatus withdrawal(Account fromAccount, double amount) {
+        return processReducing(fromAccount, TransactionType.WITHDRAW, amount, null);
     }
 
-    /**
-     * Выполняет операцию перевода средств.
-     * @param holder владелец счета
-     * @param amount сумма
-     * @param receiver получатель
-     * @return статус выполнения операции
-     */
-    public static OperationStatus transfer(Account holder, double amount, Account receiver) {
-        return processReducing(holder, OperationType.TRANSFER, amount, receiver);
+    public static TransactionStatus transfer(Account fromAccount, double amount, Account toAccount) {
+        return processReducing(fromAccount, TransactionType.TRANSFER, amount, toAccount);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
     // METHODS. MISC
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Обрабатывает операцию, увеличивающую баланс счета (пополнение, зачисление).
-     * @param holder владелец счета
-     * @param operationType тип операции (DEPOSIT или CREDIT)
-     * @param amount сумма операции
-     * @return статус выполнения операции
-     */
-    private static OperationStatus processIncreasing(Account holder, OperationType operationType, double amount, Account beneficiary) {
+    private static TransactionStatus processIncreasing(
+            Account fromAccount,
+            TransactionType transactionType,
+            double amount,
+            Account toAccount) {
+
         // Обработка транзакции
-        Transaction transaction = new Transaction(holder, operationType, amount, beneficiary);
-        transaction.setStatus(OperationStatus.COMMITTED); // Проверки не требуются, транзакция успешна
+        Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
+        transaction.setStatus(TransactionStatus.COMMITTED); // Проверки не требуются, транзакция успешна
 
         // Добавление транзакции в список владельца
-        holder.addTransaction(transaction);
+        fromAccount.addTransaction(transaction);
 
         return transaction.getStatus();
     }
 
-    /**
-     * Обрабатывает операцию, уменьшающую баланс счета (списание, перевод, снятие).
-     * @param holder владелец счета
-     * @param operationType тип операции (DEBIT, WITHDRAW или TRANSFER)
-     * @param amount сумма операции
-     * @param beneficiary бенефициар
-     * @return статус выполнения операции
-     */
-    private static OperationStatus processReducing(Account holder, OperationType operationType, double amount, Account beneficiary) {
-        OperationStatus status;
+    private static TransactionStatus processReducing(
+            Account fromAccount,
+            TransactionType transactionType,
+            double amount,
+            Account toAccount) {
+
+        TransactionStatus status;
 
         // Обработка транзакции
-        Transaction transaction = new Transaction(holder, operationType, amount, beneficiary);
+        Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
 
-        if (holder.getBalance() >= amount) {
-            if (operationType.hasBeneficiary()) {
-                status = credit(beneficiary, amount, holder);
+        if (fromAccount.getBalance() >= amount) {
+            if (transactionType.hasToAccount()) {
+                status = credit(toAccount, amount, fromAccount);
             } else {
-                status = OperationStatus.COMMITTED;
+                status = TransactionStatus.COMMITTED;
             }
         } else {
-            status = OperationStatus.CANCELED;
+            status = TransactionStatus.CANCELED;
         }
 
         transaction.setStatus(status);
 
         // Добавление транзакции в список владельца
-        holder.addTransaction(transaction);
+        fromAccount.addTransaction(transaction);
 
         return transaction.getStatus();
     }

@@ -4,10 +4,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
-/**
- * Класс, представляющий банковский счет.
- * Содержит информацию о владельце, номере счета, балансе и списке транзакций.
- */
 public class Account {
     private final long accountNumber;
     private String holderName;
@@ -21,10 +17,6 @@ public class Account {
     // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает строковое представление счета.
-     * @return строка в формате "Имя владельца (№НомерСчета)"
-     */
     @Override
     public String toString() {
         return MessageFormat.format("{0} (№{1})", holderName, Long.toString(accountNumber));
@@ -34,11 +26,6 @@ public class Account {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Создает новый банковский счет.
-     * @param accountNumber номер счета
-     * @param ownerName имя владельца
-     */
     public Account(String holderName) {
         Random random = new Random();
 
@@ -51,26 +38,14 @@ public class Account {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает номер счета.
-     * @return номер счета
-     */
     public long getAccountNumber() {
         return accountNumber;
     }
 
-    /**
-     * Возвращает имя владельца счета.
-     * @return имя владельца
-     */
     public String getHolderName() {
         return holderName;
     }
 
-    /**
-     * Возвращает копию списка транзакций.
-     * @return список транзакций
-     */
     public ArrayList<Transaction> getTransactions() {
         return new ArrayList<>(transactions);
     }
@@ -79,18 +54,10 @@ public class Account {
     // SETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Устанавливает имя владельца счета.
-     * @param holderName новое имя владельца
-     */
     public void setHolderName(String holderName) {
         this.holderName = holderName;
     }
 
-    /**
-     * Добавляет транзакцию в список.
-     * @param transaction транзакция для добавления
-     */
     public void addTransaction(Transaction transaction) {
         transactions.add(transaction);
 
@@ -102,10 +69,6 @@ public class Account {
     // METHODS. GETTING DATA
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает текущий баланс счета.
-     * @return текущий баланс
-     */
     public double getBalance() {
         double balance = 0;
 
@@ -132,27 +95,21 @@ public class Account {
     // METHODS. PRINT
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Выводит текущий баланс счета.
-     */
     public void printBalance() {
         double balance = getBalance();
-        String message = MessageFormat.format("Владелец: {0}, баланс: {1}", this, balance);
+        String message = MessageFormat.format("Счет: {0}, баланс: {1}", this, balance);
         System.out.println(message);
     }
 
-    /**
-     * Выводит список всех транзакций по счету.
-     */
     public void printTransactions() {
         String message;
 
         if (transactions.isEmpty()) {
-            message = MessageFormat.format("Владелец: {0}, список транзакций пуст...", this);
+            message = MessageFormat.format("Счет: {0}, список транзакций пуст...", this);
         } else {
             StringBuilder messages = new StringBuilder();
 
-            String title = MessageFormat.format("Владелец: {0}, транзакции:\n", this);
+            String title = MessageFormat.format("Счет: {0}, транзакции:\n", this);
             messages.append(title);
 
             int i = 1;
@@ -180,11 +137,6 @@ public class Account {
     // METHODS. MISC
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Формирует строковое представление операции транзакции.
-     * @param transaction транзакция
-     * @return строковое представление операции
-     */
     private String transactionOperationView(Transaction transaction) {
         String operationView = transaction.getOperationType().getTitle();
 
@@ -198,7 +150,7 @@ public class Account {
         if (!extOperationViewTemplate.isBlank()) {
             operationView = MessageFormat.format(
                     extOperationViewTemplate,
-                    operationView, transaction.getBeneficiary());
+                    operationView, transaction.getToAccount());
         }
 
         return operationView;

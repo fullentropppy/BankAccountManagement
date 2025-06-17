@@ -1,9 +1,6 @@
 package ru.dgritsenko.bam.bank;
 
-/**
- * Перечисление типов операций.
- */
-public enum OperationType {
+public enum TransactionType {
     DEPOSIT("Пополнение"),
     CREDIT("Поступление"),
     DEBIT("Списание"),
@@ -16,10 +13,6 @@ public enum OperationType {
     // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает строковое представление типа операции.
-     * @return title
-     */
     @Override
     public String toString() {
         return getTitle();
@@ -29,11 +22,7 @@ public enum OperationType {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Создает новый тип операции.
-     * @param title название типа
-     */
-    OperationType(String title) {
+    TransactionType(String title) {
         this.title = title;
     }
 
@@ -41,10 +30,6 @@ public enum OperationType {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает название типа операции.
-     * @return название
-     */
     public String getTitle() {
         return title;
     }
@@ -53,18 +38,10 @@ public enum OperationType {
     // METHODS. GETTING DATA
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Проверяет, требует ли операция указания бенефициара.
-     * @return true если требуется, иначе false
-     */
-    public boolean hasBeneficiary() {
+    public boolean hasToAccount() {
         return this == DEBIT || this == TRANSFER;
     }
 
-    /**
-     * Проверяет, является ли операция пополнением счета.
-     * @return true если пополнение, иначе false
-     */
     public boolean isAddition() {
         return this == DEPOSIT || this == CREDIT;
     }

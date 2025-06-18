@@ -3,8 +3,10 @@ package ru.dgritsenko.bam.test;
 import ru.dgritsenko.bam.bank.Account;
 import ru.dgritsenko.bam.bank.TransactionService;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Тестовый класс для проверки функциональности банковского приложения.
@@ -20,6 +22,12 @@ public class Test {
      */
     public static void main(String[] args) {
         processPredefinedSet();
+
+        String pageActionMessage = "> Нажмите Enter чтобы завершить работу...";
+        System.out.print(pageActionMessage);
+
+        Scanner scanner = new Scanner(System.in);
+        scanner.nextLine();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -48,9 +56,9 @@ public class Test {
      */
     private static void initializeAccounts() {
         addAccount("store", "Магазин");
-        addAccount("ivanovI", "Иванов И");
-        addAccount("sidorovS", "Сидоров С");
-        addAccount("petrovP", "Петров П");
+        addAccount("ivanov", "Иванов И");
+        addAccount("sidorov", "Сидоров С");
+        addAccount("petrov", "Петров П");
     }
 
     /**

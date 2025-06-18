@@ -1,28 +1,31 @@
-package ru.gritsenkodaniil.bankaccountmanagement;
+package ru.dgritsenko.bam.bank;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.Random;
 
 /**
  * Класс, представляющий банковский счет.
- * Содержит информацию о владельце, номере счета, балансе и списке транзакций.
+ * Содержит информацию о владельце счета, номере счета, списке транзакций и балансе.
+ * Поддерживает операции по работе с балансом и транзакциями.
  */
-public class BankAccount {
+public class Account {
     private final long accountNumber;
     private String holderName;
     private final ArrayList<Transaction> transactions;
 
     // Кэширование баланса
     private double cachedBalance;
-    boolean balanceIsValid;
+    private boolean balanceIsValid;
 
     // -----------------------------------------------------------------------------------------------------------------
     // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Возвращает строковое представление счета.
-     * @return строка в формате "Имя владельца (№НомерСчета)"
+     * Возвращает строковое представление счета в формате: "Имя владельца (№НомерСчета)".
+     *
+     * @return строковое представление счета
      */
     @Override
     public String toString() {
@@ -34,14 +37,17 @@ public class BankAccount {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Создает новый банковский счет.
-     * @param accountNumber номер счета
-     * @param ownerName имя владельца
+     * Конструктор создает новый счет с указанным именем владельца.
+     * Номер счета генерируется случайным образом.
+     *
+     * @param holderName ФИО владельца счета
      */
-    public BankAccount(long accountNumber, String ownerName) {
+    public Account(String holderName) {
+        Random random = new Random();
+
         this.transactions = new ArrayList<>();
-        this.accountNumber = accountNumber;
-        this.holderName = ownerName;
+        this.accountNumber = random.nextInt(999999999);
+        this.holderName = holderName;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -50,6 +56,7 @@ public class BankAccount {
 
     /**
      * Возвращает номер счета.
+     *
      * @return номер счета
      */
     public long getAccountNumber() {
@@ -58,6 +65,7 @@ public class BankAccount {
 
     /**
      * Возвращает имя владельца счета.
+     *
      * @return имя владельца
      */
     public String getHolderName() {
@@ -65,11 +73,12 @@ public class BankAccount {
     }
 
     /**
-     * Возвращает копию списка транзакций.
+     * Возвращает копию списка транзакций по счету.
+     *
      * @return список транзакций
      */
     public ArrayList<Transaction> getTransactions() {
-        return new ArrayList<>(transactions);
+        return transactions;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -77,7 +86,8 @@ public class BankAccount {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Устанавливает имя владельца счета.
+     * Устанавливает новое имя владельца счета.
+     *
      * @param holderName новое имя владельца
      */
     public void setHolderName(String holderName) {
@@ -85,7 +95,8 @@ public class BankAccount {
     }
 
     /**
-     * Добавляет транзакцию в список.
+     * Добавляет новую транзакцию в список транзакций счета.
+     *
      * @param transaction транзакция для добавления
      */
     public void addTransaction(Transaction transaction) {
@@ -100,8 +111,10 @@ public class BankAccount {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Возвращает текущий баланс счета.
-     * @return текущий баланс
+     * Вычисляет текущий баланс счета на основе подтвержденных транзакций.
+     * Использует кэширование для оптимизации.
+     *
+     * @return текущий баланс счета
      */
     public double getBalance() {
         double balance = 0;
@@ -130,33 +143,47 @@ public class BankAccount {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Выводит текущий баланс счета.
+     * Выводит на экран информацию о балансе счета.
      */
     public void printBalance() {
         double balance = getBalance();
-        String message = MessageFormat.format("Владелец: {0}, баланс: {1}", this, balance);
+        String message = MessageFormat.format("Счет: {0}, баланс: {1}", this, balance);
         System.out.println(message);
     }
 
     /**
-     * Выводит список всех транзакций по счету.
+     * Выводит на экран список всех транзакций по счету.
      */
     public void printTransactions() {
-        String title = MessageFormat.format("Владелец: {0}, транзакции: ", this);
-        System.out.println(title);
+        String message;
 
-        int i = 1;
+        if (transactions.isEmpty()) {
+            message = MessageFormat.format("Счет: {0}, список транзакций пуст...", this);
+        } else {
+            StringBuilder messages = new StringBuilder();
 
-        for (Transaction transaction : transactions) {
-            String operationView = transactionOperationView(transaction);
+            String title = MessageFormat.format("Счет: {0}, транзакции:\n", this);
+            messages.append(title);
 
-            String transactionInfo = MessageFormat.format(
-                    "   {0} - {1}, операция: {2}, сумма {3}",
-                    i, transaction, operationView, transaction.getAmount()
-            );
-            System.out.println(transactionInfo);
-            i++;
+            int i = 1;
+
+            for (Transaction transaction : transactions) {
+                String operationView = transactionOperationView(transaction);
+
+                String transactionInfoTemplate = (i == 1)
+                        ? "\t{0} - {1}, операция: {2}, сумма {3}"
+                        : "\n\t{0} - {1}, операция: {2}, сумма {3}";
+                String transactionInfo = MessageFormat.format(transactionInfoTemplate,
+                        i, transaction, operationView, transaction.getAmount()
+                );
+                messages.append(transactionInfo);
+                i++;
+            }
+
+            message = messages.toString();
         }
+
+        System.out.println(message);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -164,8 +191,10 @@ public class BankAccount {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Формирует строковое представление операции транзакции.
-     * @param transaction транзакция
+     * Форматирует строковое представление операции транзакции в зависимости от её типа.
+     * Добавляет дополнительную информацию для операций CREDIT, DEBIT и TRANSFER.
+     *
+     * @param transaction транзакция для форматирования
      * @return строковое представление операции
      */
     private String transactionOperationView(Transaction transaction) {
@@ -181,7 +210,7 @@ public class BankAccount {
         if (!extOperationViewTemplate.isBlank()) {
             operationView = MessageFormat.format(
                     extOperationViewTemplate,
-                    operationView, transaction.getBeneficiary());
+                    operationView, transaction.getToAccount());
         }
 
         return operationView;

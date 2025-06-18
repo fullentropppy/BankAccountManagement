@@ -1,9 +1,7 @@
 package ru.dgritsenko.bam.userinterface;
 
-import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.bank.TransactionStatus;
-import ru.dgritsenko.bam.bank.TransactionProcessor;
-import ru.dgritsenko.bam.bank.TransactionType;
+import ru.dgritsenko.bam.bank.*;
+import ru.dgritsenko.bam.main.BankService;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -17,9 +15,26 @@ import java.util.regex.Pattern;
  * Класс для обработки взаимодействия с пользователем через консоль.
  * Реализует пользовательский интерфейс банковского приложения.
  */
-public class ConsoleProcessor {
-    private final ArrayList<Account> accounts = new ArrayList<>();
+public class ConsoleService {
+    private final BankService bankService;
     private Account currentFromAccount;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Создаёт обработчик консольного ввода с указанным сервисом банка.
+     *
+     * @param bankService сервис для работы с банковскими операциями
+     */
+    public ConsoleService(BankService bankService) {
+        this.bankService = bankService;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. MAIN
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Запускает главный цикл обработки пользовательского ввода.
@@ -104,11 +119,10 @@ public class ConsoleProcessor {
         String actionMessage = "\n> Введите ФИО владельца нового счета: ";
         System.out.print(actionMessage);
 
-        Scanner fromAccountNameScanner = new Scanner(System.in);
-        String fromAccountName = fromAccountNameScanner.nextLine();
+        Scanner fromAccountHolderNameScanner = new Scanner(System.in);
+        String fromAccountHolderName = fromAccountHolderNameScanner.nextLine();
 
-        currentFromAccount = new Account(fromAccountName);
-        accounts.add(currentFromAccount);
+        currentFromAccount = bankService.createAccount(fromAccountHolderName);
 
         String pageMenu = MessageFormat.format("""
                 
@@ -146,7 +160,7 @@ public class ConsoleProcessor {
 
         int i = 1;
 
-        for (Account account : accounts) {
+        for (Account account : bankService.getAccounts()) {
             String accountOption = MessageFormat.format("\n\t{0}. {1}", i, account);
             pageMenuOptions.append(accountOption);
             i++;
@@ -167,10 +181,10 @@ public class ConsoleProcessor {
             System.out.println(pageMenu);
 
             int option = getOptionFromMenu(pageMenu, "Введите номер пункта");
-            int optionsAmount = accounts.size() + 1;
+            int optionsAmount = bankService.getAccounts().size() + 1;
 
             if (option > 0 && option < optionsAmount) {
-                currentFromAccount = accounts.get(option - 1);
+                currentFromAccount = bankService.getAccounts().get(option - 1);
                 showAccountOperationPage();
             } else if (option == optionsAmount) {
                 showMainPage();
@@ -233,8 +247,8 @@ public class ConsoleProcessor {
     private void showAccountTransactionPage() {
         printNewAccountOperationPage();
 
-        currentFromAccount.printTransactions();
         System.out.println();
+        currentFromAccount.printTransactions();
 
         waitForInputToContinue("Нажмите Enter для возврата в меню операций со счетом");
 
@@ -278,7 +292,7 @@ public class ConsoleProcessor {
         printNewAccountOperationPage();
 
         double amount = getAmount(inputTitle);
-        TransactionStatus result = TransactionProcessor.perform(transactionType, currentFromAccount, amount);
+        TransactionStatus result = bankService.performTransaction(transactionType, currentFromAccount, amount);
 
         String resultMessage = MessageFormat.format(resultTitleTemplate, result);
         System.out.println(resultMessage);
@@ -300,7 +314,7 @@ public class ConsoleProcessor {
 
         int i = 1;
 
-        for (Account toAccount : accounts) {
+        for (Account toAccount : bankService.getAccounts()) {
             if (!(currentFromAccount == toAccount)) {
                 availableAccounts.add(toAccount);
                 String accountOption = MessageFormat.format("\n\t{0}. {1}", i, toAccount);
@@ -337,11 +351,11 @@ public class ConsoleProcessor {
 
             int option = getOptionFromMenu(pageMenu, inputOptionTittle);
 
-            if (option > 0 && option < accounts.size()) {
+            if (option > 0 && option < bankService.getAccounts().size()) {
                 Account toAccount = availableAccounts.get(option - 1);
                 double amount = getAmount(inputAmountTittle);
 
-                TransactionStatus result = TransactionProcessor.perform(
+                TransactionStatus result = bankService.performTransaction(
                         transactionType, currentFromAccount, amount, toAccount);
 
                 String resultMessage = MessageFormat.format(resultTitleTemplate, result);
@@ -366,13 +380,13 @@ public class ConsoleProcessor {
     private void showTransactionPage() {
         printNewPageHeader("Транзакции");
 
-        if (accounts.isEmpty()) {
+        if (bankService.getAccounts().isEmpty()) {
             String message = "\n\tСписок транзакций пуст...";
             System.out.println(message);
         } else {
             System.out.println();
 
-            for (Account account : accounts) {
+            for (Account account : bankService.getAccounts()) {
                 account.printTransactions();
                 System.out.println();
             }

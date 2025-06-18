@@ -78,7 +78,7 @@ public class Account {
      * @return список транзакций
      */
     public ArrayList<Transaction> getTransactions() {
-        return new ArrayList<>(transactions);
+        return transactions;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

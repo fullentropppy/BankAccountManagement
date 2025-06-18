@@ -76,7 +76,7 @@ public class Transaction {
      * @return дата транзакции
      */
     public LocalDateTime getDate() {
-        return LocalDateTime.from(date);
+        return date;
     }
 
     /**

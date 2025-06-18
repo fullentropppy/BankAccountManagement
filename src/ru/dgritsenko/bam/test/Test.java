@@ -1,7 +1,7 @@
 package ru.dgritsenko.bam.test;
 
 import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.bank.TransactionProcessor;
+import ru.dgritsenko.bam.bank.TransactionService;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -70,17 +70,17 @@ public class Test {
         Account petrov = accounts.get("petrov");
 
         // Выполнение операций через обработчик
-        TransactionProcessor.deposit(ivanov, 50000);
-        TransactionProcessor.debit(ivanov, 599.25, store);
-        TransactionProcessor.transfer(ivanov, 10000, sidorov);
+        TransactionService.deposit(ivanov, 50000);
+        TransactionService.debit(ivanov, 599.25, store);
+        TransactionService.transfer(ivanov, 10000, sidorov);
 
-        TransactionProcessor.withdrawal(sidorov, 1000);
-        TransactionProcessor.transfer(sidorov, 2000, petrov);
-        TransactionProcessor.withdrawal(sidorov, 8000);
+        TransactionService.withdrawal(sidorov, 1000);
+        TransactionService.transfer(sidorov, 2000, petrov);
+        TransactionService.withdrawal(sidorov, 8000);
 
-        TransactionProcessor.transfer(petrov, 5000, ivanov);
-        TransactionProcessor.deposit(petrov, 5000);
-        TransactionProcessor.transfer(petrov, 5000, ivanov);
+        TransactionService.transfer(petrov, 5000, ivanov);
+        TransactionService.deposit(petrov, 5000);
+        TransactionService.transfer(petrov, 5000, ivanov);
     }
 
     /**

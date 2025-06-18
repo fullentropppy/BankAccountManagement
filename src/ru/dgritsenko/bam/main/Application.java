@@ -1,6 +1,6 @@
 package ru.dgritsenko.bam.main;
 
-import ru.dgritsenko.bam.userinterface.ConsoleProcessor;
+import ru.dgritsenko.bam.userinterface.ConsoleService;
 
 /**
  * Главный класс приложения, содержащий точку входа.
@@ -12,7 +12,8 @@ public class Application {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
-        ConsoleProcessor consoleProcessor = new ConsoleProcessor();
-        consoleProcessor.run();
+        BankService bankService = new BankService();
+        ConsoleService consoleService = new ConsoleService(bankService);
+        consoleService.run();
     }
 }

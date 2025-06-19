@@ -48,10 +48,7 @@ public class ConsoleService {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Отображает главное меню приложения с возможностью выбора:
-     * 1. Работа со счетами
-     * 2. Просмотр транзакций
-     * 3. Выход из приложения
+     * Отображает главное меню приложения.
      */
     private void showMainPage() {
         printNewPageHeader("Главное меню");
@@ -65,13 +62,11 @@ public class ConsoleService {
 
         int option = getOptionFromMenu(pageMenu, "Введите номер пункта");
 
-        if (option == 1) {
-            showAccountPage();
-        } else if (option == 2) {
-            showTransactionPage();
-        } else if (option == 3) {
-            System.exit(0);
-        }
+        switch (option) {
+            case 1 -> showAccountPage();
+            case 2 -> showTransactionPage();
+            default -> System.exit(0);
+        };
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -79,10 +74,7 @@ public class ConsoleService {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Отображает меню работы со счетами с возможностью выбора:
-     * 1. Создание нового счета
-     * 2. Просмотр списка счетов
-     * 3. Возврат в главное меню
+     * Отображает меню работы со счетами.
      */
     private void showAccountPage() {
         printNewPageHeader("Меню счетов");
@@ -96,22 +88,15 @@ public class ConsoleService {
 
         int option = getOptionFromMenu(pageMenu, "Введите номер пункта");
 
-        if (option == 1) {
-            showAccountCreatingPage();
-        } else if (option == 2) {
-            showAccountListPage();
-        } else if (option == 3) {
-            showMainPage();
-        }
+        switch (option) {
+            case 1 -> showAccountCreatingPage();
+            case 2 -> showAccountListPage();
+            default -> showMainPage();
+        };
     }
 
     /**
-     * Отображает страницу создания нового счета. Запрашивает ФИО владельца,
-     * создает счет и предлагает дальнейшие действия:
-     * 1. Создать еще один счет
-     * 2. Перейти к операциям с созданным счетом
-     * 3. Просмотреть список счетов
-     * 4. Вернуться в главное меню
+     * Отображает страницу создания нового счета.
      */
     private void showAccountCreatingPage() {
         printNewPageHeader("Создание счета");
@@ -137,21 +122,16 @@ public class ConsoleService {
 
         int option = getOptionFromMenu(pageMenu, "Введите номер пункта");
 
-        if (option == 1) {
-            showAccountCreatingPage();
-        } else if (option == 2) {
-            showAccountOperationPage();
-        } else if (option == 3) {
-            showAccountListPage();
-        } else if (option == 4) {
-            showMainPage();
-        }
+        switch (option) {
+            case 1 -> showAccountCreatingPage();
+            case 2 -> showAccountOperationPage();
+            case 3 -> showAccountListPage();
+            default -> showMainPage();
+        };
     }
 
     /**
-     * Отображает список всех созданных счетов с нумерацией.
-     * Если список пуст, выводит соответствующее сообщение.
-     * Последним пунктом предлагает вернуться в главное меню.
+     * Отображает список всех созданных счетов с возможностью выбора.
      */
     private void showAccountListPage() {
         printNewPageHeader("Список счетов");
@@ -183,7 +163,7 @@ public class ConsoleService {
             int option = getOptionFromMenu(pageMenu, "Введите номер пункта");
             int optionsAmount = bankService.getAccounts().size() + 1;
 
-            if (option > 0 && option < optionsAmount) {
+            if (option < optionsAmount) {
                 currentFromAccount = bankService.getAccounts().get(option - 1);
                 showAccountOperationPage();
             } else if (option == optionsAmount) {
@@ -193,15 +173,7 @@ public class ConsoleService {
     }
 
     /**
-     * Отображает меню операций с текущим выбранным счетом:
-     * 1. Пополнение счета
-     * 2. Оплата (списание средств)
-     * 3. Перевод средств
-     * 4. Снятие наличных
-     * 5. Просмотр транзакций счета
-     * 6. Просмотр списка счетов
-     * 7. Возврат в меню счетов
-     * 8. Возврат в главное меню
+     * Отображает меню операций со счетом.
      */
     private void showAccountOperationPage() {
         printNewAccountOperationPage();
@@ -221,28 +193,20 @@ public class ConsoleService {
 
         int option = getOptionFromMenu(pageMenu, "Введите номер пункта");
 
-        if (option == 1) {
-            processOperationWithOnlyFromAccount(TransactionType.DEPOSIT);
-        } else if (option == 2) {
-            processOperationWithToAccount(TransactionType.DEBIT);
-        } else if (option == 3) {
-            processOperationWithToAccount(TransactionType.TRANSFER);
-        } else if (option == 4) {
-            processOperationWithOnlyFromAccount(TransactionType.WITHDRAW);
-        } else if (option == 5 ) {
-            showAccountTransactionPage();
-        } else if (option == 6) {
-            showAccountListPage();
-        } else if (option == 7) {
-            showAccountPage();
-        } else if (option == 8) {
-            showMainPage();
-        }
+        switch (option) {
+            case 1 -> processOperationWithOnlyFromAccount(TransactionType.DEPOSIT);
+            case 2 -> processOperationWithToAccount(TransactionType.DEBIT);
+            case 3 -> processOperationWithToAccount(TransactionType.TRANSFER);
+            case 4 -> processOperationWithOnlyFromAccount(TransactionType.WITHDRAW);
+            case 5 -> showAccountTransactionPage();
+            case 6 -> showAccountListPage();
+            case 7 -> showAccountPage();
+            default -> showMainPage();
+        };
     }
 
     /**
-     * Отображает все транзакции текущего выбранного счета.
-     * После вывода ожидает нажатия Enter для возврата в меню операций со счетом.
+     * Отображает список всех транзакции текущего выбранного счета.
      */
     private void showAccountTransactionPage() {
         printNewAccountOperationPage();
@@ -351,7 +315,7 @@ public class ConsoleService {
 
             int option = getOptionFromMenu(pageMenu, inputOptionTittle);
 
-            if (option > 0 && option < bankService.getAccounts().size()) {
+            if (option < bankService.getAccounts().size()) {
                 Account toAccount = availableAccounts.get(option - 1);
                 double amount = getAmount(inputAmountTittle);
 
@@ -374,8 +338,6 @@ public class ConsoleService {
 
     /**
      * Отображает страницу со списком всех транзакций по всем счетам.
-     * Если счетов нет, выводит соответствующее сообщение.
-     * Ожидает нажатия Enter для возврата в главное меню.
      */
     private void showTransactionPage() {
         printNewPageHeader("Транзакции");
@@ -434,7 +396,7 @@ public class ConsoleService {
         String actionMessage = MessageFormat.format("\n> {0}: ", title);
         Scanner scanner = new Scanner(System.in);
 
-        while (amount <= 0) {
+        while (!scanner.hasNextDouble() || amount <= 0) {
             System.out.print(actionMessage);
             amount = scanner.nextDouble();
         }
@@ -502,8 +464,7 @@ public class ConsoleService {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Очищает консоль в зависимости от операционной системы.
-     * Для Windows используется команда "cls", для Unix-систем — "clear".
+     * Очищает консоль.
      */
     private void clearText() {
         try {

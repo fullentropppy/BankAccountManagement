@@ -20,9 +20,9 @@ public class TransactionService {
     public static TransactionStatus perform(
             TransactionType transactionType,
             Account fromAccount,
-            double amount) {
-
-            TransactionStatus status = null;
+            double amount)
+    {
+        TransactionStatus status = null;
 
         if (transactionType == TransactionType.DEPOSIT) {
             status = deposit(fromAccount, amount);
@@ -46,8 +46,8 @@ public class TransactionService {
             TransactionType transactionType,
             Account fromAccount,
             double amount,
-            Account toAccount) {
-
+            Account toAccount)
+    {
         TransactionStatus status = null;
 
         if (transactionType == TransactionType.CREDIT) {
@@ -139,11 +139,8 @@ public class TransactionService {
             double amount,
             Account toAccount) {
 
-        // Обработка транзакции
         Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
         transaction.setStatus(TransactionStatus.COMMITTED); // Проверки не требуются, транзакция успешна
-
-        // Добавление транзакции в список владельца
         fromAccount.addTransaction(transaction);
 
         return transaction.getStatus();
@@ -167,8 +164,6 @@ public class TransactionService {
             Account toAccount) {
 
         TransactionStatus status;
-
-        // Обработка транзакции
         Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
 
         if (fromAccount.getBalance() >= amount) {
@@ -182,8 +177,6 @@ public class TransactionService {
         }
 
         transaction.setStatus(status);
-
-        // Добавление транзакции в список владельца
         fromAccount.addTransaction(transaction);
 
         return transaction.getStatus();

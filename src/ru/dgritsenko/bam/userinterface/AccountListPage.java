@@ -1,0 +1,62 @@
+package ru.dgritsenko.bam.userinterface;
+
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.main.BankService;
+
+import java.text.MessageFormat;
+
+public class AccountListPage extends Page {
+    private BankService bankService;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public AccountListPage(ConsoleService consoleService, BankService bankService) {
+        super(consoleService);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. INPUT / OUTPUT
+    // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public void show() {
+        super.setTitle("Список счетов");
+
+        StringBuilder pageMenuOptions = new StringBuilder();
+
+        int i = 1;
+
+        for (Account account : bankService.getAccounts()) {
+            String accountOption = MessageFormat.format("\n\t{0}. {1}", i, account);
+            pageMenuOptions.append(accountOption);
+            i++;
+        }
+
+        if (pageMenuOptions.isEmpty()) {
+            String missingMessage = "\n\tСписок счетов пуст...";
+            System.out.println(missingMessage);
+
+            super.waitForInputToContinue("Нажмите Enter для возврата в меню счетов");
+            super.consoleService.showAccountPage();
+        } else {
+            String goToMainMenuOption = MessageFormat.format("\n\n\t{0}. Главное меню", i);
+            pageMenuOptions.append(goToMainMenuOption);
+
+            String pageMenu = pageMenuOptions.toString();
+            super.setMenu(pageMenu);
+
+            int option = super.getOptionFromMenu("Введите номер пункта");
+            int optionsAmount = bankService.getAccounts().size() + 1;
+
+            if (option < optionsAmount) {
+                Account currentFromAccount = bankService.getAccounts().get(option - 1);
+                super.consoleService.setCurrentFromAccount(currentFromAccount);
+                super.consoleService.showAccountOperationPage();
+            } else if (option == optionsAmount) {
+                super.consoleService.showMainPage();
+            }
+        }
+    }
+}

@@ -132,7 +132,7 @@ public abstract class Page {
 
             if (!validOptions.contains(option)) {
                 String errorMessage = MessageFormat.format(
-                        "\n! Ошибка: введите корректный номер опции (с {0} по {1})",
+                        "\n! Ошибка: введите корректный номер (с {0} по {1})",
                         validOptions.getFirst(), validOptions.getLast());
                 System.out.println(errorMessage);
 

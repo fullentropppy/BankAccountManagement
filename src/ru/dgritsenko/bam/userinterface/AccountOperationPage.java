@@ -149,7 +149,7 @@ public class AccountOperationPage extends Page {
             toAccountMenu.append(cancellationOption);
 
             String pageMenu = toAccountMenu.toString();
-            System.out.println(pageMenu);
+            super.setMenu(pageMenu);
 
             int option = super.getOptionFromMenu(inputOptionTittle);
 

@@ -46,14 +46,10 @@ public class Account {
      * @param holderName ФИО владельца счета
      */
     public Account(String holderName) {
-        if (!holderNameIsCorrect()) {
-
-        }
+        setHolderName(holderName);
 
         this.accountNumber = getGeneratedAccountNumber();
         this.transactions = new ArrayList<>();
-
-        setHolderName(holderName);
     }
 
     /**
@@ -65,14 +61,13 @@ public class Account {
     public Account(long accountNumber, String holderName) {
         if (!accountNumberIsCorrect()) {
 
-        } else if (!holderNameIsCorrect()) {
 
         }
 
+        setHolderName(holderName);
+
         this.accountNumber = accountNumber;
         this.transactions = new ArrayList<>();
-
-        setHolderName(holderName);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -116,11 +111,12 @@ public class Account {
      * @param holderName новое имя владельца
      */
     public void setHolderName(String holderName) {
+        this.holderName = holderName;
+
         if (!holderNameIsCorrect()) {
 
         }
-
-        this.holderName = holderName;
+        
         formatHolderName();
     }
 
@@ -151,7 +147,8 @@ public class Account {
     }
 
     public boolean holderNameIsCorrect() {
-        Pattern pattern = Pattern.compile("^[A-z][A-z]+(['-][A-z][A-z]+)* [A-z]$");
+        // todo: добавить поддержку двойных фамилий: ^[A-z][A-z]+(['-][A-z][A-z]+)* [A-z]$
+        Pattern pattern = Pattern.compile("^[A-z][A-z]+ [A-z]$");
         Matcher matcher = pattern.matcher(holderName.strip());
 
         return matcher.matches();

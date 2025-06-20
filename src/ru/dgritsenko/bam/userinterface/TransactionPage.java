@@ -4,16 +4,15 @@ import ru.dgritsenko.bam.bank.Account;
 import ru.dgritsenko.bam.main.BankService;
 
 public class TransactionPage extends Page {
-    private BankService bankService;
+    private final BankService bankService;
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    public TransactionPage(ConsoleService consoleService, BankService bankService) {
+    public TransactionPage(ConsoleService consoleService) {
         super(consoleService);
-
-        this.bankService = bankService;
+        this.bankService = consoleService.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -38,6 +37,6 @@ public class TransactionPage extends Page {
 
         super.waitForInputToContinue("Нажмите Enter для возврата в главное меню");
 
-        consoleService.showMainPage();
+        super.consoleService.showMainPage();
     }
 }

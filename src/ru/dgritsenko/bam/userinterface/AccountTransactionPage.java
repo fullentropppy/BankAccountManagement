@@ -6,16 +6,13 @@ import ru.dgritsenko.bam.main.BankService;
 import java.text.MessageFormat;
 
 public class AccountTransactionPage extends Page {
-    private BankService bankService;
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    public AccountTransactionPage(ConsoleService consoleService, BankService bankService) {
+    public AccountTransactionPage(ConsoleService consoleService) {
         super(consoleService);
-
-        this.bankService = bankService;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -33,6 +30,6 @@ public class AccountTransactionPage extends Page {
 
         super.waitForInputToContinue("Нажмите Enter для возврата в меню операций со счетом");
 
-        consoleService.showAccountOperationPage();
+        super.consoleService.showAccountOperationPage();
     }
 }

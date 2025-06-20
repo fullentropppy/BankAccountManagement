@@ -26,9 +26,9 @@ public class AccountPage extends Page {
         int option = super.getOptionFromMenu("Введите номер пункта");
 
         switch (option) {
-            case 1 -> consoleService.showAccountCreatingPage();
-            case 2 -> consoleService.showAccountListPage();
-            default -> consoleService.showMainPage();
+            case 1 -> super.consoleService.showAccountCreatingPage();
+            case 2 -> super.consoleService.showAccountListPage();
+            default -> super.consoleService.showMainPage();
         };
     }
 }

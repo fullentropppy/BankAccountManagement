@@ -26,8 +26,8 @@ public class MainPage extends Page {
         int option = super.getOptionFromMenu("Введите номер пункта");
 
         switch (option) {
-            case 1 -> consoleService.showAccountPage();
-            case 2 -> consoleService.showTransactionPage();
+            case 1 -> super.consoleService.showAccountPage();
+            case 2 -> super.consoleService.showTransactionPage();
             default -> System.exit(0);
         };
     }

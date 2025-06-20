@@ -13,14 +13,13 @@ public class AccountCreatingPage extends Page {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    public AccountCreatingPage(ConsoleService consoleService, BankService bankService) {
+    public AccountCreatingPage(ConsoleService consoleService) {
         super(consoleService);
-
-        this.bankService = bankService;
+        this.bankService = consoleService.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. INPUT / OUTPUT
+    // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
     @Override
@@ -50,10 +49,10 @@ public class AccountCreatingPage extends Page {
         int option = super.getOptionFromMenu("Введите номер пункта");
 
         switch (option) {
-            case 1 -> consoleService.showAccountCreatingPage();
-            case 2 -> consoleService.showAccountOperationPage();
-            case 3 -> consoleService.showAccountListPage();
-            default -> consoleService.showMainPage();
+            case 1 -> super.consoleService.showAccountCreatingPage();
+            case 2 -> super.consoleService.showAccountOperationPage();
+            case 3 -> super.consoleService.showAccountListPage();
+            default -> super.consoleService.showMainPage();
         };
     }
 }

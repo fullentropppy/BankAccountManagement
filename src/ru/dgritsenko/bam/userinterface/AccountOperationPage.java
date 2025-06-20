@@ -10,20 +10,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class AccountOperationPage extends Page {
-    private BankService bankService;
+    private final BankService bankService;
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    public AccountOperationPage(ConsoleService consoleService, BankService bankService) {
+    public AccountOperationPage(ConsoleService consoleService) {
         super(consoleService);
-
-        this.bankService = bankService;
+        this.bankService = consoleService.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. INPUT / OUTPUT
+    // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
     @Override
@@ -43,15 +42,16 @@ public class AccountOperationPage extends Page {
         super.setMenu(menu);
 
         int option = super.getOptionFromMenu("Введите номер пункта");
+
         switch (option) {
             case 1 -> processOperationWithOnlyFromAccount(TransactionType.DEPOSIT);
             case 2 -> processOperationWithToAccount(TransactionType.DEBIT);
             case 3 -> processOperationWithToAccount(TransactionType.TRANSFER);
             case 4 -> processOperationWithOnlyFromAccount(TransactionType.WITHDRAW);
-            case 5 -> consoleService.showAccountTransactionPage();
-            case 6 -> consoleService.showAccountListPage();
-            case 7 -> consoleService.showAccountPage();
-            default -> consoleService.showMainPage();
+            case 5 -> super.consoleService.showAccountTransactionPage();
+            case 6 -> super.consoleService.showAccountListPage();
+            case 7 -> super.consoleService.showAccountPage();
+            default -> super.consoleService.showMainPage();
         };
     }
 
@@ -80,14 +80,14 @@ public class AccountOperationPage extends Page {
 
         Account currentFromAccount = super.consoleService.getCurrentFromAccount();
 
-        double amount = getAmount(inputTitle);
+        double amount = super.getAmount(inputTitle);
         TransactionStatus result = bankService.performTransaction(transactionType, currentFromAccount, amount);
 
         String resultMessage = MessageFormat.format(resultTitleTemplate, result);
         System.out.println(resultMessage);
 
-        waitForInputToContinue("Нажмите Enter для продолжения");
-        consoleService.showAccountOperationPage();
+        super.waitForInputToContinue("Нажмите Enter для продолжения");
+        super.consoleService.showAccountOperationPage();
     }
 
     /**
@@ -118,7 +118,7 @@ public class AccountOperationPage extends Page {
             String missingMessage = "\n\tСписок получателей пуст...";
             System.out.println(missingMessage);
 
-            waitForInputToContinue("Нажмите Enter для продолжения");
+            super.waitForInputToContinue("Нажмите Enter для продолжения");
         } else {
             String inputOptionTittle = "";
             String inputAmountTittle = "";
@@ -152,11 +152,11 @@ public class AccountOperationPage extends Page {
                 String resultMessage = MessageFormat.format(resultTitleTemplate, result);
                 System.out.println(resultMessage);
 
-                waitForInputToContinue("Нажмите Enter для продолжения");
+                super.waitForInputToContinue("Нажмите Enter для продолжения");
             }
         }
 
-        consoleService.showAccountOperationPage();
+        super.consoleService.showAccountOperationPage();
     }
 
     // -----------------------------------------------------------------------------------------------------------------

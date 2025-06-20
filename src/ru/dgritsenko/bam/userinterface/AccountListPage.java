@@ -6,18 +6,19 @@ import ru.dgritsenko.bam.main.BankService;
 import java.text.MessageFormat;
 
 public class AccountListPage extends Page {
-    private BankService bankService;
+    private final BankService bankService;
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    public AccountListPage(ConsoleService consoleService, BankService bankService) {
+    public AccountListPage(ConsoleService consoleService) {
         super(consoleService);
+        this.bankService = consoleService.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. INPUT / OUTPUT
+    // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
     @Override

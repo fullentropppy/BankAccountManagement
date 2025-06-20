@@ -36,6 +36,10 @@ public class ConsoleService {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
+    public BankService getBankService() {
+        return bankService;
+    }
+
     public Account getCurrentFromAccount() {
         return currentFromAccount;
     }
@@ -44,6 +48,11 @@ public class ConsoleService {
     // SETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Устанавливает текущий обрабатываемый счет.
+     *
+     * @param currentFromAccount счет
+     */
     public void setCurrentFromAccount(Account currentFromAccount) {
         this.currentFromAccount = currentFromAccount;
     }
@@ -60,7 +69,7 @@ public class ConsoleService {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. PAGES SHOWING
+    // METHODS. PAGES PROCESSING
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -90,7 +99,7 @@ public class ConsoleService {
      */
     protected void showAccountCreatingPage() {
         if (accountCreatingPage == null) {
-            accountCreatingPage = new AccountCreatingPage(this, bankService);
+            accountCreatingPage = new AccountCreatingPage(this);
         }
 
         accountCreatingPage.show();
@@ -101,7 +110,7 @@ public class ConsoleService {
      */
     protected void showAccountListPage() {
         if (accountListPage == null) {
-            accountListPage = new AccountListPage(this, bankService);
+            accountListPage = new AccountListPage(this);
         }
 
         accountListPage.show();
@@ -112,7 +121,7 @@ public class ConsoleService {
      */
     protected void showAccountOperationPage() {
         if (accountOperationPage == null) {
-            accountOperationPage = new AccountOperationPage(this, bankService);
+            accountOperationPage = new AccountOperationPage(this);
         }
 
         accountOperationPage.show();
@@ -123,7 +132,7 @@ public class ConsoleService {
      */
     protected void showAccountTransactionPage() {
         if (accountTransactionPage == null) {
-            accountTransactionPage = new AccountTransactionPage(this, bankService);
+            accountTransactionPage = new AccountTransactionPage(this);
         }
 
         accountTransactionPage.show();
@@ -134,7 +143,7 @@ public class ConsoleService {
      */
     protected void showTransactionPage() {
         if (transactionPage == null) {
-            transactionPage = new TransactionPage(this, bankService);
+            transactionPage = new TransactionPage(this);
         }
 
         transactionPage.show();

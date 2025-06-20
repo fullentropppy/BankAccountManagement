@@ -1,5 +1,7 @@
 package ru.dgritsenko.bam.userinterface;
 
+import ru.dgritsenko.bam.main.BankService;
+
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -10,6 +12,7 @@ import java.util.regex.Pattern;
 
 public abstract class Page {
     protected final ConsoleService consoleService;
+
     private final List<Integer> validOptions = new ArrayList<>();
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -62,7 +65,7 @@ public abstract class Page {
         String actionMessage = MessageFormat.format("\n> {0}: ", actionTitle);
         Scanner scanner = new Scanner(System.in);
 
-        while (!scanner.hasNextDouble() || amount <= 0) {
+        while (amount <= 0) {
             System.out.print(actionMessage);
             amount = scanner.nextDouble();
         }

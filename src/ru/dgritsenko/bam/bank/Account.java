@@ -1,8 +1,11 @@
 package ru.dgritsenko.bam.bank;
 
+import java.lang.annotation.IncompleteAnnotationException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Класс, представляющий банковский счет.
@@ -43,11 +46,14 @@ public class Account {
      * @param holderName ФИО владельца счета
      */
     public Account(String holderName) {
-        Random random = new Random();
+        if (!holderNameIsCorrect()) {
 
-        this.accountNumber = random.nextInt(999999999);
-        this.holderName = holderName;
+        }
+
+        this.accountNumber = getGeneratedAccountNumber();
         this.transactions = new ArrayList<>();
+
+        setHolderName(holderName);
     }
 
     /**
@@ -57,9 +63,16 @@ public class Account {
      * @param holderName ФИО владельца счета
      */
     public Account(long accountNumber, String holderName) {
+        if (!accountNumberIsCorrect()) {
+
+        } else if (!holderNameIsCorrect()) {
+
+        }
+
         this.accountNumber = accountNumber;
-        this.holderName = holderName;
         this.transactions = new ArrayList<>();
+
+        setHolderName(holderName);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -103,7 +116,12 @@ public class Account {
      * @param holderName новое имя владельца
      */
     public void setHolderName(String holderName) {
+        if (!holderNameIsCorrect()) {
+
+        }
+
         this.holderName = holderName;
+        formatHolderName();
     }
 
     /**
@@ -112,6 +130,12 @@ public class Account {
      * @param transaction транзакция для добавления
      */
     public void addTransaction(Transaction transaction) {
+        if (transaction == null) {
+            
+        } else if (transactions.contains(transaction)) {
+            
+        }
+
         transactions.add(transaction);
 
         // При обновлении списка транзакций требуется пересчет кэша баланса
@@ -119,8 +143,29 @@ public class Account {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. CHECKS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public boolean accountNumberIsCorrect() {
+        return accountNumber >= 100_000_000 && accountNumber < 1_000_000_000;
+    }
+
+    public boolean holderNameIsCorrect() {
+        Pattern pattern = Pattern.compile("^[A-z][A-z]+(['-][A-z][A-z]+)* [A-z]$");
+        Matcher matcher = pattern.matcher(holderName.strip());
+
+        return matcher.matches();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     // METHODS. GETTING DATA
     // -----------------------------------------------------------------------------------------------------------------
+
+    public long getGeneratedAccountNumber() {
+        Random random = new Random();
+
+        return 100_000_000 + random.nextLong(900_000_001);
+    }
 
     /**
      * Вычисляет текущий баланс счета на основе подтвержденных транзакций.
@@ -201,6 +246,16 @@ public class Account {
     // -----------------------------------------------------------------------------------------------------------------
     // METHODS. MISC
     // -----------------------------------------------------------------------------------------------------------------
+
+    private void formatHolderName() {
+        String strippedLowerCaseName = holderName.strip().toLowerCase();
+        int nameLength = strippedLowerCaseName.length();
+
+        holderName = strippedLowerCaseName.substring(0, 1).toUpperCase()
+                + strippedLowerCaseName.substring(1, nameLength - 2)
+                + " "
+                + strippedLowerCaseName.substring(nameLength - 1).toUpperCase();
+    }
 
     /**
      * Форматирует строковое представление операции транзакции в зависимости от её типа.

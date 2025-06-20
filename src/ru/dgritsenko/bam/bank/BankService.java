@@ -1,9 +1,4 @@
-package ru.dgritsenko.bam.main;
-
-import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.bank.TransactionService;
-import ru.dgritsenko.bam.bank.TransactionStatus;
-import ru.dgritsenko.bam.bank.TransactionType;
+package ru.dgritsenko.bam.bank;
 
 import java.util.ArrayList;
 

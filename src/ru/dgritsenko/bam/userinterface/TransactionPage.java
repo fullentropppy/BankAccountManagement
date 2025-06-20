@@ -1,7 +1,7 @@
 package ru.dgritsenko.bam.userinterface;
 
 import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.main.BankService;
+import ru.dgritsenko.bam.bank.BankService;
 
 /**
  * Класс представляет страницу просмотра всех транзакций по всем счетам.

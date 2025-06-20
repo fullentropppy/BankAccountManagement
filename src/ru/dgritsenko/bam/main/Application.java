@@ -1,5 +1,6 @@
 package ru.dgritsenko.bam.main;
 
+import ru.dgritsenko.bam.bank.BankService;
 import ru.dgritsenko.bam.userinterface.ConsoleService;
 
 /**

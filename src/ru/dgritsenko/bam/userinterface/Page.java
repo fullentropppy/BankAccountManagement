@@ -85,9 +85,25 @@ public abstract class Page {
         String actionMessage = MessageFormat.format("\n> {0}: ", actionTitle);
         Scanner scanner = new Scanner(System.in);
 
-        while (amount <= 0) {
+        while (true) {
             System.out.print(actionMessage);
-            amount = scanner.nextDouble();
+
+            boolean hasNextDouble = scanner.hasNextDouble();
+
+            if (hasNextDouble) {
+                amount = scanner.nextDouble();
+            }
+
+            if (amount <= 0) {
+                String errorMessage = "\n! Ошибка: введите корректную сумму (число > 0)";
+                System.out.println(errorMessage);
+
+                if (!hasNextDouble) {
+                    scanner.next();
+                }
+            } else {
+                break; // значение amount определено корректно
+            }
         }
 
         return amount;
@@ -105,9 +121,27 @@ public abstract class Page {
         String actionMessage = MessageFormat.format("\n> {0}: ", actionTitle);
         Scanner scanner = new Scanner(System.in);
 
-        while (!validOptions.contains(option)) {
+        while (true) {
             System.out.print(actionMessage);
-            option = scanner.nextInt();
+
+            boolean hasNextInt = scanner.hasNextInt();
+
+            if (hasNextInt) {
+                option = scanner.nextInt();
+            }
+
+            if (!validOptions.contains(option)) {
+                String errorMessage = MessageFormat.format(
+                        "\n! Ошибка: введите корректный номер опции (с {0} по {1})",
+                        validOptions.getFirst(), validOptions.getLast());
+                System.out.println(errorMessage);
+
+                if (!hasNextInt) {
+                    scanner.next();
+                }
+            } else {
+                break; // значение option определено корректно
+            }
         }
 
         return option;

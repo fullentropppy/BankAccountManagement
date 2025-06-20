@@ -45,9 +45,21 @@ public class Account {
     public Account(String holderName) {
         Random random = new Random();
 
-        this.transactions = new ArrayList<>();
         this.accountNumber = random.nextInt(999999999);
         this.holderName = holderName;
+        this.transactions = new ArrayList<>();
+    }
+
+    /**
+     * Конструктор создает новый счет с указанным номером счета и именем владельца.
+     *
+     * @param accountNumber номер счета
+     * @param holderName ФИО владельца счета
+     */
+    public Account(long accountNumber, String holderName) {
+        this.accountNumber = accountNumber;
+        this.holderName = holderName;
+        this.transactions = new ArrayList<>();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -128,7 +140,7 @@ public class Account {
                 // Учитываются только подтвержденные транзакции
                 if (transaction.getStatus().isCommitted()) {
                     double transactionAmount = transaction.getAmount();
-                    balance += transaction.getOperationType().isAddition() ? transactionAmount : -transactionAmount;
+                    balance += transaction.getTransactionType().isAddition() ? transactionAmount : -transactionAmount;
                 }
             }
             cachedBalance = balance;
@@ -198,9 +210,9 @@ public class Account {
      * @return строковое представление операции
      */
     private String transactionOperationView(Transaction transaction) {
-        String operationView = transaction.getOperationType().getTitle();
+        String operationView = transaction.getTransactionType().getTitle();
 
-        String extOperationViewTemplate = switch (transaction.getOperationType()) {
+        String extOperationViewTemplate = switch (transaction.getTransactionType()) {
             case CREDIT -> "{0} (от: {1})";
             case DEBIT -> "{0} (получатель: {1})";
             case TRANSFER -> "{0} (кому: {1})";

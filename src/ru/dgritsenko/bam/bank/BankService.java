@@ -1,9 +1,4 @@
-package ru.dgritsenko.bam.main;
-
-import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.bank.TransactionService;
-import ru.dgritsenko.bam.bank.TransactionStatus;
-import ru.dgritsenko.bam.bank.TransactionType;
+package ru.dgritsenko.bam.bank;
 
 import java.util.ArrayList;
 
@@ -17,7 +12,7 @@ public class BankService {
      * Создаёт новый банковский счет с указанным владельцем.
      *
      * @param holderName ФИО владельца счёта (не может быть пустым).
-     * @return Созданный объект {@link Account}.
+     * @return Созданный объект
      */
     public Account createAccount(String holderName) {
         Account account = new Account(holderName);
@@ -45,7 +40,8 @@ public class BankService {
     public TransactionStatus performTransaction(
             TransactionType transactionType,
             Account fromAccount,
-            double amount) {
+            double amount)
+    {
         return TransactionService.perform(transactionType, fromAccount, amount);
     }
 
@@ -62,7 +58,8 @@ public class BankService {
             TransactionType transactionType,
             Account fromAccount,
             double amount,
-            Account toAccount) {
+            Account toAccount)
+    {
         return TransactionService.perform(transactionType, fromAccount, amount, toAccount);
     }
 }

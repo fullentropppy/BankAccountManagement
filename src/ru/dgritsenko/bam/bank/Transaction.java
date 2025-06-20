@@ -47,14 +47,48 @@ public class Transaction {
      * @param amount сумма транзакции
      * @param toAccount счет получателя (может быть null)
      */
-    public Transaction(Account fromAccount, TransactionType transactionType, double amount, Account toAccount) {
+    public Transaction(
+            Account fromAccount,
+            TransactionType transactionType,
+            double amount,
+            Account toAccount)
+    {
         this.uuid = UUID.randomUUID();
         this.date = LocalDateTime.now();
         this.fromAccount = fromAccount;
         this.transactionType = transactionType;
         this.amount = amount;
-        this.toAccount = toAccount; // может быть null если бенефициар не предполагается
+        this.toAccount = toAccount;
         this.status = TransactionStatus.UNCOMMITTED;
+    }
+
+    /**
+     * Конструктор создает новую транзакцию с указанными параметрами.
+     *
+     * @param uuid уникальный идентификатор транзакции
+     * @param date дата и время транзакции
+     * @param fromAccount счет отправителя
+     * @param transactionType тип транзакции
+     * @param amount сумма транзакции
+     * @param toAccount счет получателя (может быть null)
+     * @param status статус транзакции
+     */
+    public Transaction(
+            UUID uuid,
+            LocalDateTime date,
+            Account fromAccount,
+            TransactionType transactionType,
+            double amount,
+            Account toAccount,
+            TransactionStatus status)
+    {
+        this.uuid = uuid;
+        this.date = date;
+        this.fromAccount = fromAccount;
+        this.transactionType = transactionType;
+        this.amount = amount;
+        this.toAccount = toAccount;
+        this.status = status;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -102,7 +136,7 @@ public class Transaction {
      *
      * @return тип транзакции
      */
-    public TransactionType getOperationType() {
+    public TransactionType getTransactionType() {
         return transactionType;
     }
 

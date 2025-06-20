@@ -1,7 +1,5 @@
 package ru.dgritsenko.bam.userinterface;
 
-import ru.dgritsenko.bam.main.BankService;
-
 import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -10,6 +8,10 @@ import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+/**
+ * Абстрактный класс, представляющий базовую страницу интерфейса.
+ * Содержит общие методы для работы с консольным вводом/выводом.
+ */
 public abstract class Page {
     protected final ConsoleService consoleService;
 
@@ -19,6 +21,11 @@ public abstract class Page {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Создает базовую страницу с указанным сервисом консоли.
+     *
+     * @param consoleService сервис для работы с консолью
+     */
     public Page(ConsoleService consoleService) {
         this.consoleService = consoleService;
     }
@@ -27,13 +34,26 @@ public abstract class Page {
     // METHODS. OUTPUT
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Абстрактный метод для отображения страницы.
+     */
     public abstract void show();
 
+    /**
+     * Очищает консоль и устанавливает заголовок страницы.
+     *
+     * @param title заголовок страницы
+     */
     protected void setTitle(String title) {
         clearText();
         printNewPageHeader(title);
     }
 
+    /**
+     * Устанавливает меню страницы и парсит доступные опции.
+     *
+     * @param menu текст меню с опциями
+     */
     protected void setMenu(String menu) {
         System.out.println(menu);
 

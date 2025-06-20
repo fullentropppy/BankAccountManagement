@@ -3,6 +3,9 @@ package ru.dgritsenko.bam.userinterface;
 import ru.dgritsenko.bam.bank.Account;
 import ru.dgritsenko.bam.main.BankService;
 
+/**
+ * Класс представляет страницу просмотра всех транзакций по всем счетам.
+ */
 public class TransactionPage extends Page {
     private final BankService bankService;
 
@@ -10,6 +13,11 @@ public class TransactionPage extends Page {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Создает страницу транзакций с указанным сервисом консоли.
+     *
+     * @param consoleService сервис для работы с консолью
+     */
     public TransactionPage(ConsoleService consoleService) {
         super(consoleService);
         this.bankService = consoleService.getBankService();
@@ -19,6 +27,9 @@ public class TransactionPage extends Page {
     // METHODS. INPUT / OUTPUT
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Отображает список всех транзакции по всем счетам.
+     */
     @Override
     public void show() {
         super.setTitle("Транзакции");

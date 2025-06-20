@@ -6,6 +6,9 @@ import ru.dgritsenko.bam.main.BankService;
 import java.text.MessageFormat;
 import java.util.Scanner;
 
+/**
+ * Класс представляет страницу создания нового банковского счета.
+ */
 public class AccountCreatingPage extends Page {
     private final BankService bankService;
 
@@ -13,6 +16,11 @@ public class AccountCreatingPage extends Page {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Создает страницу создания счета с указанным сервисом консоли.
+     *
+     * @param consoleService сервис для работы с консолью
+     */
     public AccountCreatingPage(ConsoleService consoleService) {
         super(consoleService);
         this.bankService = consoleService.getBankService();
@@ -22,6 +30,9 @@ public class AccountCreatingPage extends Page {
     // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Отображает страницу создания нового счета.
+     */
     @Override
     public void show() {
         super.setTitle("Создание счета");

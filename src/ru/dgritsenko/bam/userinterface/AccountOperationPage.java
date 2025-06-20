@@ -9,6 +9,9 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Класс представляет страницу операций с конкретным банковским счетом.
+ */
 public class AccountOperationPage extends Page {
     private final BankService bankService;
 
@@ -16,6 +19,11 @@ public class AccountOperationPage extends Page {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Создает страницу операций со счетом с указанным сервисом консоли.
+     *
+     * @param consoleService сервис для работы с консолью
+     */
     public AccountOperationPage(ConsoleService consoleService) {
         super(consoleService);
         this.bankService = consoleService.getBankService();
@@ -25,6 +33,9 @@ public class AccountOperationPage extends Page {
     // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Отображает меню операций со счетом.
+     */
     @Override
     public void show() {
         printNewAccountOperationPage();

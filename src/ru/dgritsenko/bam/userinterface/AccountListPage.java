@@ -5,6 +5,9 @@ import ru.dgritsenko.bam.main.BankService;
 
 import java.text.MessageFormat;
 
+/**
+ * Класс представляет страницу со списком всех банковских счетов.
+ */
 public class AccountListPage extends Page {
     private final BankService bankService;
 
@@ -12,6 +15,11 @@ public class AccountListPage extends Page {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Создает страницу списка счетов с указанным сервисом консоли.
+     *
+     * @param consoleService сервис для работы с консолью
+     */
     public AccountListPage(ConsoleService consoleService) {
         super(consoleService);
         this.bankService = consoleService.getBankService();
@@ -21,6 +29,9 @@ public class AccountListPage extends Page {
     // OVERRIDDEN
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Отображает список всех созданных счетов с возможностью выбора.
+     */
     @Override
     public void show() {
         super.setTitle("Список счетов");

@@ -36,10 +36,20 @@ public class ConsoleService {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Возвращает сервис для работы с банковскими операциями.
+     *
+     * @return сервис банка
+     */
     public BankService getBankService() {
         return bankService;
     }
 
+    /**
+     * Возвращает текущий выбранный счет для операций.
+     *
+     * @return текущий счет
+     */
     public Account getCurrentFromAccount() {
         return currentFromAccount;
     }

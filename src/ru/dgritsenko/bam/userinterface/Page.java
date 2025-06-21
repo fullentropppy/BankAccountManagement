@@ -40,11 +40,11 @@ public abstract class Page {
     public abstract void show();
 
     /**
-     * Очищает консоль и устанавливает заголовок страницы.
+     * Очищает консоль и устанавливает шапку страницы.
      *
      * @param title заголовок страницы
      */
-    protected void setTitle(String title) {
+    protected void setHeader(String title) {
         clearText();
         printNewPageHeader(title);
     }

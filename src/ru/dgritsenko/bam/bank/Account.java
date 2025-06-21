@@ -3,6 +3,7 @@ package ru.dgritsenko.bam.bank;
 import java.lang.annotation.IncompleteAnnotationException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,7 +16,7 @@ import java.util.regex.Pattern;
 public class Account {
     private final long accountNumber;
     private String holderName;
-    private final ArrayList<Transaction> transactions;
+    private final List<Transaction> transactions;
 
     // Кэширование баланса
     private double cachedBalance;
@@ -61,7 +62,6 @@ public class Account {
     public Account(long accountNumber, String holderName) {
         if (!accountNumberIsCorrect()) {
 
-
         }
 
         setHolderName(holderName);
@@ -97,7 +97,7 @@ public class Account {
      *
      * @return список транзакций
      */
-    public ArrayList<Transaction> getTransactions() {
+    public List<Transaction> getTransactions() {
         return transactions;
     }
 
@@ -127,9 +127,9 @@ public class Account {
      */
     public void addTransaction(Transaction transaction) {
         if (transaction == null) {
-            
+
         } else if (transactions.contains(transaction)) {
-            
+
         }
 
         transactions.add(transaction);
@@ -147,7 +147,6 @@ public class Account {
     }
 
     public boolean holderNameIsCorrect() {
-        // todo: добавить поддержку двойных фамилий: ^[A-z][A-z]+(['-][A-z][A-z]+)* [A-z]$
         Pattern pattern = Pattern.compile("^[A-z][A-z]+ [A-z]$");
         Matcher matcher = pattern.matcher(holderName.strip());
 
@@ -266,7 +265,6 @@ public class Account {
 
         String extOperationViewTemplate = switch (transaction.getTransactionType()) {
             case CREDIT -> "{0} (от: {1})";
-            case DEBIT -> "{0} (получатель: {1})";
             case TRANSFER -> "{0} (кому: {1})";
             default -> "";
         };

@@ -21,6 +21,8 @@ public class Test {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
+        System.out.println();
+
         processPredefinedSet();
 
         String pageActionMessage = "> Нажмите Enter чтобы завершить работу...";
@@ -55,10 +57,9 @@ public class Test {
      * - "Петров П" (ключ "petrovP")
      */
     private static void initializeAccounts() {
-        addAccount("store", "Магазин");
-        addAccount("ivanov", "Иванов И");
-        addAccount("sidorov", "Сидоров С");
-        addAccount("petrov", "Петров П");
+        addAccount("ivanov", "Ivanov I");
+        addAccount("sidorov", "Sidorov S");
+        addAccount("petrov", "Petrov P");
     }
 
     /**
@@ -72,14 +73,12 @@ public class Test {
      */
     private static void performOperations() {
         // Создание счетов
-        Account store = accounts.get("store");
         Account ivanov = accounts.get("ivanov");
         Account sidorov = accounts.get("sidorov");
         Account petrov = accounts.get("petrov");
 
         // Выполнение операций через обработчик
         TransactionService.deposit(ivanov, 50000);
-        TransactionService.debit(ivanov, 599.25, store);
         TransactionService.transfer(ivanov, 10000, sidorov);
 
         TransactionService.withdrawal(sidorov, 1000);

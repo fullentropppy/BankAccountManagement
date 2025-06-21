@@ -35,7 +35,7 @@ public class AccountCreatingPage extends Page {
      */
     @Override
     public void show() {
-        super.setTitle("Создание счета");
+        super.setHeader("Создание счета");
 
         String actionMessage = "\n> Введите ФИО владельца нового счета: ";
         System.out.print(actionMessage);

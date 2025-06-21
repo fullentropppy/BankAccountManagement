@@ -34,7 +34,7 @@ public class AccountListPage extends Page {
      */
     @Override
     public void show() {
-        super.setTitle("Список счетов");
+        super.setHeader("Список счетов");
 
         StringBuilder pageMenuOptions = new StringBuilder();
 
@@ -59,7 +59,7 @@ public class AccountListPage extends Page {
             String pageMenu = pageMenuOptions.toString();
             super.setMenu(pageMenu);
 
-            int option = super.getOptionFromMenu("Введите номер пункта");
+            int option = super.getOptionFromMenu("Введите номер счета");
             int optionsAmount = bankService.getAccounts().size() + 1;
 
             if (option < optionsAmount) {

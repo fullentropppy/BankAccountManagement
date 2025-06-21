@@ -36,7 +36,7 @@ public class TransactionService {
     /**
      * Выполняет операцию, требующую указания счета получателя.
      *
-     * @param transactionType тип операции (CREDIT, DEBIT или TRANSFER)
+     * @param transactionType тип операции (CREDIT или TRANSFER)
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      * @param toAccount счет получателя
@@ -52,8 +52,6 @@ public class TransactionService {
 
         if (transactionType == TransactionType.CREDIT) {
             status = credit(fromAccount, amount, toAccount);
-        } else if (transactionType == TransactionType.DEBIT) {
-            status = debit(fromAccount, amount, toAccount);
         } else if (transactionType == TransactionType.TRANSFER) {
             status = transfer(fromAccount, amount, toAccount);
         }
@@ -82,18 +80,6 @@ public class TransactionService {
      */
     public static TransactionStatus credit(Account fromAccount, double amount, Account toAccount) {
         return processIncreasing(fromAccount, TransactionType.CREDIT, amount, toAccount);
-    }
-
-    /**
-     * Выполняет операцию списания средств со счета.
-     *
-     * @param fromAccount счет отправителя
-     * @param amount сумма списания
-     * @param toAccount счет получателя
-     * @return статус операции
-     */
-    public static TransactionStatus debit(Account fromAccount, double amount, Account toAccount ) {
-        return processReducing(fromAccount, TransactionType.DEBIT, amount, toAccount);
     }
 
     /**
@@ -149,12 +135,12 @@ public class TransactionService {
     /**
      * Обрабатывает транзакции, уменьшающие баланс счета (списание, перевод, снятие).
      * Проверяет достаточность средств. Если средств недостаточно, транзакция отменяется (CANCELED).
-     * Для операций с получателем (DEBIT, TRANSFER) также создает встречную транзакцию.
+     * Для операций с получателем (TRANSFER) также создает встречную транзакцию.
      *
      * @param fromAccount счет, с которого списываются средства
-     * @param transactionType тип операции (DEBIT, TRANSFER или WITHDRAW)
+     * @param transactionType тип операции (TRANSFER или WITHDRAW)
      * @param amount сумма
-     * @param toAccount счет-получатель (для DEBIT/TRANSFER) или null (для WITHDRAW)
+     * @param toAccount счет-получатель (для TRANSFER) или null (для WITHDRAW)
      * @return статус транзакции (COMMITTED или CANCELED)
      */
     private static TransactionStatus processReducing(

@@ -1,12 +1,13 @@
 package ru.dgritsenko.bam.bank;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Сервис для управления банковскими счетами и транзакциями.
  */
 public class BankService {
-    private final ArrayList<Account> accounts = new ArrayList<>();
+    private final List<Account> accounts = new ArrayList<>();
 
     /**
      * Создаёт новый банковский счет с указанным владельцем.
@@ -25,7 +26,7 @@ public class BankService {
      *
      * @return список счетов.
      */
-    public ArrayList<Account> getAccounts() {
+    public List<Account> getAccounts() {
         return accounts;
     }
 
@@ -48,7 +49,7 @@ public class BankService {
     /**
      * Выполняет операцию, требующую указания счета получателя.
      *
-     * @param transactionType тип операции (CREDIT, DEBIT или TRANSFER)
+     * @param transactionType тип операции (CREDIT или TRANSFER)
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      * @param toAccount счет получателя

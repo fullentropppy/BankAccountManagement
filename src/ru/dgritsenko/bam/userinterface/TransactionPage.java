@@ -32,7 +32,7 @@ public class TransactionPage extends Page {
      */
     @Override
     public void show() {
-        super.setTitle("Транзакции");
+        super.setHeader("Транзакции");
 
         if (bankService.getAccounts().isEmpty()) {
             String message = "\n\tСписок транзакций пуст...";

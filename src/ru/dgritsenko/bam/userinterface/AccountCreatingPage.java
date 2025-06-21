@@ -43,10 +43,11 @@ public class AccountCreatingPage extends Page {
         Scanner fromAccountHolderNameScanner = new Scanner(System.in);
         String fromAccountHolderName = fromAccountHolderNameScanner.nextLine();
 
-        Account account = bankService.createAccount(fromAccountHolderName);
-        super.consoleService.setCurrentFromAccount(account);
+        try {
+            Account account = bankService.createAccount(fromAccountHolderName);
+            super.consoleService.setCurrentFromAccount(account);
 
-        String menu = MessageFormat.format("""
+            String menu = MessageFormat.format("""
                 
                 \tСоздан новый счет: {0}
                 
@@ -54,16 +55,23 @@ public class AccountCreatingPage extends Page {
                 \t2. Операции
                 \t3. Список счетов
                 \t4. Главное меню""",
-                account);
-        super.setMenu(menu);
+                    account);
+            super.setMenu(menu);
 
-        int option = super.getOptionFromMenu("Введите номер пункта");
+            int option = super.getOptionFromMenu("Введите номер пункта");
 
-        switch (option) {
-            case 1 -> super.consoleService.showAccountCreatingPage();
-            case 2 -> super.consoleService.showAccountOperationPage();
-            case 3 -> super.consoleService.showAccountListPage();
-            default -> super.consoleService.showMainPage();
-        };
+            switch (option) {
+                case 1 -> super.consoleService.showAccountCreatingPage();
+                case 2 -> super.consoleService.showAccountOperationPage();
+                case 3 -> super.consoleService.showAccountListPage();
+                default -> super.consoleService.showMainPage();
+            };
+        } catch (Exception exception) {
+            String exceptionMessage = MessageFormat.format("\n! Ошибка: {0}", exception.getMessage());
+            System.out.println(exceptionMessage);
+
+            super.waitForInputToContinue("Нажмите Enter для возврата на страницу счетов");
+            super.consoleService.showAccountPage();
+        }
     }
 }

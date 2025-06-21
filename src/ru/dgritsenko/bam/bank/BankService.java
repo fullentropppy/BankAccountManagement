@@ -12,12 +12,19 @@ public class BankService {
     /**
      * Создаёт новый банковский счет с указанным владельцем.
      *
-     * @param holderName ФИО владельца счёта (не может быть пустым).
+     * @param holderName имя владельца счёта.
      * @return Созданный объект
      */
     public Account createAccount(String holderName) {
-        Account account = new Account(holderName);
-        accounts.add(account);
+        Account account = null;
+
+        try {
+            account = new Account(holderName);
+            accounts.add(account);
+        } catch (NullPointerException | IllegalArgumentException exception) {
+            throw exception;
+        }
+
         return account;
     }
 

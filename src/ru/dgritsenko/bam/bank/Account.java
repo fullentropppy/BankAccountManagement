@@ -138,7 +138,7 @@ public class Account {
      * Добавляет транзакцию в список транзакций счета.
      * @param transaction транзакция для добавления
      * @throws NullPointerException если transaction равен null
-     * @throws IllegalArgumentException если транзакция уже существует в списке
+     * @throws IllegalArgumentException если transaction уже существует в списке
      */
     public void addTransaction(Transaction transaction) {
         // Проверка на null
@@ -179,17 +179,24 @@ public class Account {
      * @return true если имя соответствует формату (фамилия и первая буква имени на латинице)
      */
     public boolean isHolderNameCorrect(String holderName) {
-        Pattern pattern = Pattern.compile("^[A-z][A-z]+ [A-z]$");
-        Matcher matcher = pattern.matcher(holderName.strip());
+        boolean isCorrect;
 
-        return matcher.matches();
+        if (holderName == null) {
+            isCorrect = false;
+        } else {
+            Pattern pattern = Pattern.compile("^[A-z][A-z]+ [A-z]$");
+            Matcher matcher = pattern.matcher(holderName.strip());
+            isCorrect = matcher.matches();
+        }
+
+        return isCorrect;
     }
     
     /**
      * Проверяет номер счета на валидность и возвращает его, если он корректен.
      * @param accountNumber номер счета для проверки
      * @return валидный номер счета
-     * @throws IllegalArgumentException если номер счета не соответствует формату
+     * @throws IllegalArgumentException если accountNumber не соответствует формату
      */
     private long validAccountNumber(long accountNumber) {
         // Проверка на формат
@@ -209,8 +216,8 @@ public class Account {
      * Проверяет имя владельца на валидность и возвращает отформатированное имя, если оно корректно.
      * @param holderName имя владельца для проверки
      * @return валидное отформатированное имя владельца
-     * @throws NullPointerException если имя равно null
-     * @throws IllegalArgumentException если имя не соответствует формату
+     * @throws NullPointerException если holderName равно null
+     * @throws IllegalArgumentException если holderName не соответствует формату
      */
     private String validHolderName(String holderName) {
         // Проверка на null
@@ -226,7 +233,6 @@ public class Account {
             throw new IllegalArgumentException(errMsg);
         }
 
-        // Преобразование
         return getFormattedHolderName(holderName);
     }
 

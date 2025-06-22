@@ -46,7 +46,7 @@ public class Transaction {
      * @param amount сумма транзакции
      * @param toAccount счет получателя (может быть null)
      * @throws NullPointerException если любой из обязательных параметров равен null
-     * @throws IllegalArgumentException если amount ≤ 0
+     * @throws IllegalArgumentException если amount <= 0
      * @throws NullPointerException если для данного типа транзакции требуется toAccount, но он равен null
      */
     public Transaction(
@@ -77,7 +77,7 @@ public class Transaction {
      * @param toAccount счет получателя (может быть null)
      * @param status статус транзакции
      * @throws NullPointerException если любой из обязательных параметров равен null
-     * @throws IllegalArgumentException если amount ≤ 0
+     * @throws IllegalArgumentException если amount <= 0
      * @throws NullPointerException если для данного типа транзакции требуется toAccount, но он равен null
      */
     public Transaction(
@@ -183,11 +183,11 @@ public class Transaction {
 
     /**
      * Устанавливает новый статус транзакции.
-     *
      * @param status новый статус
+     * @throws NullPointerException если status равен null
      */
-    public void setStatus(TransactionStatus status) {
-        this.status = status;
+    public void setStatus(TransactionStatus status) throws NullPointerException {
+        this.status = Objects.requireNonNull(status, "Статус не должен быть null");
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -198,7 +198,7 @@ public class Transaction {
      * Проверяет сумму транзакции на валидность.
      * @param amount сумма транзакции для проверки
      * @return валидная сумма транзакции
-     * @throws IllegalArgumentException если сумма меньше или равна нулю
+     * @throws IllegalArgumentException если amount <= 0
      */
     private double validAmount(double amount) {
         if (amount <= 0) {

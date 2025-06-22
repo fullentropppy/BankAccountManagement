@@ -1,10 +1,11 @@
 package ru.dgritsenko.bam.bank;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
-import java.util.Random;
+import java.util.Collections;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -28,7 +29,6 @@ public class Account {
 
     /**
      * Возвращает строковое представление счета в формате: "Имя владельца (№НомерСчета)".
-     *
      * @return строковое представление счета
      */
     @Override
@@ -41,33 +41,32 @@ public class Account {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Конструктор создает новый счет с указанным именем владельца.
-     * Номер счета генерируется случайным образом.
-     *
-     * @param holderName имя владельца счета
+     * Создает новый счет с автоматически сгенерированным номером.
+     * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
+     * @throws NullPointerException если holderName равен null
+     * @throws IllegalArgumentException если holderName имеет неверный формат
      */
-    public Account(String holderName) {
+    public Account(String holderName) throws NullPointerException, IllegalArgumentException {
+        // Присвоение значений с проверкой
         setHolderName(holderName);
 
         this.accountNumber = getGeneratedAccountNumber();
+        this.holderName = holderName;
         this.transactions = new ArrayList<>();
     }
 
     /**
-     * Конструктор создает новый счет с указанным номером счета и именем владельца.
-     *
-     * @param accountNumber номер счета
-     * @param holderName имя владельца счета
+     * Создает новый счет с указанным номером.
+     * @param accountNumber номер счета (должен быть в диапазоне 100000000-999999999)
+     * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
+     * @throws NullPointerException если holderName равен null
+     * @throws IllegalArgumentException если accountNumber или holderName имеют неверный формат
      */
-    public Account(long accountNumber, String holderName) {
-        if (!accountNumberIsCorrect()) {
-            String exceptionMessageTemplate =
-                    "Некорректный номер счета '{0}': " +
-                    "Номер счета должен быть в диапазоне от 100 000 000 до 999 999 999";
-            String exceptionMessage = MessageFormat.format(exceptionMessageTemplate, accountNumber);
-            throw new IllegalArgumentException(exceptionMessage);
-        }
+    public Account(long accountNumber, String holderName) throws NullPointerException, IllegalArgumentException {
+        // Проверка параметров
+        checkAccountNumber(accountNumber);
 
+        // Присвоение значений с проверкой
         setHolderName(holderName);
 
         this.accountNumber = accountNumber;
@@ -80,7 +79,6 @@ public class Account {
 
     /**
      * Возвращает номер счета.
-     *
      * @return номер счета
      */
     public long getAccountNumber() {
@@ -89,110 +87,23 @@ public class Account {
 
     /**
      * Возвращает имя владельца счета.
-     *
-     * @return имя владельца
+     * @return имя владельца счета
      */
     public String getHolderName() {
         return holderName;
     }
 
     /**
-     * Возвращает копию списка транзакций по счету.
-     *
-     * @return список транзакций
+     * Возвращает неизменяемый список транзакций по счету.
+     * @return неизменяемый список транзакций
      */
     public List<Transaction> getTransactions() {
-        return transactions;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // SETTERS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Устанавливает новое имя владельца счета.
-     *
-     * @param holderName новое имя владельца
-     */
-    public void setHolderName(String holderName) {
-        this.holderName = Objects.requireNonNull(holderName, "Имя владельца не должно быть null");
-
-        if (!holderNameIsCorrect()) {
-            String exceptionMessageTemplate = "Некорректное имя владельца \"{0}\": " +
-                    "имя владельца должно состоять из фамилии и первой буквы имени на латинице";
-            String exceptionMessage = MessageFormat.format(exceptionMessageTemplate, holderName);
-            throw new IllegalArgumentException(exceptionMessage);
-        }
-
-        formatHolderName();
+        return Collections.unmodifiableList(transactions);
     }
 
     /**
-     * Добавляет новую транзакцию в список транзакций счета.
-     *
-     * @param transaction транзакция для добавления
-     */
-    public void addTransaction(Transaction transaction) {
-        Objects.requireNonNull(transaction, "Транзакция не должна быть null");
-
-        if (transactions.contains(transaction)) {
-            String exceptionMessageTemplate = "Транзакция не уникальна \"{0}\": " +
-                    "транзакция уже есть в списке транзакций счета \"{1}\"";
-            String exceptionMessage = MessageFormat.format(exceptionMessageTemplate, transaction.getUuid(), this);
-            throw new IllegalArgumentException(exceptionMessage);
-        }
-
-        transactions.add(transaction);
-
-        // При обновлении списка транзакций требуется пересчет кэша баланса
-        balanceIsValid = false;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. CHECKS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Проверяет корректность номера счета
-     * Корректный номер счета: число >= 100 000 000 и < 1 000 000 000.
-     */
-    public boolean accountNumberIsCorrect() {
-        return accountNumber >= 100_000_000 && accountNumber < 1_000_000_000;
-    }
-
-    /**
-     * Проверяет корректность имени владельца.
-     * Корректное имя владельца: "Surname N",
-     * где Surname - имя на латинице, N - первая буква имени на латинице.
-     *
-     * @return true если имя владельца корректно
-     */
-    public boolean holderNameIsCorrect() {
-        Pattern pattern = Pattern.compile("^[A-z][A-z]+ [A-z]$");
-        Matcher matcher = pattern.matcher(holderName.strip());
-
-        return matcher.matches();
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. GETTING DATA
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Генерирует номер счета.
-     *
-     * @return сгенерированный номер счета
-     */
-    public long getGeneratedAccountNumber() {
-        Random random = new Random();
-
-        return 100_000_000 + random.nextLong(900_000_001);
-    }
-
-    /**
-     * Вычисляет текущий баланс счета на основе подтвержденных транзакций.
+     * Возвращает текущий баланс счета, вычисляя его на основе подтвержденных транзакций.
      * Использует кэширование для оптимизации.
-     *
      * @return текущий баланс счета
      */
     public double getBalance() {
@@ -218,11 +129,138 @@ public class Account {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
+    // SETTERS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Устанавливает имя владельца счета.
+     * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
+     * @throws NullPointerException если holderName равен null
+     * @throws IllegalArgumentException если holderName имеет неверный формат
+     */
+    public void setHolderName(String holderName) throws NullPointerException, IllegalArgumentException {
+        checkHolderName(holderName);
+        formatHolderName();
+    }
+
+    /**
+     * Добавляет транзакцию в список транзакций счета.
+     * @param transaction транзакция для добавления
+     * @throws NullPointerException если transaction равен null
+     * @throws IllegalArgumentException если транзакция уже существует в списке
+     */
+    public void addTransaction(Transaction transaction) {
+        // Проверка на null
+        Objects.requireNonNull(transaction, "Транзакция не должна быть null");
+
+        // Проверка на уникальность транзакции
+        if (transactions.contains(transaction)) {
+            String exceptionMessageTemplate =
+                    "Транзакция не уникальна \"{0}\": " +
+                    "транзакция уже есть в списке транзакций счета \"{1}\"";
+            String exceptionMessage = MessageFormat.format(exceptionMessageTemplate, transaction.getUuid(), this);
+            throw new IllegalArgumentException(exceptionMessage);
+        }
+
+        transactions.add(transaction);
+
+        // При обновлении списка транзакций требуется пересчет кэша баланса
+        balanceIsValid = false;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. CHECKS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Проверяет корректность номера счета.
+     * @param accountNumber номер счета для проверки
+     * @return true если номер корректен (в диапазоне 100000000-999999999)
+     */
+    public boolean accountNumberIsCorrect(long accountNumber) {
+        return accountNumber >= 100_000_000 && accountNumber < 1_000_000_000;
+    }
+
+    /**
+     * Проверяет корректность имени владельца счета.
+     * @param holderName имя для проверки
+     * @return true если имя соответствует формату (фамилия и первая буква имени на латинице)
+     */
+    public boolean holderNameIsCorrect(String holderName) {
+        Pattern pattern = Pattern.compile("^[A-z][A-z]+ [A-z]$");
+        Matcher matcher = pattern.matcher(holderName.strip());
+
+        return matcher.matches();
+    }
+
+    /**
+     * Проверяет номер счета и генерирует исключение, если он некорректен.
+     * @param accountNumber номер счета для проверки
+     * @throws IllegalArgumentException если номер счета не в диапазоне 100000000-999999999
+     */
+    private void checkAccountNumber(long accountNumber) {
+        // Проверка на формат
+        if (!accountNumberIsCorrect(accountNumber)) {
+            String exceptionMessageTemplate =
+                    "Некорректный номер счета \"{0}\": " +
+                    "Номер счета должен быть в диапазоне от 100 000 000 до 999 999 999";
+            String exceptionMessage = MessageFormat.format(exceptionMessageTemplate, accountNumber);
+            throw new IllegalArgumentException(exceptionMessage);
+        }
+    }
+
+    /**
+     * Проверяет имя владельца и генерирует исключение, если оно некорректно.
+     * @param holderName имя для проверки
+     * @throws NullPointerException если holderName равен null
+     * @throws IllegalArgumentException если имя не соответствует формату
+     */
+    private void checkHolderName(String holderName) {
+        // Проверка на null
+        Objects.requireNonNull(holderName, "Имя владельца не должно быть null");
+
+        // Проверка на формат
+        if (!holderNameIsCorrect(holderName)) {
+            String exceptionMessageTemplate =
+                    "Некорректное имя владельца \"{0}\": " +
+                    "имя владельца должно состоять из фамилии и первой буквы имени на латинице";
+            String exceptionMessage = MessageFormat.format(exceptionMessageTemplate, holderName);
+            throw new IllegalArgumentException(exceptionMessage);
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. WORKING WITH FIELDS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Генерирует случайный номер счета в диапазоне 100000000-999999999.
+     * @return сгенерированный номер счета
+     */
+    private long getGeneratedAccountNumber() {
+        return 100_000_000 + ThreadLocalRandom.current().nextLong(900_000_001);
+    }
+
+    /**
+     * Форматирует имя владельца счета: первая буква фамилии и имени в верхнем регистре,
+     * остальные буквы фамилии в нижнем регистре.
+     */
+    private void formatHolderName() {
+        String strippedLowerCaseName = holderName.strip().toLowerCase();
+        int nameLength = strippedLowerCaseName.length();
+
+        holderName = strippedLowerCaseName.substring(0, 1).toUpperCase()
+                + strippedLowerCaseName.substring(1, nameLength - 2)
+                + " "
+                + strippedLowerCaseName.substring(nameLength - 1).toUpperCase();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
     // METHODS. PRINT
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Выводит на экран информацию о балансе счета.
+     * Выводит информацию о текущем балансе счета.
      */
     public void printBalance() {
         double balance = getBalance();
@@ -231,7 +269,7 @@ public class Account {
     }
 
     /**
-     * Выводит на экран список всех транзакций по счету.
+     * Выводит в консоль список всех транзакций по счету.
      */
     public void printTransactions() {
         String message;
@@ -270,23 +308,8 @@ public class Account {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Форматирует имя владельца, приводя символы к требуемому регистру.
-     */
-    private void formatHolderName() {
-        String strippedLowerCaseName = holderName.strip().toLowerCase();
-        int nameLength = strippedLowerCaseName.length();
-
-        holderName = strippedLowerCaseName.substring(0, 1).toUpperCase()
-                + strippedLowerCaseName.substring(1, nameLength - 2)
-                + " "
-                + strippedLowerCaseName.substring(nameLength - 1).toUpperCase();
-    }
-
-    /**
-     * Форматирует строковое представление операции транзакции в зависимости от её типа.
-     * Добавляет дополнительную информацию для операций CREDIT и TRANSFER.
-     *
-     * @param transaction транзакция для форматирования
+     * Формирует строковое представление операции транзакции.
+     * @param transaction транзакция для обработки
      * @return строковое представление операции
      */
     private String transactionOperationView(Transaction transaction) {

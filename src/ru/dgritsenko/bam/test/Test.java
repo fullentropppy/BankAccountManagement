@@ -3,7 +3,6 @@ package ru.dgritsenko.bam.test;
 import ru.dgritsenko.bam.bank.Account;
 import ru.dgritsenko.bam.bank.TransactionService;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
@@ -50,11 +49,7 @@ public class Test {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Инициализирует тестовые счета:
-     * - "Магазин" (ключ "store")
-     * - "Иванов И" (ключ "ivanovI")
-     * - "Сидоров С" (ключ "sidorovS")
-     * - "Петров П" (ключ "petrovP")
+     * Инициализирует тестовые счета
      */
     private static void initializeAccounts() {
         addAccount("ivanov", "Ivanov I");
@@ -63,13 +58,7 @@ public class Test {
     }
 
     /**
-     * Выполняет тестовый набор операций:
-     * 1. Пополнение счета Иванова.
-     * 2. Оплата в магазин.
-     * 3. Перевод от Иванова Сидорову.
-     * 4. Снятие наличных Сидоровым.
-     * 5. Перевод от Сидорова Петрову.
-     * 6. Возврат средств от Петрова Иванову.
+     * Выполняет тестовый набор операций
      */
     private static void performOperations() {
         // Создание счетов
@@ -92,10 +81,6 @@ public class Test {
 
     /**
      * Выводит на экран информацию о всех счетах: список транзакций и текущий баланс для каждого счета.
-     * Формат вывода для каждого счета:
-     * - Список транзакций (если есть)
-     * - Текущий баланс
-     * - Пустая строка-разделитель
      */
     private static void printAccountsInfo() {
         for (Account account : accounts.values()) {

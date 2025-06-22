@@ -47,11 +47,8 @@ public class Account {
      * @throws IllegalArgumentException если holderName имеет неверный формат
      */
     public Account(String holderName) throws NullPointerException, IllegalArgumentException {
-        // Присвоение значений с проверкой
-        setHolderName(holderName);
-
         this.accountNumber = getGeneratedAccountNumber();
-        this.holderName = holderName;
+        this.holderName = validHolderName(holderName);
         this.transactions = new ArrayList<>();
     }
 
@@ -63,13 +60,8 @@ public class Account {
      * @throws IllegalArgumentException если accountNumber или holderName имеют неверный формат
      */
     public Account(long accountNumber, String holderName) throws NullPointerException, IllegalArgumentException {
-        // Проверка параметров
-        checkAccountNumber(accountNumber);
-
-        // Присвоение значений с проверкой
-        setHolderName(holderName);
-
-        this.accountNumber = accountNumber;
+        this.accountNumber = validAccountNumber(accountNumber);
+        this.holderName = validHolderName(holderName);
         this.transactions = new ArrayList<>();
     }
 
@@ -139,8 +131,7 @@ public class Account {
      * @throws IllegalArgumentException если holderName имеет неверный формат
      */
     public void setHolderName(String holderName) throws NullPointerException, IllegalArgumentException {
-        checkHolderName(holderName);
-        formatHolderName();
+        this.holderName = validHolderName(holderName);
     }
 
     /**
@@ -155,11 +146,12 @@ public class Account {
 
         // Проверка на уникальность транзакции
         if (transactions.contains(transaction)) {
-            String exceptionMessageTemplate =
+            String errMsg = MessageFormat.format(
                     "Транзакция не уникальна \"{0}\": " +
-                    "транзакция уже есть в списке транзакций счета \"{1}\"";
-            String exceptionMessage = MessageFormat.format(exceptionMessageTemplate, transaction.getUuid(), this);
-            throw new IllegalArgumentException(exceptionMessage);
+                    "транзакция уже есть в списке транзакций счета \"{1}\"",
+                    transaction.getUuid(), this
+            );
+            throw new IllegalArgumentException(errMsg);
         }
 
         transactions.add(transaction);
@@ -177,7 +169,7 @@ public class Account {
      * @param accountNumber номер счета для проверки
      * @return true если номер корректен (в диапазоне 100000000-999999999)
      */
-    public boolean accountNumberIsCorrect(long accountNumber) {
+    public boolean isAccountNumberCorrect(long accountNumber) {
         return accountNumber >= 100_000_000 && accountNumber < 1_000_000_000;
     }
 
@@ -186,47 +178,56 @@ public class Account {
      * @param holderName имя для проверки
      * @return true если имя соответствует формату (фамилия и первая буква имени на латинице)
      */
-    public boolean holderNameIsCorrect(String holderName) {
+    public boolean isHolderNameCorrect(String holderName) {
         Pattern pattern = Pattern.compile("^[A-z][A-z]+ [A-z]$");
         Matcher matcher = pattern.matcher(holderName.strip());
 
         return matcher.matches();
     }
-
+    
     /**
-     * Проверяет номер счета и генерирует исключение, если он некорректен.
+     * Проверяет номер счета на валидность и возвращает его, если он корректен.
      * @param accountNumber номер счета для проверки
-     * @throws IllegalArgumentException если номер счета не в диапазоне 100000000-999999999
+     * @return валидный номер счета
+     * @throws IllegalArgumentException если номер счета не соответствует формату
      */
-    private void checkAccountNumber(long accountNumber) {
+    private long validAccountNumber(long accountNumber) {
         // Проверка на формат
-        if (!accountNumberIsCorrect(accountNumber)) {
-            String exceptionMessageTemplate =
+        if (!isAccountNumberCorrect(accountNumber)) {
+            String errMsg = MessageFormat.format(
                     "Некорректный номер счета \"{0}\": " +
-                    "Номер счета должен быть в диапазоне от 100 000 000 до 999 999 999";
-            String exceptionMessage = MessageFormat.format(exceptionMessageTemplate, accountNumber);
-            throw new IllegalArgumentException(exceptionMessage);
+                            "Номер счета должен быть в диапазоне от 100 000 000 до 999 999 999",
+                    accountNumber
+            );
+            throw new IllegalArgumentException(errMsg);
         }
+
+        return accountNumber;
     }
 
     /**
-     * Проверяет имя владельца и генерирует исключение, если оно некорректно.
-     * @param holderName имя для проверки
-     * @throws NullPointerException если holderName равен null
+     * Проверяет имя владельца на валидность и возвращает отформатированное имя, если оно корректно.
+     * @param holderName имя владельца для проверки
+     * @return валидное отформатированное имя владельца
+     * @throws NullPointerException если имя равно null
      * @throws IllegalArgumentException если имя не соответствует формату
      */
-    private void checkHolderName(String holderName) {
+    private String validHolderName(String holderName) {
         // Проверка на null
         Objects.requireNonNull(holderName, "Имя владельца не должно быть null");
 
         // Проверка на формат
-        if (!holderNameIsCorrect(holderName)) {
-            String exceptionMessageTemplate =
+        if (!isHolderNameCorrect(holderName)) {
+            String errMsg = MessageFormat.format(
                     "Некорректное имя владельца \"{0}\": " +
-                    "имя владельца должно состоять из фамилии и первой буквы имени на латинице";
-            String exceptionMessage = MessageFormat.format(exceptionMessageTemplate, holderName);
-            throw new IllegalArgumentException(exceptionMessage);
+                    "имя владельца должно состоять из фамилии и первой буквы имени на латинице",
+                    holderName
+            );
+            throw new IllegalArgumentException(errMsg);
         }
+
+        // Преобразование
+        return getFormattedHolderName(holderName);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -242,14 +243,15 @@ public class Account {
     }
 
     /**
-     * Форматирует имя владельца счета: первая буква фамилии и имени в верхнем регистре,
-     * остальные буквы фамилии в нижнем регистре.
+     * Возвращает отформатированное имя владельца счета в виде "Фамилия И" (первая буква имени в верхнем регистре).
+     * @param holderName исходное имя владельца
+     * @return отформатированное имя владельца
      */
-    private void formatHolderName() {
+    private String getFormattedHolderName(String holderName) {
         String strippedLowerCaseName = holderName.strip().toLowerCase();
         int nameLength = strippedLowerCaseName.length();
 
-        holderName = strippedLowerCaseName.substring(0, 1).toUpperCase()
+        return strippedLowerCaseName.substring(0, 1).toUpperCase()
                 + strippedLowerCaseName.substring(1, nameLength - 2)
                 + " "
                 + strippedLowerCaseName.substring(nameLength - 1).toUpperCase();
@@ -264,43 +266,41 @@ public class Account {
      */
     public void printBalance() {
         double balance = getBalance();
-        String message = MessageFormat.format("Счет: {0}, баланс: {1}", this, balance);
-        System.out.println(message);
+        String msg = MessageFormat.format("Счет: {0}, баланс: {1}", this, balance);
+        System.out.println(msg);
     }
 
     /**
      * Выводит в консоль список всех транзакций по счету.
      */
     public void printTransactions() {
-        String message;
+        String msg;
 
         if (transactions.isEmpty()) {
-            message = MessageFormat.format("Счет: {0}, список транзакций пуст...", this);
+            msg = MessageFormat.format("Счет: {0}, список транзакций пуст...", this);
         } else {
-            StringBuilder messages = new StringBuilder();
+            StringBuilder transactionsView = new StringBuilder();
 
             String title = MessageFormat.format("Счет: {0}, транзакции:\n", this);
-            messages.append(title);
+            transactionsView.append(title);
 
             int i = 1;
 
-            for (Transaction transaction : transactions) {
-                String operationView = transactionOperationView(transaction);
+            for (Transaction transaction : this.transactions) {
+                String transactionView = transactionView(transaction);
 
                 String transactionInfoTemplate = (i == 1)
                         ? "\t{0} - {1}, операция: {2}, сумма {3}"
                         : "\n\t{0} - {1}, операция: {2}, сумма {3}";
                 String transactionInfo = MessageFormat.format(transactionInfoTemplate,
-                        i, transaction, operationView, transaction.getAmount()
+                        i, transaction, transactionView, transaction.getAmount()
                 );
-                messages.append(transactionInfo);
+                transactionsView.append(transactionInfo);
                 i++;
             }
-
-            message = messages.toString();
+            msg = transactionsView.toString();
         }
-
-        System.out.println(message);
+        System.out.println(msg);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -312,7 +312,7 @@ public class Account {
      * @param transaction транзакция для обработки
      * @return строковое представление операции
      */
-    private String transactionOperationView(Transaction transaction) {
+    private String transactionView(Transaction transaction) {
         String operationView = transaction.getTransactionType().getTitle();
 
         String extOperationViewTemplate = switch (transaction.getTransactionType()) {

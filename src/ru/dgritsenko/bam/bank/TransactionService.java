@@ -1,5 +1,7 @@
 package ru.dgritsenko.bam.bank;
 
+import java.util.Objects;
+
 /**
  * Класс-обработчик банковских транзакций.
  * Содержит статические методы для выполнения различных типов операций.
@@ -12,7 +14,7 @@ public class TransactionService {
     /**
      * Выполняет операцию, не требующую указания счета получателя.
      *
-     * @param transactionType тип операции (DEPOSIT или WITHDRAW)
+     * @param transactionType тип операции ({@code DEPOSIT} или {@code WITHDRAW})
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      * @return статус выполненной операции
@@ -36,7 +38,7 @@ public class TransactionService {
     /**
      * Выполняет операцию, требующую указания счета получателя.
      *
-     * @param transactionType тип операции (CREDIT или TRANSFER)
+     * @param transactionType тип операции ({@code CREDIT} или {@code TRANSFER})
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      * @param toAccount счет получателя
@@ -110,21 +112,21 @@ public class TransactionService {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Обрабатывает транзакции, увеличивающие баланс счета (пополнение, зачисление).
-     * Автоматически подтверждает транзакцию (COMMITTED) и добавляет её в историю.
+     * Обрабатывает транзакции, увеличивающие баланс счета.
+     * Автоматически подтверждает транзакцию и добавляет её в историю.
      *
      * @param fromAccount счет, на который зачисляются средства
-     * @param transactionType тип операции (DEPOSIT или CREDIT)
+     * @param transactionType тип операции ({@code DEPOSIT})
      * @param amount сумма
-     * @param toAccount счет-источник (для CREDIT) или null (для DEPOSIT)
-     * @return статус транзакции (всегда COMMITTED)
+     * @param toAccount счет-источник (для {@code CREDIT}) или {@code null} (для {@code DEPOSIT})
+     * @return статус транзакции
      */
     private static TransactionStatus processIncreasing(
             Account fromAccount,
             TransactionType transactionType,
             double amount,
-            Account toAccount) {
-
+            Account toAccount)
+    {
         Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
         transaction.setStatus(TransactionStatus.COMMITTED); // Проверки не требуются, транзакция успешна
         fromAccount.addTransaction(transaction);
@@ -133,22 +135,21 @@ public class TransactionService {
     }
 
     /**
-     * Обрабатывает транзакции, уменьшающие баланс счета (списание, перевод, снятие).
-     * Проверяет достаточность средств. Если средств недостаточно, транзакция отменяется (CANCELED).
-     * Для операций с получателем (TRANSFER) также создает встречную транзакцию.
+     * Обрабатывает транзакции, уменьшающие баланс счета.
+     * Проверяет достаточность средств. Если средств недостаточно, транзакция отменяется.
      *
      * @param fromAccount счет, с которого списываются средства
-     * @param transactionType тип операции (TRANSFER или WITHDRAW)
+     * @param transactionType тип операции ({@code TRANSFER} или {@code WITHDRAW})
      * @param amount сумма
-     * @param toAccount счет-получатель (для TRANSFER) или null (для WITHDRAW)
-     * @return статус транзакции (COMMITTED или CANCELED)
+     * @param toAccount счет-получатель (для {@code TRANSFER}) или null (для {@code WITHDRAW})
+     * @return статус транзакции
      */
     private static TransactionStatus processReducing(
             Account fromAccount,
             TransactionType transactionType,
             double amount,
-            Account toAccount) {
-
+            Account toAccount)
+    {
         TransactionStatus status;
         Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
 

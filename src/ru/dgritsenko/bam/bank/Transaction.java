@@ -46,14 +46,14 @@ public class Transaction {
      * @param amount сумма транзакции
      * @param toAccount счет получателя (может быть null)
      * @throws NullPointerException если любой из обязательных параметров равен null
-     * @throws IllegalArgumentException если amount <= 0
-     * @throws NullPointerException если для данного типа транзакции требуется toAccount, но он равен null
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
+     * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
      */
     public Transaction(
             Account fromAccount,
             TransactionType transactionType,
             double amount,
-            Account toAccount) throws NullPointerException, IllegalArgumentException
+            Account toAccount)
     {
         this(
                 UUID.randomUUID(),
@@ -62,7 +62,7 @@ public class Transaction {
                 transactionType,
                 amount,
                 toAccount,
-                TransactionStatus.COMMITTED
+                TransactionStatus.UNCOMMITTED
         );
     }
 
@@ -77,8 +77,8 @@ public class Transaction {
      * @param toAccount счет получателя (может быть null)
      * @param status статус транзакции
      * @throws NullPointerException если любой из обязательных параметров равен null
-     * @throws IllegalArgumentException если amount <= 0
-     * @throws NullPointerException если для данного типа транзакции требуется toAccount, но он равен null
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
+     * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
      */
     public Transaction(
             UUID uuid,
@@ -87,7 +87,7 @@ public class Transaction {
             TransactionType transactionType,
             double amount,
             Account toAccount,
-            TransactionStatus status) throws NullPointerException, IllegalArgumentException
+            TransactionStatus status)
     {
         // Установка значений с проверкой на null
         this.uuid = Objects.requireNonNull(uuid, "UUID не должен быть null");
@@ -162,7 +162,7 @@ public class Transaction {
     /**
      * Возвращает счет получателя средств.
      *
-     * @return счет получателя (может быть null)
+     * @return счет получателя (может быть {@code null})
      */
     public Account getToAccount() {
         return toAccount;
@@ -184,9 +184,9 @@ public class Transaction {
     /**
      * Устанавливает новый статус транзакции.
      * @param status новый статус
-     * @throws NullPointerException если status равен null
+     * @throws NullPointerException если {@code status} равен {@code null}
      */
-    public void setStatus(TransactionStatus status) throws NullPointerException {
+    public void setStatus(TransactionStatus status) {
         this.status = Objects.requireNonNull(status, "Статус не должен быть null");
     }
 
@@ -198,7 +198,7 @@ public class Transaction {
      * Проверяет сумму транзакции на валидность.
      * @param amount сумма транзакции для проверки
      * @return валидная сумма транзакции
-     * @throws IllegalArgumentException если amount <= 0
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     private double validAmount(double amount) {
         if (amount <= 0) {
@@ -217,7 +217,7 @@ public class Transaction {
      * Проверяет счет получателя на соответствие типу транзакции.
      * @param toAccount счет получателя для проверки
      * @return счет получателя, если он корректен
-     * @throws NullPointerException если для типа транзакции требуется счет получателя, но он не указан
+     * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
      */
     private Account validToAccount(Account toAccount) {
         if (transactionType.hasToAccount() && toAccount == null) {

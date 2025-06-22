@@ -43,10 +43,10 @@ public class Account {
     /**
      * Создает новый счет с автоматически сгенерированным номером.
      * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
-     * @throws NullPointerException если holderName равен null
-     * @throws IllegalArgumentException если holderName имеет неверный формат
+     * @throws NullPointerException если {@code holderName} равен {@code null}
+     * @throws IllegalArgumentException если {@code holderName} имеет неверный формат
      */
-    public Account(String holderName) throws NullPointerException, IllegalArgumentException {
+    public Account(String holderName) {
         this.accountNumber = getGeneratedAccountNumber();
         this.holderName = validHolderName(holderName);
         this.transactions = new ArrayList<>();
@@ -56,10 +56,10 @@ public class Account {
      * Создает новый счет с указанным номером.
      * @param accountNumber номер счета (должен быть в диапазоне 100000000-999999999)
      * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
-     * @throws NullPointerException если holderName равен null
-     * @throws IllegalArgumentException если accountNumber или holderName имеют неверный формат
+     * @throws NullPointerException если {@code holderName} равен {@code null}
+     * @throws IllegalArgumentException если {@code accountNumber} или {@code holderName} имеют неверный формат
      */
-    public Account(long accountNumber, String holderName) throws NullPointerException, IllegalArgumentException {
+    public Account(long accountNumber, String holderName) {
         this.accountNumber = validAccountNumber(accountNumber);
         this.holderName = validHolderName(holderName);
         this.transactions = new ArrayList<>();
@@ -127,18 +127,18 @@ public class Account {
     /**
      * Устанавливает имя владельца счета.
      * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
-     * @throws NullPointerException если holderName равен null
-     * @throws IllegalArgumentException если holderName имеет неверный формат
+     * @throws NullPointerException если {@code holderName} равен {@code null}
+     * @throws IllegalArgumentException если {@code holderName} имеет неверный формат
      */
-    public void setHolderName(String holderName) throws NullPointerException, IllegalArgumentException {
+    public void setHolderName(String holderName) {
         this.holderName = validHolderName(holderName);
     }
 
     /**
      * Добавляет транзакцию в список транзакций счета.
      * @param transaction транзакция для добавления
-     * @throws NullPointerException если transaction равен null
-     * @throws IllegalArgumentException если transaction уже существует в списке
+     * @throws NullPointerException если {@code transaction} равен {@code null}
+     * @throws IllegalArgumentException если {@code transaction} уже существует в списке
      */
     public void addTransaction(Transaction transaction) {
         // Проверка на null
@@ -167,7 +167,7 @@ public class Account {
     /**
      * Проверяет корректность номера счета.
      * @param accountNumber номер счета для проверки
-     * @return true если номер корректен (в диапазоне 100000000-999999999)
+     * @return {@code true} если номер корректен (в диапазоне 100000000-999999999)
      */
     public boolean isAccountNumberCorrect(long accountNumber) {
         return accountNumber >= 100_000_000 && accountNumber < 1_000_000_000;
@@ -176,7 +176,7 @@ public class Account {
     /**
      * Проверяет корректность имени владельца счета.
      * @param holderName имя для проверки
-     * @return true если имя соответствует формату (фамилия и первая буква имени на латинице)
+     * @return {@code true} если имя соответствует формату (фамилия и первая буква имени на латинице)
      */
     public boolean isHolderNameCorrect(String holderName) {
         boolean isCorrect;
@@ -196,7 +196,7 @@ public class Account {
      * Проверяет номер счета на валидность и возвращает его, если он корректен.
      * @param accountNumber номер счета для проверки
      * @return валидный номер счета
-     * @throws IllegalArgumentException если accountNumber не соответствует формату
+     * @throws IllegalArgumentException если {@code accountNumber} не соответствует формату
      */
     private long validAccountNumber(long accountNumber) {
         // Проверка на формат
@@ -216,8 +216,8 @@ public class Account {
      * Проверяет имя владельца на валидность и возвращает отформатированное имя, если оно корректно.
      * @param holderName имя владельца для проверки
      * @return валидное отформатированное имя владельца
-     * @throws NullPointerException если holderName равно null
-     * @throws IllegalArgumentException если holderName не соответствует формату
+     * @throws NullPointerException если {@code holderName} равно {@code null}
+     * @throws IllegalArgumentException если {@code holderName} не соответствует формату
      */
     private String validHolderName(String holderName) {
         // Проверка на null
@@ -249,7 +249,7 @@ public class Account {
     }
 
     /**
-     * Возвращает отформатированное имя владельца счета в виде "Фамилия И" (первая буква имени в верхнем регистре).
+     * Возвращает отформатированное имя владельца: первая буква имени в верхнем регистре.
      * @param holderName исходное имя владельца
      * @return отформатированное имя владельца
      */

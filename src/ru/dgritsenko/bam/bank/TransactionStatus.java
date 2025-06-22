@@ -57,7 +57,7 @@ public enum TransactionStatus {
     /**
      * Проверяет, является ли транзакция подтвержденной.
      *
-     * @return true, если транзакция подтверждена
+     * @return {@code true}, если транзакция подтверждена
      */
     public boolean isCommitted() {
         return this == COMMITTED;

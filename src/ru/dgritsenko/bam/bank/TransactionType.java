@@ -58,7 +58,7 @@ public enum TransactionType {
     /**
      * Проверяет, требует ли тип транзакции указания счета получателя.
      *
-     * @return true, если требуется счет получателя
+     * @return {@code true}, если требуется счет получателя
      */
     public boolean hasToAccount() {
         return this == TRANSFER;
@@ -67,7 +67,7 @@ public enum TransactionType {
     /**
      * Проверяет, является ли операция пополнением (увеличивает баланс).
      *
-     * @return true, если операция увеличивает баланс
+     * @return {@code true}, если операция увеличивает баланс
      */
     public boolean isAddition() {
         return this == DEPOSIT || this == CREDIT;

@@ -2,13 +2,13 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>org.example</groupId>
+  <name>BankAccountManagement</name>
+  <url>https://github.com/fullentropppy/BankAccountManagement</url>
+
+  <groupId>ru.dgritsenko</groupId>
   <artifactId>BankAccountManagement</artifactId>
   <version>1.1-SNAPSHOT</version>
   <packaging>jar</packaging>
-
-  <name>BankAccountManagement</name>
-  <url>http://maven.apache.org</url>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -16,12 +16,4 @@
     <maven.compiler.target>24</maven.compiler.target>
   </properties>
 
-  <dependencies>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>3.8.1</version>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
 </project>

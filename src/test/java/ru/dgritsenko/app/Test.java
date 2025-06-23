@@ -1,7 +1,7 @@
-package ru.dgritsenko.bam.test;
+package ru.dgritsenko.app;
 
-import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.bank.TransactionService;
+import ru.dgritsenko.bank.Account;
+import ru.dgritsenko.bank.TransactionService;
 
 import java.util.HashMap;
 import java.util.Map;

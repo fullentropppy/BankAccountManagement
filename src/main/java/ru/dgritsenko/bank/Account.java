@@ -59,14 +59,19 @@ public class Account {
      *
      * @param accountNumber номер счета (должен быть в диапазоне 100000000-999999999)
      * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
+     * @param transactions список транзакций для переноса в список транзакций объекта с проверкой
      *
      * @throws NullPointerException если {@code holderName} равен {@code null}
      * @throws IllegalArgumentException если {@code accountNumber} или {@code holderName} имеют неверный формат
      */
-    public Account(long accountNumber, String holderName) {
+    public Account(long accountNumber, String holderName, ArrayList<Transaction> transactions) {
         this.accountNumber = validAccountNumber(accountNumber);
         this.holderName = validHolderName(holderName);
         this.transactions = new ArrayList<>();
+
+        for (Transaction transaction : transactions) {
+            addTransaction(transaction);
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------

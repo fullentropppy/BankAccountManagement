@@ -3,9 +3,9 @@ package ru.dgritsenko.app;
 import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.TransactionService;
 
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
+import java.util.Map;
+import java.util.HashMap;
 
 /**
  * Тестовый класс для проверки функциональности банковского приложения.

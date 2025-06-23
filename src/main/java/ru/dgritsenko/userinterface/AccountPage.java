@@ -1,4 +1,4 @@
-package ru.dgritsenko.bam.userinterface;
+package ru.dgritsenko.userinterface;
 
 /**
  * Класс представляет страницу со списком всех банковских счетов.

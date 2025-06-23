@@ -1,7 +1,7 @@
-package ru.dgritsenko.bam.main;
+package ru.dgritsenko.app;
 
-import ru.dgritsenko.bam.bank.BankService;
-import ru.dgritsenko.bam.userinterface.ConsoleService;
+import ru.dgritsenko.bank.BankService;
+import ru.dgritsenko.userinterface.ConsoleService;
 
 /**
  * Главный класс приложения, содержащий точку входа.

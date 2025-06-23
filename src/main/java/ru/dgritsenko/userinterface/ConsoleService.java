@@ -1,7 +1,7 @@
-package ru.dgritsenko.bam.userinterface;
+package ru.dgritsenko.userinterface;
 
-import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.bank.BankService;
+import ru.dgritsenko.bank.Account;
+import ru.dgritsenko.bank.BankService;
 
 /**
  * Класс для обработки взаимодействия с пользователем через консоль.

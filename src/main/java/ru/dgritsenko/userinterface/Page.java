@@ -1,4 +1,4 @@
-package ru.dgritsenko.bam.userinterface;
+package ru.dgritsenko.userinterface;
 
 import java.io.IOException;
 import java.text.MessageFormat;

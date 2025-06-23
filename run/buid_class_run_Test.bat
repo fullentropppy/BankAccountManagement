@@ -3,12 +3,12 @@ setlocal
 
 set SRC_DIR=D:\IT\Repositories\BankAccountManagement\src
 set OUT_DIR=D:\IT\Repositories\BankAccountManagement\out\production\BankAccountManagement_BAT
-set TEST_CLASS=ru.dgritsenko.bam.test.Test
+set TEST_CLASS=test1.Test
 
 if not exist "%BIN_DIR%" mkdir "%OUT_DIR%"
 
 echo Compilation...
-javac -d "%OUT_DIR%" -sourcepath "%SRC_DIR%" "%SRC_DIR%\ru\dgritsenko\bam\test\Test.java"
+javac -d "%OUT_DIR%" -sourcepath "%SRC_DIR%" "%SRC_DIR%\ru\dgritsenko\bam\test\test1.Test.java"
 
 if errorlevel 1 (
     echo Compilation error...

@@ -3,7 +3,7 @@ setlocal
 
 set SRC_DIR=D:\IT\Repositories\BankAccountManagement\src
 set OUT_DIR=D:\IT\Repositories\BankAccountManagement\out\production\BankAccountManagement_BAT
-set MAIN_CLASS=ru.dgritsenko.bam.main.Application
+set MAIN_CLASS=main.ru.dgritsenko.ru.dgritsenko.app.Application
 set JAR_FILE=D:\IT\Repositories\BankAccountManagement\run\bam.jar
 set MANIFEST_FILE=%OUT_DIR%\MANIFEST.MF
 

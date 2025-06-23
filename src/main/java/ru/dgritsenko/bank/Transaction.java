@@ -1,4 +1,4 @@
-package ru.dgritsenko.bam.bank;
+package ru.dgritsenko.bank;
 
 import java.text.MessageFormat;
 import java.time.LocalDateTime;

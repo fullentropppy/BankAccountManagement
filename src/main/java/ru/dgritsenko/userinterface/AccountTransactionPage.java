@@ -1,6 +1,6 @@
-package ru.dgritsenko.bam.userinterface;
+package ru.dgritsenko.userinterface;
 
-import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bank.Account;
 
 import java.text.MessageFormat;
 

@@ -13,6 +13,6 @@
 
 ## Запуск:
 <p>- run\buid_class_run_Console.bat - компилирует .class-файлы и запускает приложение (класс Application);
-<p>- run\buid_class_run_Test.bat - компилирует .class-файлы и запускает выполнение тестового набора данных (класс Test);
+<p>- run\buid_class_run_Test.bat - компилирует .class-файлы и запускает выполнение тестового набора данных (класс test1.Test);
 <p>- run\buld_class_jar.bat - компилирует .class-файлы и упаковывает их в .jar-файл (основной класс Application);
 <p>- run\run_bam.bat - запускает приложение используя файл bam.jar (основной класс Application);

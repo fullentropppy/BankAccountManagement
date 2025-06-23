@@ -1,4 +1,4 @@
-package ru.dgritsenko.bam.bank;
+package ru.dgritsenko.bank;
 
 /**
  * Перечисление, представляющее возможные статусы транзакции.

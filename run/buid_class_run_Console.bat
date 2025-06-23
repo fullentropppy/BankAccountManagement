@@ -3,7 +3,7 @@ setlocal
 
 set SRC_DIR=D:\IT\Repositories\BankAccountManagement\src
 set OUT_DIR=D:\IT\Repositories\BankAccountManagement\out\production\BankAccountManagement_BAT
-set MAIN_CLASS=ru.dgritsenko.bam.main.Application
+set MAIN_CLASS=main.ru.dgritsenko.ru.dgritsenko.app.Application
 
 if not exist "%BIN_DIR%" mkdir "%OUT_DIR%"
 

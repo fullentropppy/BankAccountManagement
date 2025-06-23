@@ -37,7 +37,7 @@ public class AccountCreatingPage extends Page {
     public void show() {
         super.setHeader("Создание счета");
 
-        System.out.print("\n> Введите ФИО владельца нового счета: ");
+        System.out.print("\n> Введите на латинице фамилию и первую буку имени владельца нового счета: ");
         Scanner fromAccountHolderNameScanner = new Scanner(System.in);
         String fromAccountHolderName = fromAccountHolderNameScanner.nextLine();
 
@@ -65,6 +65,7 @@ public class AccountCreatingPage extends Page {
             };
         } catch (Exception exception) {
             super.printError(exception.getMessage(), "Нажмите Enter для возврата на страницу счетов");
+            super.consoleService.showAccountPage();
         }
     }
 }

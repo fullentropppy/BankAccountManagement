@@ -1,7 +1,10 @@
 package ru.dgritsenko.bam.bank;
 
+import java.util.Objects;
+
 /**
  * Класс-обработчик банковских транзакций.
+ * <p>
  * Содержит статические методы для выполнения различных типов операций.
  */
 public class TransactionService {
@@ -12,10 +15,14 @@ public class TransactionService {
     /**
      * Выполняет операцию, не требующую указания счета получателя.
      *
-     * @param transactionType тип операции (DEPOSIT или WITHDRAW)
+     * @param transactionType тип операции ({@code DEPOSIT} или {@code WITHDRAW})
      * @param fromAccount счет отправителя
      * @param amount сумма операции
+     *
      * @return статус выполненной операции
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     public static TransactionStatus perform(
             TransactionType transactionType,
@@ -36,11 +43,15 @@ public class TransactionService {
     /**
      * Выполняет операцию, требующую указания счета получателя.
      *
-     * @param transactionType тип операции (CREDIT, DEBIT или TRANSFER)
+     * @param transactionType тип операции ({@code CREDIT} или {@code TRANSFER})
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      * @param toAccount счет получателя
+     *
      * @return статус выполненной операции
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     public static TransactionStatus perform(
             TransactionType transactionType,
@@ -52,8 +63,6 @@ public class TransactionService {
 
         if (transactionType == TransactionType.CREDIT) {
             status = credit(fromAccount, amount, toAccount);
-        } else if (transactionType == TransactionType.DEBIT) {
-            status = debit(fromAccount, amount, toAccount);
         } else if (transactionType == TransactionType.TRANSFER) {
             status = transfer(fromAccount, amount, toAccount);
         }
@@ -66,7 +75,11 @@ public class TransactionService {
      *
      * @param fromAccount счет для пополнения
      * @param amount сумма пополнения
+     *
      * @return статус операции
+     *
+     * @throws NullPointerException если {@code fromAccount} равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     public static TransactionStatus deposit(Account fromAccount, double amount) {
         return processIncreasing(fromAccount, TransactionType.DEPOSIT, amount, null);
@@ -78,22 +91,14 @@ public class TransactionService {
      * @param fromAccount счет отправителя
      * @param amount сумма перевода
      * @param toAccount счет получателя
+     *
      * @return статус операции
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     public static TransactionStatus credit(Account fromAccount, double amount, Account toAccount) {
         return processIncreasing(fromAccount, TransactionType.CREDIT, amount, toAccount);
-    }
-
-    /**
-     * Выполняет операцию списания средств со счета.
-     *
-     * @param fromAccount счет отправителя
-     * @param amount сумма списания
-     * @param toAccount счет получателя
-     * @return статус операции
-     */
-    public static TransactionStatus debit(Account fromAccount, double amount, Account toAccount ) {
-        return processReducing(fromAccount, TransactionType.DEBIT, amount, toAccount);
     }
 
     /**
@@ -101,7 +106,11 @@ public class TransactionService {
      *
      * @param fromAccount счет для снятия
      * @param amount сумма снятия
+     *
      * @return статус операции
+     *
+     * @throws NullPointerException если {@code fromAccount} равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     public static TransactionStatus withdrawal(Account fromAccount, double amount) {
         return processReducing(fromAccount, TransactionType.WITHDRAW, amount, null);
@@ -113,7 +122,11 @@ public class TransactionService {
      * @param fromAccount счет отправителя
      * @param amount сумма перевода
      * @param toAccount счет получателя
+     *
      * @return статус операции
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     public static TransactionStatus transfer(Account fromAccount, double amount, Account toAccount) {
         return processReducing(fromAccount, TransactionType.TRANSFER, amount, toAccount);
@@ -124,21 +137,26 @@ public class TransactionService {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Обрабатывает транзакции, увеличивающие баланс счета (пополнение, зачисление).
-     * Автоматически подтверждает транзакцию (COMMITTED) и добавляет её в историю.
+     * Обрабатывает транзакции, увеличивающие баланс счета.
+     * Автоматически подтверждает транзакцию и добавляет её в историю.
      *
      * @param fromAccount счет, на который зачисляются средства
-     * @param transactionType тип операции (DEPOSIT или CREDIT)
+     * @param transactionType тип операции ({@code DEPOSIT})
      * @param amount сумма
-     * @param toAccount счет-источник (для CREDIT) или null (для DEPOSIT)
-     * @return статус транзакции (всегда COMMITTED)
+     * @param toAccount счет-источник (для {@code CREDIT}) или {@code null} (для {@code DEPOSIT})
+     *
+     * @return статус транзакции
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
+     * @throws NullPointerException если для данного типа операции требуется {@code toAccount}, но он равен {@code null}
      */
     private static TransactionStatus processIncreasing(
             Account fromAccount,
             TransactionType transactionType,
             double amount,
-            Account toAccount) {
-
+            Account toAccount)
+    {
         Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
         transaction.setStatus(TransactionStatus.COMMITTED); // Проверки не требуются, транзакция успешна
         fromAccount.addTransaction(transaction);
@@ -147,22 +165,26 @@ public class TransactionService {
     }
 
     /**
-     * Обрабатывает транзакции, уменьшающие баланс счета (списание, перевод, снятие).
-     * Проверяет достаточность средств. Если средств недостаточно, транзакция отменяется (CANCELED).
-     * Для операций с получателем (DEBIT, TRANSFER) также создает встречную транзакцию.
+     * Обрабатывает транзакции, уменьшающие баланс счета.
+     * Проверяет достаточность средств. Если средств недостаточно, транзакция отменяется.
      *
      * @param fromAccount счет, с которого списываются средства
-     * @param transactionType тип операции (DEBIT, TRANSFER или WITHDRAW)
+     * @param transactionType тип операции ({@code TRANSFER} или {@code WITHDRAW})
      * @param amount сумма
-     * @param toAccount счет-получатель (для DEBIT/TRANSFER) или null (для WITHDRAW)
-     * @return статус транзакции (COMMITTED или CANCELED)
+     * @param toAccount счет-получатель (для {@code TRANSFER}) или null (для {@code WITHDRAW})
+     *
+     * @return статус транзакции
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
+     * @throws NullPointerException если для данного типа операции требуется {@code toAccount}, но он равен {@code null}
      */
     private static TransactionStatus processReducing(
             Account fromAccount,
             TransactionType transactionType,
             double amount,
-            Account toAccount) {
-
+            Account toAccount)
+    {
         TransactionStatus status;
         Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
 

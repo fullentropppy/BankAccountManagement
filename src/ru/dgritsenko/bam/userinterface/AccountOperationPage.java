@@ -38,30 +38,28 @@ public class AccountOperationPage extends Page {
      */
     @Override
     public void show() {
-        printNewAccountOperationPage();
+        printNewPageHeader();
 
         String menu = """
                 \n\t1. Пополнить
-                \t2. Оплатить
-                \t3. Перевести
-                \t4. Снять наличные
+                \t2. Перевести
+                \t3. Снять наличные
                 
-                \t5. Транзакции счета
-                \t6. Список счетов
-                \t7. Меню счетов
-                \t8. Главное меню""";
+                \t4. Транзакции счета
+                \t5. Список счетов
+                \t6. Меню счетов
+                \t7. Главное меню""";
         super.setMenu(menu);
 
         int option = super.getOptionFromMenu("Введите номер пункта");
 
         switch (option) {
             case 1 -> processOperationWithOnlyFromAccount(TransactionType.DEPOSIT);
-            case 2 -> processOperationWithToAccount(TransactionType.DEBIT);
-            case 3 -> processOperationWithToAccount(TransactionType.TRANSFER);
-            case 4 -> processOperationWithOnlyFromAccount(TransactionType.WITHDRAW);
-            case 5 -> super.consoleService.showAccountTransactionPage();
-            case 6 -> super.consoleService.showAccountListPage();
-            case 7 -> super.consoleService.showAccountPage();
+            case 2 -> processOperationWithToAccount(TransactionType.TRANSFER);
+            case 3 -> processOperationWithOnlyFromAccount(TransactionType.WITHDRAW);
+            case 4 -> super.consoleService.showAccountTransactionPage();
+            case 5 -> super.consoleService.showAccountListPage();
+            case 6 -> super.consoleService.showAccountPage();
             default -> super.consoleService.showMainPage();
         };
     }
@@ -71,30 +69,19 @@ public class AccountOperationPage extends Page {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Обрабатывает операции, требующие только счет-источник (пополнение, снятие).
+     * Обрабатывает операции, требующие только счет-источник.
      *
-     * @param transactionType тип операции (DEPOSIT или WITHDRAW)
+     * @param transactionType тип операции ({@code DEPOSIT} или {@code WITHDRAW})
      */
     private void processOperationWithOnlyFromAccount(TransactionType transactionType) {
-        String inputTitle = "";
-        String resultTitleTemplate = "";
-
-        if (transactionType == TransactionType.DEPOSIT) {
-            inputTitle = "Введите сумму пополнения";
-            resultTitleTemplate = "\nСтатус транзакции пополнения: {0}";
-        } else if (transactionType == TransactionType.WITHDRAW){
-            inputTitle = "Введите сумму снимаемых наличных";
-            resultTitleTemplate = "\nСтатус транзакции снятия наличных: {0}";
-        }
-
-        printNewAccountOperationPage();
+        printNewPageHeader();
+        printOperationHeader(transactionType);
 
         Account currentFromAccount = super.consoleService.getCurrentFromAccount();
-
-        double amount = super.getAmount(inputTitle);
+        double amount = super.getAmount("Введите сумму операции");
         TransactionStatus result = bankService.performTransaction(transactionType, currentFromAccount, amount);
 
-        String resultMessage = MessageFormat.format(resultTitleTemplate, result);
+        String resultMessage = MessageFormat.format("\nСтатус транзакции: {0}", result);
         System.out.println(resultMessage);
 
         super.waitForInputToContinue("Нажмите Enter для продолжения");
@@ -102,15 +89,16 @@ public class AccountOperationPage extends Page {
     }
 
     /**
-     * Обрабатывает операции, требующие указания счета-получателя (оплата, перевод).
+     * Обрабатывает операции, требующие указания счета-получателя.
      *
-     * @param transactionType тип операции (DEBIT или TRANSFER)
+     * @param transactionType тип операции ({@code TRANSFER})
      */
     private void processOperationWithToAccount(TransactionType transactionType) {
-        printNewAccountOperationPage();
+        printNewPageHeader();
+        printOperationHeader(transactionType);
 
         List<Account> availableAccounts = new ArrayList<>();
-        StringBuilder toAccountMenu = new StringBuilder();
+        StringBuilder toAccountOptions = new StringBuilder();
 
         Account currentFromAccount = super.consoleService.getCurrentFromAccount();
 
@@ -120,47 +108,34 @@ public class AccountOperationPage extends Page {
             if (!(currentFromAccount == toAccount)) {
                 availableAccounts.add(toAccount);
                 String accountOption = MessageFormat.format("\n\t{0}. {1}", i, toAccount);
-                toAccountMenu.append(accountOption);
+                toAccountOptions.append(accountOption);
                 i++;
             }
         }
 
-        if (toAccountMenu.isEmpty()) {
-            String missingMessage = "\n\tСписок получателей пуст...";
-            System.out.println(missingMessage);
+        if (toAccountOptions.isEmpty()) {
+            String missingMsg = "\n\tСписок получателей пуст...";
+            System.out.println(missingMsg);
 
             super.waitForInputToContinue("Нажмите Enter для продолжения");
         } else {
-            String inputOptionTittle = "";
-            String inputAmountTittle = "";
-            String resultTitleTemplate = "";
-
-            if (transactionType == TransactionType.DEBIT) {
-                inputOptionTittle = "Введите номер получателя оплаты";
-                inputAmountTittle = "Введите сумму оплаты";
-                resultTitleTemplate = "\nСтатус транзакции оплаты: {0}";
-            } else if (transactionType == TransactionType.TRANSFER) {
-                inputOptionTittle = "Введите номер получателя перевода";
-                inputAmountTittle = "Введите сумму перевода";
-                resultTitleTemplate = "\nСтатус транзакции перевода: {0}";
-            }
-
             String cancellationOption = MessageFormat.format("\n\n\t{0}. Отмена", i);
-            toAccountMenu.append(cancellationOption);
+            toAccountOptions.append(cancellationOption);
 
-            String pageMenu = toAccountMenu.toString();
-            System.out.println(pageMenu);
+            String pageMenu = toAccountOptions.toString();
+            super.setMenu(pageMenu);
 
-            int option = super.getOptionFromMenu(inputOptionTittle);
+            int option = super.getOptionFromMenu("Введите номер получателя");
 
-            if (option < bankService.getAccounts().size()) {
+            if (option < bankService.getNumberOfAccounts()) {
                 Account toAccount = availableAccounts.get(option - 1);
-                double amount = getAmount(inputAmountTittle);
+                double amount = getAmount("Введите сумму операции");
 
                 TransactionStatus result = bankService.performTransaction(
-                        transactionType, currentFromAccount, amount, toAccount);
+                        transactionType, currentFromAccount, amount, toAccount
+                );
 
-                String resultMessage = MessageFormat.format(resultTitleTemplate, result);
+                String resultMessage = MessageFormat.format("\nСтатус транзакции: {0}", result);
                 System.out.println(resultMessage);
 
                 super.waitForInputToContinue("Нажмите Enter для продолжения");
@@ -180,12 +155,19 @@ public class AccountOperationPage extends Page {
      * - Информацию о текущем счете
      * - Текущий баланс счета
      */
-    protected void printNewAccountOperationPage() {
+    private void printNewPageHeader() {
         Account currentFromAccount = super.consoleService.getCurrentFromAccount();
 
         String title = MessageFormat.format(
                 "Операции со счетом: {0}, баланс: {1}",
-                currentFromAccount, currentFromAccount.getBalance());
-        super.setTitle(title);
+                currentFromAccount, currentFromAccount.getBalance()
+        );
+        super.setHeader(title);
     }
+
+    private void printOperationHeader(TransactionType transactionType) {
+        String operationHeader = MessageFormat.format("\n\tВыполняемая операция: {0}", transactionType);
+        System.out.println(operationHeader);
+    }
+
 }

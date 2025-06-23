@@ -27,7 +27,7 @@ public class MainPage extends Page {
      */
     @Override
     public void show() {
-        super.setTitle("Главное меню");
+        super.setHeader("Главное меню");
         String menu = """
                 \n\t1. Счета
                 \t2. Транзакции

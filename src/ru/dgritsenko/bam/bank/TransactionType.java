@@ -6,7 +6,6 @@ package ru.dgritsenko.bam.bank;
 public enum TransactionType {
     DEPOSIT("Пополнение"),
     CREDIT("Поступление"),
-    DEBIT("Списание"),
     WITHDRAW("Снятие наличных"),
     TRANSFER("Перевод");
 
@@ -59,16 +58,16 @@ public enum TransactionType {
     /**
      * Проверяет, требует ли тип транзакции указания счета получателя.
      *
-     * @return true, если требуется счет получателя
+     * @return {@code true}, если требуется счет получателя
      */
     public boolean hasToAccount() {
-        return this == DEBIT || this == TRANSFER;
+        return this == TRANSFER;
     }
 
     /**
      * Проверяет, является ли операция пополнением (увеличивает баланс).
      *
-     * @return true, если операция увеличивает баланс
+     * @return {@code true}, если операция увеличивает баланс
      */
     public boolean isAddition() {
         return this == DEPOSIT || this == CREDIT;

@@ -32,9 +32,9 @@ public class TransactionPage extends Page {
      */
     @Override
     public void show() {
-        super.setTitle("Транзакции");
+        super.setHeader("Транзакции");
 
-        if (bankService.getAccounts().isEmpty()) {
+        if (bankService.getNumberOfAccounts() == 0) {
             String message = "\n\tСписок транзакций пуст...";
             System.out.println(message);
         } else {
@@ -47,7 +47,6 @@ public class TransactionPage extends Page {
         }
 
         super.waitForInputToContinue("Нажмите Enter для возврата в главное меню");
-
         super.consoleService.showMainPage();
     }
 }

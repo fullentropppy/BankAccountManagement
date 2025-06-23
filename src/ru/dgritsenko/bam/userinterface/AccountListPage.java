@@ -34,7 +34,7 @@ public class AccountListPage extends Page {
      */
     @Override
     public void show() {
-        super.setTitle("Список счетов");
+        super.setHeader("Список счетов");
 
         StringBuilder pageMenuOptions = new StringBuilder();
 
@@ -47,8 +47,8 @@ public class AccountListPage extends Page {
         }
 
         if (pageMenuOptions.isEmpty()) {
-            String missingMessage = "\n\tСписок счетов пуст...";
-            System.out.println(missingMessage);
+            String missingMsg = "\n\tСписок счетов пуст...";
+            System.out.println(missingMsg);
 
             super.waitForInputToContinue("Нажмите Enter для возврата в меню счетов");
             super.consoleService.showAccountPage();
@@ -56,14 +56,14 @@ public class AccountListPage extends Page {
             String goToMainMenuOption = MessageFormat.format("\n\n\t{0}. Главное меню", i);
             pageMenuOptions.append(goToMainMenuOption);
 
-            String pageMenu = pageMenuOptions.toString();
-            super.setMenu(pageMenu);
+            String menu = pageMenuOptions.toString();
+            super.setMenu(menu);
 
-            int option = super.getOptionFromMenu("Введите номер пункта");
-            int optionsAmount = bankService.getAccounts().size() + 1;
+            int option = super.getOptionFromMenu("Введите номер счета");
+            int optionsAmount = bankService.getNumberOfAccounts() + 1;
 
             if (option < optionsAmount) {
-                Account currentFromAccount = bankService.getAccounts().get(option - 1);
+                Account currentFromAccount = bankService.getAccount(option - 1);
                 super.consoleService.setCurrentFromAccount(currentFromAccount);
                 super.consoleService.showAccountOperationPage();
             } else if (option == optionsAmount) {

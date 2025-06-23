@@ -10,11 +10,11 @@ import java.util.regex.Pattern;
 
 /**
  * Абстрактный класс, представляющий базовую страницу интерфейса.
+ *  <p>
  * Содержит общие методы для работы с консольным вводом/выводом.
  */
 public abstract class Page {
     protected final ConsoleService consoleService;
-
     private final List<Integer> validOptions = new ArrayList<>();
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -40,11 +40,11 @@ public abstract class Page {
     public abstract void show();
 
     /**
-     * Очищает консоль и устанавливает заголовок страницы.
+     * Очищает консоль и устанавливает шапку страницы.
      *
      * @param title заголовок страницы
      */
-    protected void setTitle(String title) {
+    protected void setHeader(String title) {
         clearText();
         printNewPageHeader(title);
     }
@@ -69,6 +69,32 @@ public abstract class Page {
         }
     }
 
+    /**
+     * Выводит форматированную ошибку.
+     *
+     * @param error текст ошибки
+     */
+    protected void printError(String error) {
+        printError(error, null);
+    }
+
+    /**
+     * Выводит форматированную ошибку
+     * и при необходимости приостанавливает выполнение программы до нажатия Enter пользователем.
+     *
+     * @param error текст ошибки
+     * @param waitingTitle сообщение, отображаемое при приостановлении выполнения,
+     *                     если {@code null}, то приостановления выполнения не будет.
+     */
+    protected void printError(String error, String waitingTitle) {
+        String errorMsg = MessageFormat.format("\n! Ошибка: {0}", error);
+        System.out.println(errorMsg);
+
+        if (waitingTitle != null && !waitingTitle.isBlank()) {
+            waitForInputToContinue(waitingTitle);
+        }
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
     // METHODS. INPUT
     // -----------------------------------------------------------------------------------------------------------------
@@ -76,17 +102,18 @@ public abstract class Page {
     /**
      * Запрашивает у пользователя ввод суммы (положительное число) через консоль.
      *
-     * @param actionTitle подсказка для ввода (например, "Введите сумму")
-     * @return введенная пользователем сумма (больше 0)
+     * @param actionTitle подсказка для ввода
+     *
+     * @return введенная пользователем сумма
      */
     protected double getAmount(String actionTitle) {
         double amount = 0;
 
-        String actionMessage = MessageFormat.format("\n> {0}: ", actionTitle);
+        String actionMsg = MessageFormat.format("\n> {0}: ", actionTitle);
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.print(actionMessage);
+            System.out.print(actionMsg);
 
             boolean hasNextDouble = scanner.hasNextDouble();
 
@@ -95,8 +122,7 @@ public abstract class Page {
             }
 
             if (amount <= 0) {
-                String errorMessage = "\n! Ошибка: введите корректную сумму (число > 0)";
-                System.out.println(errorMessage);
+                System.out.println("\n! Ошибка: введите корректную сумму (число > 0)");
 
                 if (!hasNextDouble) {
                     scanner.next();
@@ -112,17 +138,18 @@ public abstract class Page {
     /**
      * Запрашивает у пользователя выбор пункта меню и проверяет его корректность.
      *
-     * @param actionTitle подсказка для ввода (например, "Введите номер пункта")
+     * @param actionTitle подсказка для ввода
+     *
      * @return выбранный пользователем пункт меню
      */
     protected int getOptionFromMenu(String actionTitle) {
         int option = -1;
 
-        String actionMessage = MessageFormat.format("\n> {0}: ", actionTitle);
+        String actionMsg = MessageFormat.format("\n> {0}: ", actionTitle);
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
-            System.out.print(actionMessage);
+            System.out.print(actionMsg);
 
             boolean hasNextInt = scanner.hasNextInt();
 
@@ -131,10 +158,11 @@ public abstract class Page {
             }
 
             if (!validOptions.contains(option)) {
-                String errorMessage = MessageFormat.format(
-                        "\n! Ошибка: введите корректный номер опции (с {0} по {1})",
-                        validOptions.getFirst(), validOptions.getLast());
-                System.out.println(errorMessage);
+                String error = MessageFormat.format(
+                        "Введите корректный номер (с {0} по {1})",
+                        validOptions.getFirst(), validOptions.getLast()
+                );
+                printError(error);
 
                 if (!hasNextInt) {
                     scanner.next();
@@ -153,8 +181,8 @@ public abstract class Page {
      * @param actionTitle сообщение, отображаемое перед ожиданием ввода
      */
     protected void waitForInputToContinue(String actionTitle) {
-        String pageActionMessage = MessageFormat.format("\n> {0}...", actionTitle);
-        System.out.print(pageActionMessage);
+        String actionMsg = MessageFormat.format("\n> {0}...", actionTitle);
+        System.out.print(actionMsg);
 
         Scanner scanner = new Scanner(System.in);
         scanner.nextLine();

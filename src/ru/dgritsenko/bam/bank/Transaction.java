@@ -3,10 +3,12 @@ package ru.dgritsenko.bam.bank;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Objects;
 import java.util.UUID;
 
 /**
  * Класс, представляющий банковскую транзакцию.
+ * <p>
  * Содержит информацию о типе, сумме, участниках, статусе и дате транзакции.
  */
 public class Transaction {
@@ -24,15 +26,14 @@ public class Transaction {
 
     /**
      * Возвращает строковое представление транзакции в формате:
+     *
      * "UUID от Дата (Статус)".
      *
      * @return строковое представление транзакции
      */
     @Override
     public String toString() {
-        return MessageFormat.format(
-                "{0} от {1} ({2})",
-                uuid, getDateFormatted(), status);
+        return MessageFormat.format("{0} от {1} ({2})", uuid, getDateFormatted(), status);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -46,6 +47,10 @@ public class Transaction {
      * @param transactionType тип транзакции
      * @param amount сумма транзакции
      * @param toAccount счет получателя (может быть null)
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
+     * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
      */
     public Transaction(
             Account fromAccount,
@@ -53,13 +58,15 @@ public class Transaction {
             double amount,
             Account toAccount)
     {
-        this.uuid = UUID.randomUUID();
-        this.date = LocalDateTime.now();
-        this.fromAccount = fromAccount;
-        this.transactionType = transactionType;
-        this.amount = amount;
-        this.toAccount = toAccount;
-        this.status = TransactionStatus.UNCOMMITTED;
+        this(
+                UUID.randomUUID(),
+                LocalDateTime.now(),
+                fromAccount,
+                transactionType,
+                amount,
+                toAccount,
+                TransactionStatus.UNCOMMITTED
+        );
     }
 
     /**
@@ -72,6 +79,10 @@ public class Transaction {
      * @param amount сумма транзакции
      * @param toAccount счет получателя (может быть null)
      * @param status статус транзакции
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
+     * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
      */
     public Transaction(
             UUID uuid,
@@ -82,13 +93,16 @@ public class Transaction {
             Account toAccount,
             TransactionStatus status)
     {
-        this.uuid = uuid;
-        this.date = date;
-        this.fromAccount = fromAccount;
-        this.transactionType = transactionType;
-        this.amount = amount;
-        this.toAccount = toAccount;
-        this.status = status;
+        // Установка значений с проверкой на null
+        this.uuid = Objects.requireNonNull(uuid, "UUID не должен быть null");
+        this.date = Objects.requireNonNull(date, "Дата не должна быть null");
+        this.fromAccount = Objects.requireNonNull(fromAccount, "Счет не должен быть null");
+        this.transactionType = Objects.requireNonNull(transactionType, "Тип транзакции не должен быть null");
+        this.status = Objects.requireNonNull(status, "Статус не должен быть null");
+
+        // Установка значений с расширенной проверкой
+        this.amount = validAmount(amount);
+        this.toAccount = validToAccount(toAccount);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -152,7 +166,7 @@ public class Transaction {
     /**
      * Возвращает счет получателя средств.
      *
-     * @return счет получателя (может быть null)
+     * @return счет получателя (может быть {@code null})
      */
     public Account getToAccount() {
         return toAccount;
@@ -175,8 +189,57 @@ public class Transaction {
      * Устанавливает новый статус транзакции.
      *
      * @param status новый статус
+     *
+     * @throws NullPointerException если {@code status} равен {@code null}
      */
     public void setStatus(TransactionStatus status) {
-        this.status = status;
+        this.status = Objects.requireNonNull(status, "Статус не должен быть null");
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. CHECKS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Проверяет сумму транзакции на валидность.
+     *
+     * @param amount сумма транзакции для проверки
+     *
+     * @return валидная сумма транзакции
+     *
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
+     */
+    private double validAmount(double amount) {
+        if (amount <= 0) {
+            String errMsg = MessageFormat.format(
+                    "Некорректная сумма транзакции \"{0}\": " +
+                    "сумма транзакции должна быть больше нуля",
+                    amount
+            );
+            throw new IllegalArgumentException(errMsg);
+        }
+
+        return amount;
+    }
+
+    /**
+     * Проверяет счет получателя на соответствие типу транзакции.
+     *
+     * @param toAccount счет получателя для проверки
+     *
+     * @return счет получателя, если он корректен
+     *
+     * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
+     */
+    private Account validToAccount(Account toAccount) {
+        if (transactionType.hasToAccount() && toAccount == null) {
+            String errMsg = MessageFormat.format(
+                    "Счет получателя не должен быть null при типе транзакции \"{0}\"",
+                    transactionType
+            );
+            throw new NullPointerException(errMsg);
+        }
+
+        return toAccount;
     }
 }

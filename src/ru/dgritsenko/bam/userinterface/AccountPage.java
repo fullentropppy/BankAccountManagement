@@ -27,7 +27,7 @@ public class AccountPage extends Page {
      */
     @Override
     public void show() {
-        super.setTitle("Меню счетов");
+        super.setHeader("Меню счетов");
         String menu = """
                 \n\t1. Создать
                 \t2. Список

@@ -35,35 +35,37 @@ public class AccountCreatingPage extends Page {
      */
     @Override
     public void show() {
-        super.setTitle("Создание счета");
+        super.setHeader("Создание счета");
 
-        String actionMessage = "\n> Введите ФИО владельца нового счета: ";
-        System.out.print(actionMessage);
-
+        System.out.print("\n> Введите на латинице фамилию и первую буку имени владельца нового счета: ");
         Scanner fromAccountHolderNameScanner = new Scanner(System.in);
         String fromAccountHolderName = fromAccountHolderNameScanner.nextLine();
 
-        Account account = bankService.createAccount(fromAccountHolderName);
-        super.consoleService.setCurrentFromAccount(account);
+        try {
+            Account account = bankService.createAccount(fromAccountHolderName);
+            super.consoleService.setCurrentFromAccount(account);
 
-        String menu = MessageFormat.format("""
-                
-                \tСоздан новый счет: {0}
+            String menu = MessageFormat.format("""
+                \n\tСоздан новый счет: {0}
                 
                 \t1. Создать еще
                 \t2. Операции
                 \t3. Список счетов
                 \t4. Главное меню""",
-                account);
-        super.setMenu(menu);
+                    account);
+            super.setMenu(menu);
 
-        int option = super.getOptionFromMenu("Введите номер пункта");
+            int option = super.getOptionFromMenu("Введите номер пункта");
 
-        switch (option) {
-            case 1 -> super.consoleService.showAccountCreatingPage();
-            case 2 -> super.consoleService.showAccountOperationPage();
-            case 3 -> super.consoleService.showAccountListPage();
-            default -> super.consoleService.showMainPage();
-        };
+            switch (option) {
+                case 1 -> super.consoleService.showAccountCreatingPage();
+                case 2 -> super.consoleService.showAccountOperationPage();
+                case 3 -> super.consoleService.showAccountListPage();
+                default -> super.consoleService.showMainPage();
+            };
+        } catch (Exception exception) {
+            super.printError(exception.getMessage(), "Нажмите Enter для возврата на страницу счетов");
+            super.consoleService.showAccountPage();
+        }
     }
 }

@@ -3,13 +3,13 @@ package ru.dgritsenko.bam.test;
 import ru.dgritsenko.bam.bank.Account;
 import ru.dgritsenko.bam.bank.TransactionService;
 
-import java.text.MessageFormat;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
 /**
  * Тестовый класс для проверки функциональности банковского приложения.
+ * <p>
  * Содержит предопределенный набор операций для демонстрации работы системы.
  */
 public class Test {
@@ -21,6 +21,8 @@ public class Test {
      * @param args аргументы командной строки
      */
     public static void main(String[] args) {
+        System.out.println();
+
         processPredefinedSet();
 
         String pageActionMessage = "> Нажмите Enter чтобы завершить работу...";
@@ -48,38 +50,25 @@ public class Test {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Инициализирует тестовые счета:
-     * - "Магазин" (ключ "store")
-     * - "Иванов И" (ключ "ivanovI")
-     * - "Сидоров С" (ключ "sidorovS")
-     * - "Петров П" (ключ "petrovP")
+     * Инициализирует тестовые счета
      */
     private static void initializeAccounts() {
-        addAccount("store", "Магазин");
-        addAccount("ivanov", "Иванов И");
-        addAccount("sidorov", "Сидоров С");
-        addAccount("petrov", "Петров П");
+        addAccount("ivanov", "Ivanov I");
+        addAccount("sidorov", "Sidorov S");
+        addAccount("petrov", "Petrov P");
     }
 
     /**
-     * Выполняет тестовый набор операций:
-     * 1. Пополнение счета Иванова.
-     * 2. Оплата в магазин.
-     * 3. Перевод от Иванова Сидорову.
-     * 4. Снятие наличных Сидоровым.
-     * 5. Перевод от Сидорова Петрову.
-     * 6. Возврат средств от Петрова Иванову.
+     * Выполняет тестовый набор операций
      */
     private static void performOperations() {
         // Создание счетов
-        Account store = accounts.get("store");
         Account ivanov = accounts.get("ivanov");
         Account sidorov = accounts.get("sidorov");
         Account petrov = accounts.get("petrov");
 
         // Выполнение операций через обработчик
         TransactionService.deposit(ivanov, 50000);
-        TransactionService.debit(ivanov, 599.25, store);
         TransactionService.transfer(ivanov, 10000, sidorov);
 
         TransactionService.withdrawal(sidorov, 1000);
@@ -93,10 +82,6 @@ public class Test {
 
     /**
      * Выводит на экран информацию о всех счетах: список транзакций и текущий баланс для каждого счета.
-     * Формат вывода для каждого счета:
-     * - Список транзакций (если есть)
-     * - Текущий баланс
-     * - Пустая строка-разделитель
      */
     private static void printAccountsInfo() {
         for (Account account : accounts.values()) {

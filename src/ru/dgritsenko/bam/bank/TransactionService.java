@@ -1,7 +1,5 @@
 package ru.dgritsenko.bam.bank;
 
-import java.util.Objects;
-
 /**
  * Класс-обработчик банковских транзакций.
  * <p>

@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 
 /**
  * Класс, представляющий банковский счет.
+ * <p>
  * Содержит информацию о владельце счета, номере счета, списке транзакций и балансе.
- * Поддерживает операции по работе с балансом и транзакциями.
  */
 public class Account {
     private final long accountNumber;
@@ -42,7 +42,9 @@ public class Account {
 
     /**
      * Создает новый счет с автоматически сгенерированным номером.
+     *
      * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
+     *
      * @throws NullPointerException если {@code holderName} равен {@code null}
      * @throws IllegalArgumentException если {@code holderName} имеет неверный формат
      */
@@ -54,8 +56,10 @@ public class Account {
 
     /**
      * Создает новый счет с указанным номером.
+     *
      * @param accountNumber номер счета (должен быть в диапазоне 100000000-999999999)
      * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
+     *
      * @throws NullPointerException если {@code holderName} равен {@code null}
      * @throws IllegalArgumentException если {@code accountNumber} или {@code holderName} имеют неверный формат
      */
@@ -71,6 +75,7 @@ public class Account {
 
     /**
      * Возвращает номер счета.
+     *
      * @return номер счета
      */
     public long getAccountNumber() {
@@ -79,6 +84,7 @@ public class Account {
 
     /**
      * Возвращает имя владельца счета.
+     *
      * @return имя владельца счета
      */
     public String getHolderName() {
@@ -87,6 +93,7 @@ public class Account {
 
     /**
      * Возвращает неизменяемый список транзакций по счету.
+     *
      * @return неизменяемый список транзакций
      */
     public List<Transaction> getTransactions() {
@@ -95,7 +102,9 @@ public class Account {
 
     /**
      * Возвращает текущий баланс счета, вычисляя его на основе подтвержденных транзакций.
+     * <p>
      * Использует кэширование для оптимизации.
+     *
      * @return текущий баланс счета
      */
     public double getBalance() {
@@ -126,7 +135,9 @@ public class Account {
 
     /**
      * Устанавливает имя владельца счета.
+     *
      * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
+     *
      * @throws NullPointerException если {@code holderName} равен {@code null}
      * @throws IllegalArgumentException если {@code holderName} имеет неверный формат
      */
@@ -136,7 +147,9 @@ public class Account {
 
     /**
      * Добавляет транзакцию в список транзакций счета.
+     *
      * @param transaction транзакция для добавления
+     *
      * @throws NullPointerException если {@code transaction} равен {@code null}
      * @throws IllegalArgumentException если {@code transaction} уже существует в списке
      */
@@ -166,7 +179,9 @@ public class Account {
 
     /**
      * Проверяет корректность номера счета.
+     *
      * @param accountNumber номер счета для проверки
+     *
      * @return {@code true} если номер корректен (в диапазоне 100000000-999999999)
      */
     public boolean isAccountNumberCorrect(long accountNumber) {
@@ -175,7 +190,9 @@ public class Account {
 
     /**
      * Проверяет корректность имени владельца счета.
+     *
      * @param holderName имя для проверки
+     *
      * @return {@code true} если имя соответствует формату (фамилия и первая буква имени на латинице)
      */
     public boolean isHolderNameCorrect(String holderName) {
@@ -194,8 +211,11 @@ public class Account {
     
     /**
      * Проверяет номер счета на валидность и возвращает его, если он корректен.
+     *
      * @param accountNumber номер счета для проверки
+     *
      * @return валидный номер счета
+     *
      * @throws IllegalArgumentException если {@code accountNumber} не соответствует формату
      */
     private long validAccountNumber(long accountNumber) {
@@ -214,9 +234,13 @@ public class Account {
 
     /**
      * Проверяет имя владельца на валидность и возвращает отформатированное имя, если оно корректно.
+     *
      * @param holderName имя владельца для проверки
+     *
      * @return валидное отформатированное имя владельца
+     *
      * @throws NullPointerException если {@code holderName} равно {@code null}
+     *
      * @throws IllegalArgumentException если {@code holderName} не соответствует формату
      */
     private String validHolderName(String holderName) {
@@ -242,6 +266,7 @@ public class Account {
 
     /**
      * Генерирует случайный номер счета в диапазоне 100000000-999999999.
+     *
      * @return сгенерированный номер счета
      */
     private long getGeneratedAccountNumber() {
@@ -249,8 +274,11 @@ public class Account {
     }
 
     /**
-     * Возвращает отформатированное имя владельца: первая буква имени в верхнем регистре.
+     * Возвращает отформатированное имя владельца:
+     * первая буква фамилии и имени в верхнем регистре, остальные в нижнем.
+     *
      * @param holderName исходное имя владельца
+     *
      * @return отформатированное имя владельца
      */
     private String getFormattedHolderName(String holderName) {
@@ -277,7 +305,7 @@ public class Account {
     }
 
     /**
-     * Выводит в консоль список всех транзакций по счету.
+     * Выводит список всех транзакций по счету.
      */
     public void printTransactions() {
         String msg;
@@ -315,7 +343,9 @@ public class Account {
 
     /**
      * Формирует строковое представление операции транзакции.
+     *
      * @param transaction транзакция для обработки
+     *
      * @return строковое представление операции
      */
     private String transactionView(Transaction transaction) {

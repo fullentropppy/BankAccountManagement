@@ -39,7 +39,6 @@ public class AccountTransactionPage extends Page {
         currentFromAccount.printTransactions();
 
         super.waitForInputToContinue("Нажмите Enter для возврата в меню операций со счетом");
-
         super.consoleService.showAccountOperationPage();
     }
 }

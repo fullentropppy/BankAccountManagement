@@ -5,6 +5,7 @@ import ru.dgritsenko.bam.bank.BankService;
 
 /**
  * Класс для обработки взаимодействия с пользователем через консоль.
+ * <p>
  * Реализует пользовательский интерфейс банковского приложения.
  */
 public class ConsoleService {

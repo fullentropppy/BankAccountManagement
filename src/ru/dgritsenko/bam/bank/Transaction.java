@@ -8,6 +8,7 @@ import java.util.UUID;
 
 /**
  * Класс, представляющий банковскую транзакцию.
+ * <p>
  * Содержит информацию о типе, сумме, участниках, статусе и дате транзакции.
  */
 public class Transaction {
@@ -25,6 +26,7 @@ public class Transaction {
 
     /**
      * Возвращает строковое представление транзакции в формате:
+     *
      * "UUID от Дата (Статус)".
      *
      * @return строковое представление транзакции
@@ -45,7 +47,8 @@ public class Transaction {
      * @param transactionType тип транзакции
      * @param amount сумма транзакции
      * @param toAccount счет получателя (может быть null)
-     * @throws NullPointerException если любой из обязательных параметров равен null
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
      * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
      */
@@ -76,7 +79,8 @@ public class Transaction {
      * @param amount сумма транзакции
      * @param toAccount счет получателя (может быть null)
      * @param status статус транзакции
-     * @throws NullPointerException если любой из обязательных параметров равен null
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
      * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
      */
@@ -183,7 +187,9 @@ public class Transaction {
 
     /**
      * Устанавливает новый статус транзакции.
+     *
      * @param status новый статус
+     *
      * @throws NullPointerException если {@code status} равен {@code null}
      */
     public void setStatus(TransactionStatus status) {
@@ -196,8 +202,11 @@ public class Transaction {
 
     /**
      * Проверяет сумму транзакции на валидность.
+     *
      * @param amount сумма транзакции для проверки
+     *
      * @return валидная сумма транзакции
+     *
      * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     private double validAmount(double amount) {
@@ -215,8 +224,11 @@ public class Transaction {
 
     /**
      * Проверяет счет получателя на соответствие типу транзакции.
+     *
      * @param toAccount счет получателя для проверки
+     *
      * @return счет получателя, если он корректен
+     *
      * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
      */
     private Account validToAccount(Account toAccount) {

@@ -37,9 +37,7 @@ public class AccountCreatingPage extends Page {
     public void show() {
         super.setHeader("Создание счета");
 
-        String actionMessage = "\n> Введите ФИО владельца нового счета: ";
-        System.out.print(actionMessage);
-
+        System.out.print("\n> Введите ФИО владельца нового счета: ");
         Scanner fromAccountHolderNameScanner = new Scanner(System.in);
         String fromAccountHolderName = fromAccountHolderNameScanner.nextLine();
 
@@ -48,8 +46,7 @@ public class AccountCreatingPage extends Page {
             super.consoleService.setCurrentFromAccount(account);
 
             String menu = MessageFormat.format("""
-                
-                \tСоздан новый счет: {0}
+                \n\tСоздан новый счет: {0}
                 
                 \t1. Создать еще
                 \t2. Операции
@@ -67,11 +64,7 @@ public class AccountCreatingPage extends Page {
                 default -> super.consoleService.showMainPage();
             };
         } catch (Exception exception) {
-            String exceptionMessage = MessageFormat.format("\n! Ошибка: {0}", exception.getMessage());
-            System.out.println(exceptionMessage);
-
-            super.waitForInputToContinue("Нажмите Enter для возврата на страницу счетов");
-            super.consoleService.showAccountPage();
+            super.printError(exception.getMessage(), "Нажмите Enter для возврата на страницу счетов");
         }
     }
 }

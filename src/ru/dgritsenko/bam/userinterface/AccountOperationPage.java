@@ -69,9 +69,9 @@ public class AccountOperationPage extends Page {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Обрабатывает операции, требующие только счет-источник (пополнение, снятие).
+     * Обрабатывает операции, требующие только счет-источник.
      *
-     * @param transactionType тип операции (DEPOSIT или WITHDRAW)
+     * @param transactionType тип операции ({@code DEPOSIT} или {@code WITHDRAW})
      */
     private void processOperationWithOnlyFromAccount(TransactionType transactionType) {
         printNewPageHeader();
@@ -89,9 +89,9 @@ public class AccountOperationPage extends Page {
     }
 
     /**
-     * Обрабатывает операции, требующие указания счета-получателя (оплата, перевод).
+     * Обрабатывает операции, требующие указания счета-получателя.
      *
-     * @param transactionType тип операции (TRANSFER)
+     * @param transactionType тип операции ({@code TRANSFER})
      */
     private void processOperationWithToAccount(TransactionType transactionType) {
         printNewPageHeader();
@@ -114,8 +114,8 @@ public class AccountOperationPage extends Page {
         }
 
         if (toAccountOptions.isEmpty()) {
-            String missingMessage = "\n\tСписок получателей пуст...";
-            System.out.println(missingMessage);
+            String missingMsg = "\n\tСписок получателей пуст...";
+            System.out.println(missingMsg);
 
             super.waitForInputToContinue("Нажмите Enter для продолжения");
         } else {
@@ -127,12 +127,13 @@ public class AccountOperationPage extends Page {
 
             int option = super.getOptionFromMenu("Введите номер получателя");
 
-            if (option < bankService.getAccounts().size()) {
+            if (option < bankService.getNumberOfAccounts()) {
                 Account toAccount = availableAccounts.get(option - 1);
                 double amount = getAmount("Введите сумму операции");
 
                 TransactionStatus result = bankService.performTransaction(
-                        transactionType, currentFromAccount, amount, toAccount);
+                        transactionType, currentFromAccount, amount, toAccount
+                );
 
                 String resultMessage = MessageFormat.format("\nСтатус транзакции: {0}", result);
                 System.out.println(resultMessage);
@@ -159,7 +160,8 @@ public class AccountOperationPage extends Page {
 
         String title = MessageFormat.format(
                 "Операции со счетом: {0}, баланс: {1}",
-                currentFromAccount, currentFromAccount.getBalance());
+                currentFromAccount, currentFromAccount.getBalance()
+        );
         super.setHeader(title);
     }
 

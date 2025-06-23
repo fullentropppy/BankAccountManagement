@@ -9,11 +9,27 @@ import java.util.List;
 public class BankService {
     private final List<Account> accounts = new ArrayList<>();
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // CONSTRUCTORS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Создает новый счет, добавляет в список и возвращает его.
+     *
+     * @return созданный счет.
+     *
+     * @throws NullPointerException если {@code holderName} равен {@code null}
+     * @throws IllegalArgumentException если {@code holderName} имеет неверный формат
+     */
     public Account createAccount(String holderName) {
         Account account = new Account(holderName);
         accounts.add(account);
         return account;
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Возвращает копию списка всех счетов.
@@ -24,13 +40,47 @@ public class BankService {
         return List.copyOf(accounts);
     }
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. GETTING DATA
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Возвращает счет по индексу из списка счетов.
+     *
+     * @param indexInAccounts индекс счета в {@code accounts}
+     *
+     * @return счет
+     *
+     * @throws IndexOutOfBoundsException если {@code indexInAccounts} не существует в {@code accounts}
+     */
+    public Account getAccount(int indexInAccounts) {
+        return accounts.get(indexInAccounts);
+    }
+
+    /**
+     * Возвращает количество счетов в {@code accounts}.
+     *
+     * @return количество счетов.
+     */
+    public int getNumberOfAccounts() {
+        return accounts.size();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. TRANSACTION PERFORMING
+    // -----------------------------------------------------------------------------------------------------------------
+
     /**
      * Выполняет операцию, не требующую указания счета получателя.
      *
      * @param transactionType тип операции ({@code DEPOSIT} или {@code WITHDRAW})
      * @param fromAccount счет отправителя
      * @param amount сумма операции
+     *
      * @return статус выполненной операции
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     public TransactionStatus performTransaction(
             TransactionType transactionType,
@@ -47,7 +97,11 @@ public class BankService {
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      * @param toAccount счет получателя
+     *
      * @return статус выполненной операции
+     *
+     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
+     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
     public TransactionStatus performTransaction(
             TransactionType transactionType,

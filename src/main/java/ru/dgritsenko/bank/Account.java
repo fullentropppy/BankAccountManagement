@@ -40,98 +40,10 @@ public class Account {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Создает новый счет с автоматически сгенерированным номером.
-     *
-     * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
-     *
-     * @throws NullPointerException если {@code holderName} равен {@code null}
-     * @throws IllegalArgumentException если {@code holderName} имеет неверный формат
-     */
-    public Account(String holderName) {
-        this.accountNumber = getGeneratedAccountNumber();
-        this.holderName = validHolderName(holderName);
-        this.transactions = new ArrayList<>();
-    }
-
-    /**
-     * Создает новый счет с указанным номером.
-     *
-     * @param accountNumber номер счета (должен быть в диапазоне 100000000-999999999)
-     * @param holderName имя владельца счета (фамилия и первая буква имени на латинице)
-     * @param transactions список транзакций для переноса в список транзакций объекта с проверкой
-     *
-     * @throws NullPointerException если {@code holderName} равен {@code null}
-     * @throws IllegalArgumentException если {@code accountNumber} или {@code holderName} имеют неверный формат
-     */
-    public Account(long accountNumber, String holderName, ArrayList<Transaction> transactions) {
-        this.accountNumber = validAccountNumber(accountNumber);
-        this.holderName = validHolderName(holderName);
-        this.transactions = new ArrayList<>();
-
-        for (Transaction transaction : transactions) {
-            addTransaction(transaction);
-        }
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Возвращает номер счета.
-     *
-     * @return номер счета
-     */
-    public long getAccountNumber() {
-        return accountNumber;
-    }
-
-    /**
-     * Возвращает имя владельца счета.
-     *
-     * @return имя владельца счета
-     */
-    public String getHolderName() {
-        return holderName;
-    }
-
-    /**
-     * Возвращает неизменяемый список транзакций по счету.
-     *
-     * @return неизменяемый список транзакций
-     */
-    public List<Transaction> getTransactions() {
-        return Collections.unmodifiableList(transactions);
-    }
-
-    /**
-     * Возвращает текущий баланс счета, вычисляя его на основе подтвержденных транзакций.
-     * <p>
-     * Использует кэширование для оптимизации.
-     *
-     * @return текущий баланс счета
-     */
-    public double getBalance() {
-        double balance = 0;
-
-        if (balanceIsValid) {
-            // Если данные актуальны, используется кэшированный баланс
-            balance = cachedBalance;
-        } else {
-            // Если данные неактуальны, баланс пересчитывается
-            for (Transaction transaction : transactions) {
-                // Учитываются только подтвержденные транзакции
-                if (transaction.getStatus().isCommitted()) {
-                    double transactionAmount = transaction.getAmount();
-                    balance += transaction.getTransactionType().isAddition() ? transactionAmount : -transactionAmount;
-                }
-            }
-            cachedBalance = balance;
-            balanceIsValid = true;
-        }
-
-        return balance;
+    private Account(Builder builder) {
+        this.accountNumber = builder.accountNumber;
+        this.holderName = builder.holderName;
+        this.transactions = builder.transactions;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -166,7 +78,7 @@ public class Account {
         if (transactions.contains(transaction)) {
             String errMsg = MessageFormat.format(
                     "Транзакция не уникальна \"{0}\": " +
-                    "транзакция уже есть в списке транзакций счета \"{1}\"",
+                            "транзакция уже есть в списке транзакций счета \"{1}\"",
                     transaction.getUuid(), this
             );
             throw new IllegalArgumentException(errMsg);
@@ -179,7 +91,71 @@ public class Account {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. CHECKS
+    // GETTERS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Возвращает номер счета.
+     *
+     * @return номер счета
+     */
+    public long getAccountNumber() {
+        return accountNumber;
+    }
+
+    /**
+     * Возвращает имя владельца счета.
+     *
+     * @return имя владельца счета
+     */
+    public String getHolderName() {
+        return holderName;
+    }
+
+    /**
+     * Возвращает неизменяемый список транзакций по счету.
+     *
+     * @return неизменяемый список транзакций
+     */
+    public List<Transaction> getTransactions() {
+        return Collections.unmodifiableList(transactions);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. GETTING OTHER DATA
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Возвращает текущий баланс счета, вычисляя его на основе подтвержденных транзакций.
+     * <p>
+     * Использует кэширование для оптимизации.
+     *
+     * @return текущий баланс счета
+     */
+    public double getBalance() {
+        double balance = 0;
+
+        if (balanceIsValid) {
+            // Если данные актуальны, используется кэшированный баланс
+            balance = cachedBalance;
+        } else {
+            // Если данные неактуальны, баланс пересчитывается
+            for (Transaction transaction : transactions) {
+                // Учитываются только подтвержденные транзакции
+                if (transaction.getStatus().isCommitted()) {
+                    double transactionAmount = transaction.getAmount();
+                    balance += transaction.getTransactionType().isAddition() ? transactionAmount : -transactionAmount;
+                }
+            }
+            cachedBalance = balance;
+            balanceIsValid = true;
+        }
+
+        return balance;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. STATIC VALIDATION
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -189,31 +165,10 @@ public class Account {
      *
      * @return {@code true} если номер корректен (в диапазоне 100000000-999999999)
      */
-    public boolean isAccountNumberCorrect(long accountNumber) {
+    public static boolean isAccountNumberCorrect(long accountNumber) {
         return accountNumber >= 100_000_000 && accountNumber < 1_000_000_000;
     }
 
-    /**
-     * Проверяет корректность имени владельца счета.
-     *
-     * @param holderName имя для проверки
-     *
-     * @return {@code true} если имя соответствует формату (фамилия и первая буква имени на латинице)
-     */
-    public boolean isHolderNameCorrect(String holderName) {
-        boolean isCorrect;
-
-        if (holderName == null) {
-            isCorrect = false;
-        } else {
-            Pattern pattern = Pattern.compile("^[A-z][A-z]+ [A-z]$");
-            Matcher matcher = pattern.matcher(holderName.strip());
-            isCorrect = matcher.matches();
-        }
-
-        return isCorrect;
-    }
-    
     /**
      * Проверяет номер счета на валидность и возвращает его, если он корректен.
      *
@@ -223,7 +178,7 @@ public class Account {
      *
      * @throws IllegalArgumentException если {@code accountNumber} не соответствует формату
      */
-    private long validAccountNumber(long accountNumber) {
+    public static long validAccountNumber(long accountNumber) {
         // Проверка на формат
         if (!isAccountNumberCorrect(accountNumber)) {
             String errMsg = MessageFormat.format(
@@ -238,6 +193,27 @@ public class Account {
     }
 
     /**
+     * Проверяет корректность имени владельца счета.
+     *
+     * @param holderName имя для проверки
+     *
+     * @return {@code true} если имя соответствует формату (фамилия и первая буква имени на латинице)
+     */
+    public static boolean isHolderNameCorrect(String holderName) {
+        boolean isCorrect;
+
+        if (holderName == null) {
+            isCorrect = false;
+        } else {
+            Pattern pattern = Pattern.compile("^[A-z][A-z]+ [A-z]$");
+            Matcher matcher = pattern.matcher(holderName.strip());
+            isCorrect = matcher.matches();
+        }
+
+        return isCorrect;
+    }
+
+    /**
      * Проверяет имя владельца на валидность и возвращает отформатированное имя, если оно корректно.
      *
      * @param holderName имя владельца для проверки
@@ -248,7 +224,7 @@ public class Account {
      *
      * @throws IllegalArgumentException если {@code holderName} не соответствует формату
      */
-    private String validHolderName(String holderName) {
+    public static String validHolderName(String holderName) {
         // Проверка на null
         Objects.requireNonNull(holderName, "Имя владельца не должно быть null");
 
@@ -265,8 +241,22 @@ public class Account {
         return getFormattedHolderName(holderName);
     }
 
+    public static List<Transaction> validTransactions(List<Transaction> transactions) {
+        int currentIndex = 0;
+
+        for (Transaction transaction : transactions) {
+            int lastTransactionIndex = transactions.lastIndexOf(transaction);
+
+            if(currentIndex != lastTransactionIndex) {
+                throw new IllegalArgumentException("Некорректный список транзакций: список транзакций содержит дубли");
+            }
+        }
+
+        return transactions;
+    }
+
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. WORKING WITH FIELDS
+    // METHODS. STATIC WORK WITH FIELD DATA
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -274,7 +264,7 @@ public class Account {
      *
      * @return сгенерированный номер счета
      */
-    private long getGeneratedAccountNumber() {
+    public static long getGeneratedAccountNumber() {
         return 100_000_000 + ThreadLocalRandom.current().nextLong(900_000_001);
     }
 
@@ -286,7 +276,7 @@ public class Account {
      *
      * @return отформатированное имя владельца
      */
-    private String getFormattedHolderName(String holderName) {
+    public static String getFormattedHolderName(String holderName) {
         String strippedLowerCaseName = holderName.strip().toLowerCase();
         int nameLength = strippedLowerCaseName.length();
 
@@ -297,7 +287,7 @@ public class Account {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. PRINT
+    // METHODS. PRINTING
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
@@ -370,4 +360,65 @@ public class Account {
 
         return operationView;
     }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // BUILDER NESTED CLASS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public static class Builder {
+        private long accountNumber;
+        private String holderName;
+        private List<Transaction> transactions;
+
+        // -------------------------------------------------------------------------------------------------------------
+        // BUILDER. CONSTRUCTORS
+        // -------------------------------------------------------------------------------------------------------------
+
+        public Builder() {
+            super();
+        }
+
+        // -------------------------------------------------------------------------------------------------------------
+        // BUILDER. SETTERS
+        // -------------------------------------------------------------------------------------------------------------
+
+        public Builder setAccountNumber(long accountNumber) {
+            this.accountNumber = accountNumber;
+            return this;
+        }
+
+        public Builder setHolderName(String holderName) {
+            this.holderName = holderName;
+            return this;
+        }
+
+        public Builder setTransactions(List<Transaction> transactions) {
+            this.transactions = transactions;
+            return this;
+        }
+
+        public Builder addTransaction(Transaction transaction) {
+            transactions.add(transaction);
+            return this;
+        }
+
+        // -------------------------------------------------------------------------------------------------------------
+        // BUILDER. BUILDING
+        // -------------------------------------------------------------------------------------------------------------
+
+        public Account build(boolean safeLoad) {
+            if (safeLoad) {
+                validate();
+            }
+
+            return new Account(this);
+        }
+
+        private void validate() {
+            accountNumber = accountNumber == 0 ? getGeneratedAccountNumber() : validAccountNumber(accountNumber);
+            holderName = validHolderName(holderName);
+            transactions = transactions.isEmpty() ? new ArrayList<>() : transactions;
+        }
+    }
+
 }

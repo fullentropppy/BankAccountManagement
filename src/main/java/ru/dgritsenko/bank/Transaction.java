@@ -8,8 +8,8 @@ import java.util.UUID;
 
 /**
  * Класс, представляющий банковскую транзакцию.
- * <p>
- * Содержит информацию о типе, сумме, участниках, статусе и дате транзакции.
+ * <p>Содержит информацию о типе, сумме, участниках, статусе и дате транзакции.
+ * <p>Создание объекта выполняется через {@link Builder}.
  */
 public class Transaction {
     private final UUID uuid;
@@ -25,9 +25,7 @@ public class Transaction {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Возвращает строковое представление транзакции в формате:
-     *
-     * "UUID от Дата (Статус)".
+     * Возвращает строковое представление транзакции в формате: "UUID от Дата (Статус)".
      *
      * @return строковое представление транзакции
      */
@@ -41,68 +39,18 @@ public class Transaction {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Конструктор создает новую транзакцию с указанными параметрами.
+     * Служебный конструктор для создания объекта через {@link Transaction.Builder}.
      *
-     * @param fromAccount счет отправителя
-     * @param transactionType тип транзакции
-     * @param amount сумма транзакции
-     * @param toAccount счет получателя (может быть null)
-     *
-     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
-     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
-     * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
+     * @param builder статический вложенный класс-источник данных для заполнения
      */
-    public Transaction(
-            Account fromAccount,
-            TransactionType transactionType,
-            double amount,
-            Account toAccount)
-    {
-        this(
-                UUID.randomUUID(),
-                LocalDateTime.now(),
-                fromAccount,
-                transactionType,
-                amount,
-                toAccount,
-                TransactionStatus.UNCOMMITTED
-        );
-    }
-
-    /**
-     * Конструктор создает новую транзакцию с указанными параметрами.
-     *
-     * @param uuid уникальный идентификатор транзакции
-     * @param date дата и время транзакции
-     * @param fromAccount счет отправителя
-     * @param transactionType тип транзакции
-     * @param amount сумма транзакции
-     * @param toAccount счет получателя (может быть null)
-     * @param status статус транзакции
-     *
-     * @throws NullPointerException если любой из обязательных параметров равен {@code null}
-     * @throws IllegalArgumentException если {@code amount} <= {@code 0}
-     * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
-     */
-    public Transaction(
-            UUID uuid,
-            LocalDateTime date,
-            Account fromAccount,
-            TransactionType transactionType,
-            double amount,
-            Account toAccount,
-            TransactionStatus status)
-    {
-        // Установка значений с проверкой на null
-        this.uuid = Objects.requireNonNull(uuid, "UUID не должен быть null");
-        this.date = Objects.requireNonNull(date, "Дата не должна быть null");
-        this.fromAccount = Objects.requireNonNull(fromAccount, "Счет не должен быть null");
-        this.transactionType = Objects.requireNonNull(transactionType, "Тип транзакции не должен быть null");
-        this.status = Objects.requireNonNull(status, "Статус не должен быть null");
-
-        // Установка значений с расширенной проверкой
-        this.amount = validAmount(amount);
-        this.toAccount = validToAccount(toAccount);
+    private Transaction(Builder builder) {
+        this.uuid = builder.uuid;
+        this.date = builder.date;
+        this.fromAccount = builder.fromAccount;
+        this.transactionType = builder.transactionType;
+        this.amount = builder.amount;
+        this.toAccount = builder.toAccount;
+        this.status = builder.status;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -128,9 +76,10 @@ public class Transaction {
     }
 
     /**
-     * Возвращает отформатированную строку с датой транзакции.
+     * Возвращает отформатированную строку с датой транзакции формате:
+     * "yyyy-MM-dd HH:mm:ss".
      *
-     * @return строка с датой в формате "yyyy-MM-dd HH:mm:ss"
+     * @return строка с форматированной датой
      */
     public String getDateFormatted() {
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
@@ -197,19 +146,19 @@ public class Transaction {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. CHECKS
+    // METHODS. STATIC VALIDATION
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Проверяет сумму транзакции на валидность.
+     * Проверяет сумму транзакции на корректность.
      *
      * @param amount сумма транзакции для проверки
      *
-     * @return валидная сумма транзакции
+     * @return корректная сумма транзакции
      *
      * @throws IllegalArgumentException если {@code amount} <= {@code 0}
      */
-    private double validAmount(double amount) {
+    private static double validAmount(double amount) {
         if (amount <= 0) {
             String errMsg = MessageFormat.format(
                     "Некорректная сумма транзакции \"{0}\": " +
@@ -231,7 +180,7 @@ public class Transaction {
      *
      * @throws NullPointerException если для данного типа транзакции требуется {@code toAccount}, но он равен {@code null}
      */
-    private Account validToAccount(Account toAccount) {
+    private static Account validToAccount(Account toAccount, TransactionType transactionType) {
         if (transactionType.hasToAccount() && toAccount == null) {
             String errMsg = MessageFormat.format(
                     "Счет получателя не должен быть null при типе транзакции \"{0}\"",
@@ -241,5 +190,170 @@ public class Transaction {
         }
 
         return toAccount;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // BUILDER NESTED CLASS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Вложенный статичный класс, представляющий построитель родительского класса {@link Transaction}.
+     */
+    public static class Builder {
+        private UUID uuid;
+        private LocalDateTime date;
+        private Account fromAccount;
+        private TransactionType transactionType;
+        private double amount;
+        private Account toAccount;
+        private TransactionStatus status;
+
+        // -------------------------------------------------------------------------------------------------------------
+        // BUILDER. CONSTRUCTORS
+        // -------------------------------------------------------------------------------------------------------------
+
+        /**
+         * Создает построитель для последующего создания основного класса {@link Transaction}.
+         */
+        public Builder() {
+            super();
+        }
+
+        /**
+         * Устанавливает UUID транзакции.
+         *
+         * @param uuid UUID транзакции
+         *
+         * @return экземпляр текущего класса
+         */
+        public Builder setUUID(UUID uuid) {
+            this.uuid = uuid;
+            return this;
+        }
+
+        /**
+         * Устанавливает дату транзакции.
+         *
+         * @param date дата транзакции
+         *
+         * @return экземпляр текущего класса
+         */
+        public Builder setDate(LocalDateTime date) {
+            this.date = date;
+            return this;
+        }
+
+        /**
+         * Устанавливает счет отправителя в транзакции.
+         *
+         * @param fromAccount счет отправителя
+         *
+         * @return экземпляр текущего класса
+         */
+        public Builder setFromAccount(Account fromAccount) {
+            this.fromAccount = fromAccount;
+            return this;
+        }
+
+        /**
+         * Устанавливает тип транзакции.
+         *
+         * @param transactionType тип транзакции
+         *
+         * @return экземпляр текущего класса
+         */
+        public Builder setTransactionType(TransactionType transactionType) {
+            this.transactionType = transactionType;
+            return this;
+        }
+
+        /**
+         * Устанавливает сумму транзакции.
+         *
+         * @param amount сумма транзакции
+         *
+         * @return экземпляр текущего класса
+         */
+        public Builder setAmount(double amount) {
+            this.amount = amount;
+            return this;
+        }
+
+        /**
+         * Устанавливает счет получателя в транзакции.
+         *
+         * @param toAccount счет получателя в транзакции
+         *
+         * @return экземпляр текущего класса
+         */
+        public Builder setToAccount(Account toAccount) {
+            this.toAccount = toAccount;
+            return this;
+        }
+
+        /**
+         * Устанавливает статус транзакции.
+         *
+         * @param status статус транзакции
+         *
+         * @return экземпляр текущего класса
+         */
+        public Builder setStatus(TransactionStatus status) {
+            this.status = status;
+            return this;
+        }
+
+        // -------------------------------------------------------------------------------------------------------------
+        // BUILDER. BUILDING
+        // -------------------------------------------------------------------------------------------------------------
+
+        /**
+         * Валидирует значения полей и создает экземпляр основного класса {@link Transaction}.
+         *
+         * @return новая транзакция
+         */
+        public Transaction build() {
+            validate();
+            return new Transaction(this);
+        }
+
+        /**
+         * Создает без валидации экземпляр основного класса {@link Transaction}.
+         *
+         * @return новая транзакция
+         */
+        public Transaction buildWithoutValidations() {
+            return new Transaction(this);
+        }
+
+        // -------------------------------------------------------------------------------------------------------------
+        // BUILDER. MISC
+        // -------------------------------------------------------------------------------------------------------------
+
+        /**
+         * Валидирует результат заполнения полей построителя.
+         */
+        private void validate() {
+            // Проверки на null
+            fromAccount = Objects.requireNonNull(fromAccount, "Счет не должен быть null");
+            transactionType = Objects.requireNonNull(transactionType, "Тип транзакции не должен быть null");
+
+            // Проверка на null с установкой значений по умолчанию при необходимости
+            uuid = uuid == null
+                    ? UUID.randomUUID()
+                    : Objects.requireNonNull(uuid, "UUID не должен быть null");
+
+            date = date == null
+                    ? LocalDateTime.now()
+                    : Objects.requireNonNull(date, "Дата не должна быть null");
+
+            status = status == null
+                    ? TransactionStatus.UNCOMMITTED
+                    : Objects.requireNonNull(status, "Статус не должен быть null");
+
+            // Расширенные проверки
+            amount = validAmount(amount);
+            toAccount = validToAccount(toAccount, transactionType);
+        }
     }
 }

@@ -53,7 +53,7 @@ public class AccountListPage extends Page {
             super.waitForInputToContinue("Нажмите Enter для возврата в меню счетов");
             super.consoleService.showAccountPage();
         } else {
-            String goToMainMenuOption = MessageFormat.format("\n\n\t{0}. Главное меню", i);
+            String goToMainMenuOption = MessageFormat.format("\n\n\t{0}. Меню счетов", i);
             pageMenuOptions.append(goToMainMenuOption);
 
             String menu = pageMenuOptions.toString();
@@ -67,7 +67,7 @@ public class AccountListPage extends Page {
                 super.consoleService.setCurrentFromAccount(currentFromAccount);
                 super.consoleService.showAccountOperationPage();
             } else if (option == optionsAmount) {
-                super.consoleService.showMainPage();
+                super.consoleService.showAccountPage();
             }
         }
     }

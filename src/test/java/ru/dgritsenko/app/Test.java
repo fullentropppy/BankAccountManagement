@@ -7,8 +7,7 @@ import java.util.*;
 
 /**
  * Тестовый класс для проверки функциональности банковского приложения.
- * <p>
- * Содержит предопределенный набор операций для демонстрации работы системы.
+ * <p>Содержит предопределенный набор операций для демонстрации работы системы.
  */
 public class Test {
     private static final Map<String, Account> accounts = new HashMap<>();
@@ -100,7 +99,7 @@ public class Test {
      * @param holderName имя владельца счета
      */
     private static void addAccount(String accountKey, String holderName) {
-        Account account = new Account(holderName);
+        Account account = new Account.Builder().setHolderName(holderName).build();
         accounts.put(accountKey, account);
     }
 }

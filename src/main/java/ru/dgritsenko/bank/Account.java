@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
 
 /**
  * Класс, представляющий банковский счет.
- * <p>
- * Содержит информацию о владельце счета, номере счета, списке транзакций и балансе.
+ * <p>Содержит информацию о владельце счета, номере счета, списке транзакций и балансе.
+ * <p>Создание объекта выполняется через {@link Builder}.
  */
 public class Account {
     private final long accountNumber;
@@ -29,6 +29,7 @@ public class Account {
 
     /**
      * Возвращает строковое представление счета в формате: "Имя владельца (№НомерСчета)".
+     *
      * @return строковое представление счета
      */
     @Override
@@ -40,10 +41,46 @@ public class Account {
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Служебный конструктор для создания объекта через {@link Builder}.
+     *
+     * @param builder статический вложенный класс-источник данных для заполнения
+     */
     private Account(Builder builder) {
         this.accountNumber = builder.accountNumber;
         this.holderName = builder.holderName;
         this.transactions = builder.transactions;
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Возвращает номер счета.
+     *
+     * @return номер счета
+     */
+    public long getAccountNumber() {
+        return accountNumber;
+    }
+
+    /**
+     * Возвращает имя владельца счета.
+     *
+     * @return имя владельца счета
+     */
+    public String getHolderName() {
+        return holderName;
+    }
+
+    /**
+     * Возвращает неизменяемый список транзакций по счету.
+     *
+     * @return неизменяемый список транзакций
+     */
+    public List<Transaction> getTransactions() {
+        return Collections.unmodifiableList(transactions);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -91,37 +128,6 @@ public class Account {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Возвращает номер счета.
-     *
-     * @return номер счета
-     */
-    public long getAccountNumber() {
-        return accountNumber;
-    }
-
-    /**
-     * Возвращает имя владельца счета.
-     *
-     * @return имя владельца счета
-     */
-    public String getHolderName() {
-        return holderName;
-    }
-
-    /**
-     * Возвращает неизменяемый список транзакций по счету.
-     *
-     * @return неизменяемый список транзакций
-     */
-    public List<Transaction> getTransactions() {
-        return Collections.unmodifiableList(transactions);
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
     // METHODS. GETTING OTHER DATA
     // -----------------------------------------------------------------------------------------------------------------
 
@@ -159,26 +165,26 @@ public class Account {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Проверяет корректность номера счета.
+     * Проверяет номера счета на корректность.
      *
      * @param accountNumber номер счета для проверки
      *
      * @return {@code true} если номер корректен (в диапазоне 100000000-999999999)
      */
-    public static boolean isAccountNumberCorrect(long accountNumber) {
+    private static boolean isAccountNumberCorrect(long accountNumber) {
         return accountNumber >= 100_000_000 && accountNumber < 1_000_000_000;
     }
 
     /**
-     * Проверяет номер счета на валидность и возвращает его, если он корректен.
+     * Проверяет номер счета на корректность и возвращает его, если он корректен.
      *
      * @param accountNumber номер счета для проверки
      *
-     * @return валидный номер счета
+     * @return корректный номер счета
      *
      * @throws IllegalArgumentException если {@code accountNumber} не соответствует формату
      */
-    public static long validAccountNumber(long accountNumber) {
+    private static long validAccountNumber(long accountNumber) {
         // Проверка на формат
         if (!isAccountNumberCorrect(accountNumber)) {
             String errMsg = MessageFormat.format(
@@ -193,13 +199,13 @@ public class Account {
     }
 
     /**
-     * Проверяет корректность имени владельца счета.
+     * Проверяет имя владельца номера счета на корректность.
      *
      * @param holderName имя для проверки
      *
      * @return {@code true} если имя соответствует формату (фамилия и первая буква имени на латинице)
      */
-    public static boolean isHolderNameCorrect(String holderName) {
+    private static boolean isHolderNameCorrect(String holderName) {
         boolean isCorrect;
 
         if (holderName == null) {
@@ -214,17 +220,17 @@ public class Account {
     }
 
     /**
-     * Проверяет имя владельца на валидность и возвращает отформатированное имя, если оно корректно.
+     * Проверяет имя владельца на корректность и возвращает отформатированное имя, если оно корректно.
      *
      * @param holderName имя владельца для проверки
      *
-     * @return валидное отформатированное имя владельца
+     * @return корректное отформатированное имя владельца
      *
      * @throws NullPointerException если {@code holderName} равно {@code null}
      *
      * @throws IllegalArgumentException если {@code holderName} не соответствует формату
      */
-    public static String validHolderName(String holderName) {
+    private static String validHolderName(String holderName) {
         // Проверка на null
         Objects.requireNonNull(holderName, "Имя владельца не должно быть null");
 
@@ -241,10 +247,25 @@ public class Account {
         return getFormattedHolderName(holderName);
     }
 
-    public static List<Transaction> validTransactions(List<Transaction> transactions) {
+    /**
+     * Проверяет список транзакций на корректность.
+     *
+     * @param transactions список транзакций для проверки
+     *
+     * @return корректный список транзакций
+     *
+     * @throws NullPointerException если одно из значений {@code transactions} равно {@code null}
+     *
+     * @throws IllegalArgumentException если в {@code transactions} есть неуникальные значения
+     */
+    private static List<Transaction> validTransactions(List<Transaction> transactions) {
         int currentIndex = 0;
 
         for (Transaction transaction : transactions) {
+            // Проверка на null
+            Objects.requireNonNull(transaction, "В списке транзакций не должно быть null");
+
+            // Проверка на уникальность транзакций в списке
             int lastTransactionIndex = transactions.lastIndexOf(transaction);
 
             if(currentIndex != lastTransactionIndex) {
@@ -365,6 +386,9 @@ public class Account {
     // BUILDER NESTED CLASS
     // -----------------------------------------------------------------------------------------------------------------
 
+    /**
+     * Вложенный статичный класс, представляющий построитель родительского класса {@link Account}.
+     */
     public static class Builder {
         private long accountNumber;
         private String holderName;
@@ -374,6 +398,9 @@ public class Account {
         // BUILDER. CONSTRUCTORS
         // -------------------------------------------------------------------------------------------------------------
 
+        /**
+         * Создает построитель для последующего создания основного класса {@link Account}.
+         */
         public Builder() {
             super();
         }
@@ -382,21 +409,49 @@ public class Account {
         // BUILDER. SETTERS
         // -------------------------------------------------------------------------------------------------------------
 
+        /**
+         * Устанавливает номер счета.
+         *
+         * @param accountNumber номер счета
+         *
+         * @return экземпляр текущего класса
+         */
         public Builder setAccountNumber(long accountNumber) {
             this.accountNumber = accountNumber;
             return this;
         }
 
+        /**
+         * Устанавливает имя владельца.
+         *
+         * @param holderName имя владельца
+         *
+         * @return экземпляр текущего класса
+         */
         public Builder setHolderName(String holderName) {
             this.holderName = holderName;
             return this;
         }
 
+        /**
+         * Устанавливает список транзакций.
+         *
+         * @param transactions список транзакций
+         *
+         * @return экземпляр текущего класса
+         */
         public Builder setTransactions(List<Transaction> transactions) {
             this.transactions = transactions;
             return this;
         }
 
+        /**
+         * Добавляет транзакцию в список транзакций.
+         *
+         * @param transaction транзакция
+         *
+         * @return экземпляр текущего класса
+         */
         public Builder addTransaction(Transaction transaction) {
             transactions.add(transaction);
             return this;
@@ -406,19 +461,44 @@ public class Account {
         // BUILDER. BUILDING
         // -------------------------------------------------------------------------------------------------------------
 
-        public Account build(boolean safeLoad) {
-            if (safeLoad) {
-                validate();
-            }
-
+        /**
+         * Валидирует значения полей и создает экземпляр основного класса {@link Account}.
+         *
+         * @return новый счет
+         */
+        public Account build() {
+            validate();
             return new Account(this);
         }
 
+        /**
+         * Создает без валидации экземпляр основного класса {@link Account}.
+         *
+         * @return новый счет
+         */
+        public Account buildWithoutValidations() {
+            return new Account(this);
+        }
+
+        // -------------------------------------------------------------------------------------------------------------
+        // BUILDER. MISC
+        // -------------------------------------------------------------------------------------------------------------
+
+        /**
+         * Валидирует результат заполнения полей построителя.
+         */
         private void validate() {
-            accountNumber = accountNumber == 0 ? getGeneratedAccountNumber() : validAccountNumber(accountNumber);
+            // Проверка на null с установкой значений по умолчанию при необходимости
+            accountNumber = accountNumber == 0
+                    ? getGeneratedAccountNumber()
+                    : validAccountNumber(accountNumber);
+
+            transactions = transactions == null
+                    ? new ArrayList<>()
+                    : validTransactions(transactions);
+
+            // Расширенные проверки
             holderName = validHolderName(holderName);
-            transactions = transactions.isEmpty() ? new ArrayList<>() : transactions;
         }
     }
-
 }

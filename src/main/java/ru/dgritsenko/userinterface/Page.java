@@ -10,8 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * Абстрактный класс, представляющий базовую страницу интерфейса.
- *  <p>
- * Содержит общие методы для работы с консольным вводом/выводом.
+ * <p>Содержит общие методы для работы с консольным вводом/выводом.
  */
 public abstract class Page {
     protected final ConsoleService consoleService;

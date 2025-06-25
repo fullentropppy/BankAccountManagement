@@ -1,6 +1,7 @@
 package ru.dgritsenko.bank;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -16,13 +17,13 @@ public class BankService {
     /**
      * Создает новый счет, добавляет в список и возвращает его.
      *
-     * @return созданный счет.
+     * @return созданный счет
      *
      * @throws NullPointerException если {@code holderName} равен {@code null}
      * @throws IllegalArgumentException если {@code holderName} имеет неверный формат
      */
     public Account createAccount(String holderName) {
-        Account account = new Account(holderName);
+        Account account = new Account.Builder().setHolderName(holderName).build();
         accounts.add(account);
         return account;
     }
@@ -32,12 +33,12 @@ public class BankService {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Возвращает копию списка всех счетов.
+     * Возвращает неизменяемый список счетов.
      *
-     * @return список счетов.
+     * @return список счетов
      */
     public List<Account> getAccounts() {
-        return List.copyOf(accounts);
+        return Collections.unmodifiableList(accounts);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -60,7 +61,7 @@ public class BankService {
     /**
      * Возвращает количество счетов в {@code accounts}.
      *
-     * @return количество счетов.
+     * @return количество счетов
      */
     public int getNumberOfAccounts() {
         return accounts.size();

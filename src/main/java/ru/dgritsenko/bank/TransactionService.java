@@ -2,8 +2,7 @@ package ru.dgritsenko.bank;
 
 /**
  * Класс-обработчик банковских транзакций.
- * <p>
- * Содержит статические методы для выполнения различных типов операций.
+ * <p>Содержит статические методы для выполнения различных типов операций.
  */
 public class TransactionService {
     // -----------------------------------------------------------------------------------------------------------------
@@ -13,7 +12,7 @@ public class TransactionService {
     /**
      * Выполняет операцию, не требующую указания счета получателя.
      *
-     * @param transactionType тип операции ({@code DEPOSIT} или {@code WITHDRAW})
+     * @param transactionType тип операции ({@link TransactionType#DEPOSIT} или {@link TransactionType#WITHDRAW})
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      *
@@ -41,7 +40,7 @@ public class TransactionService {
     /**
      * Выполняет операцию, требующую указания счета получателя.
      *
-     * @param transactionType тип операции ({@code CREDIT} или {@code TRANSFER})
+     * @param transactionType тип операции ({@link TransactionType#CREDIT}или {@link TransactionType#TRANSFER})
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      * @param toAccount счет получателя
@@ -139,9 +138,9 @@ public class TransactionService {
      * Автоматически подтверждает транзакцию и добавляет её в историю.
      *
      * @param fromAccount счет, на который зачисляются средства
-     * @param transactionType тип операции ({@code DEPOSIT})
+     * @param transactionType тип операции ({@link TransactionType#DEPOSIT})
      * @param amount сумма
-     * @param toAccount счет-источник (для {@code CREDIT}) или {@code null} (для {@code DEPOSIT})
+     * @param toAccount счет-источник (для {@link TransactionType#CREDIT}) или {@code null} (для {@link TransactionType#DEPOSIT})
      *
      * @return статус транзакции
      *
@@ -155,8 +154,14 @@ public class TransactionService {
             double amount,
             Account toAccount)
     {
-        Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
-        transaction.setStatus(TransactionStatus.COMMITTED); // Проверки не требуются, транзакция успешна
+        Transaction transaction = new Transaction.Builder()
+                .setFromAccount(fromAccount)
+                .setTransactionType(transactionType)
+                .setAmount(amount)
+                .setToAccount(toAccount)
+                .setStatus(TransactionStatus.COMMITTED)
+                .build();
+
         fromAccount.addTransaction(transaction);
 
         return transaction.getStatus();
@@ -167,9 +172,9 @@ public class TransactionService {
      * Проверяет достаточность средств. Если средств недостаточно, транзакция отменяется.
      *
      * @param fromAccount счет, с которого списываются средства
-     * @param transactionType тип операции ({@code TRANSFER} или {@code WITHDRAW})
+     * @param transactionType тип операции ({@link TransactionType#TRANSFER} или {@code {@link TransactionType#WITHDRAW}})
      * @param amount сумма
-     * @param toAccount счет-получатель (для {@code TRANSFER}) или null (для {@code WITHDRAW})
+     * @param toAccount счет-получатель (для {@link TransactionType#TRANSFER}) или null (для {@link TransactionType#WITHDRAW})
      *
      * @return статус транзакции
      *
@@ -184,7 +189,13 @@ public class TransactionService {
             Account toAccount)
     {
         TransactionStatus status;
-        Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
+
+        Transaction transaction = new Transaction.Builder()
+                .setFromAccount(fromAccount)
+                .setTransactionType(transactionType)
+                .setAmount(amount)
+                .setToAccount(toAccount)
+                .build();
 
         if (fromAccount.getBalance() >= amount) {
             if (transactionType.hasToAccount()) {

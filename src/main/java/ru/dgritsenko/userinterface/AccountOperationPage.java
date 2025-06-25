@@ -169,5 +169,4 @@ public class AccountOperationPage extends Page {
         String operationHeader = MessageFormat.format("\n\tВыполняемая операция: {0}", transactionType);
         System.out.println(operationHeader);
     }
-
 }

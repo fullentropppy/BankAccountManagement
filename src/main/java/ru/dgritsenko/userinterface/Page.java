@@ -115,7 +115,6 @@ public abstract class Page {
             System.out.print(actionMsg);
 
             boolean hasNextDouble = scanner.hasNextDouble();
-
             if (hasNextDouble) {
                 amount = scanner.nextDouble();
             }
@@ -151,7 +150,6 @@ public abstract class Page {
             System.out.print(actionMsg);
 
             boolean hasNextInt = scanner.hasNextInt();
-
             if (hasNextInt) {
                 option = scanner.nextInt();
             }

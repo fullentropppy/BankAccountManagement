@@ -39,7 +39,6 @@ public class AccountListPage extends Page {
         StringBuilder pageMenuOptions = new StringBuilder();
 
         int i = 1;
-
         for (Account account : bankService.getAccounts()) {
             String accountOption = MessageFormat.format("\n\t{0}. {1}", i, account);
             pageMenuOptions.append(accountOption);

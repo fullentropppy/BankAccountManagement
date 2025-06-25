@@ -52,7 +52,6 @@ public class AccountOperationPage extends Page {
         super.setMenu(menu);
 
         int option = super.getOptionFromMenu("Введите номер пункта");
-
         switch (option) {
             case 1 -> processOperationWithOnlyFromAccount(TransactionType.DEPOSIT);
             case 2 -> processOperationWithToAccount(TransactionType.TRANSFER);
@@ -76,19 +75,7 @@ public class AccountOperationPage extends Page {
     private void processOperationWithOnlyFromAccount(TransactionType transactionType) {
         printNewPageHeader();
         printOperationHeader(transactionType);
-
-        Account currentFromAccount = super.consoleService.getCurrentFromAccount();
-        double amount = super.getAmount("Введите сумму операции (или 0 для отмены)");
-
-        if (amount > 0) {
-            TransactionStatus result = bankService.performTransaction(transactionType, currentFromAccount, amount);
-
-            String resultMessage = MessageFormat.format("\nСтатус транзакции: {0}", result);
-            System.out.println(resultMessage);
-
-            super.waitForInputToContinue("Нажмите Enter для продолжения");
-        }
-
+        processOperation(transactionType, null);
         super.consoleService.showAccountOperationPage();
     }
 
@@ -101,17 +88,78 @@ public class AccountOperationPage extends Page {
         printNewPageHeader();
         printOperationHeader(transactionType);
 
+        Account toAccount = getToAccount();
+        if (toAccount != null) {
+            processOperation(transactionType, toAccount);
+        }
+
+        super.consoleService.showAccountOperationPage();
+    }
+
+    private void processOperation(TransactionType transactionType, Account toAccount) {
+        double amount = getAmount("Введите сумму операции (или 0 для отмены)");
+        if (amount > 0) {
+            Account currentFromAccount = super.consoleService.getCurrentFromAccount();
+            TransactionStatus result;
+
+            if (toAccount == null) {
+                result = bankService.performTransaction(transactionType, currentFromAccount, amount);
+            } else {
+                result = bankService.performTransaction(transactionType, currentFromAccount, amount, toAccount);
+            }
+
+            String resultMsg = MessageFormat.format("\nСтатус транзакции: {0}", result);
+            System.out.println(resultMsg);
+            super.waitForInputToContinue("Нажмите Enter для продолжения");
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. MISC
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Выводит заголовок страницы операций со счетом.
+     */
+    private void printNewPageHeader() {
+        Account currentFromAccount = super.consoleService.getCurrentFromAccount();
+
+        String title = MessageFormat.format(
+                "Операции со счетом: {0}, баланс: {1}",
+                currentFromAccount, currentFromAccount.getBalance()
+        );
+
+        super.setHeader(title);
+    }
+
+    /**
+     * Выводит заголовок выполняемой операции со счетом.
+     *
+     * @param transactionType тип выполняемой операции
+     */
+    private void printOperationHeader(TransactionType transactionType) {
+        String operationHeader = MessageFormat.format("\n\tВыполняемая операция: {0}", transactionType);
+        System.out.println(operationHeader);
+    }
+
+    /**
+     * Выводит меню с выбором счета получателя.
+     *
+     * @return выбранный счет, иначе {@code null}
+     */
+    private Account getToAccount() {
+        Account toAccount = null;
+
+        Account currentFromAccount = super.consoleService.getCurrentFromAccount();
         List<Account> availableAccounts = new ArrayList<>();
         StringBuilder toAccountOptions = new StringBuilder();
 
-        Account currentFromAccount = super.consoleService.getCurrentFromAccount();
-
         int i = 1;
-
-        for (Account toAccount : bankService.getAccounts()) {
-            if (!(currentFromAccount == toAccount)) {
-                availableAccounts.add(toAccount);
-                String accountOption = MessageFormat.format("\n\t{0}. {1}", i, toAccount);
+        for (Account account : bankService.getAccounts()) {
+            // Пропуск текущего счета
+            if (!(currentFromAccount == account)) {
+                availableAccounts.add(account);
+                String accountOption = MessageFormat.format("\n\t{0}. {1}", i, account);
                 toAccountOptions.append(accountOption);
                 i++;
             }
@@ -120,7 +168,6 @@ public class AccountOperationPage extends Page {
         if (toAccountOptions.isEmpty()) {
             String missingMsg = "\n\tСписок получателей пуст...";
             System.out.println(missingMsg);
-
             super.waitForInputToContinue("Нажмите Enter для продолжения");
         } else {
             String cancellationOption = MessageFormat.format("\n\n\t{0}. Отмена", i);
@@ -130,49 +177,11 @@ public class AccountOperationPage extends Page {
             super.setMenu(pageMenu);
 
             int option = super.getOptionFromMenu("Введите номер получателя");
-
-            if (option < bankService.getNumberOfAccounts()) {
-                Account toAccount = availableAccounts.get(option - 1);
-                double amount = getAmount("Введите сумму операции (или 0 для отмены)");
-
-                if (amount > 0) {
-                    TransactionStatus result = bankService.performTransaction(
-                            transactionType, currentFromAccount, amount, toAccount
-                    );
-
-                    String resultMessage = MessageFormat.format("\nСтатус транзакции: {0}", result);
-                    System.out.println(resultMessage);
-
-                    super.waitForInputToContinue("Нажмите Enter для продолжения");
-                }
+            if (option > 0 && option < bankService.getNumberOfAccounts()) {
+                toAccount = availableAccounts.get(option - 1);
             }
         }
 
-        super.consoleService.showAccountOperationPage();
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. MISC
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Выводит заголовок страницы операций со счетом, содержащий:
-     * - Название страницы
-     * - Информацию о текущем счете
-     * - Текущий баланс счета
-     */
-    private void printNewPageHeader() {
-        Account currentFromAccount = super.consoleService.getCurrentFromAccount();
-
-        String title = MessageFormat.format(
-                "Операции со счетом: {0}, баланс: {1}",
-                currentFromAccount, currentFromAccount.getBalance()
-        );
-        super.setHeader(title);
-    }
-
-    private void printOperationHeader(TransactionType transactionType) {
-        String operationHeader = MessageFormat.format("\n\tВыполняемая операция: {0}", transactionType);
-        System.out.println(operationHeader);
+        return toAccount;
     }
 }

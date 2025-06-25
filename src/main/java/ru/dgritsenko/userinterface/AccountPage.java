@@ -4,7 +4,6 @@ package ru.dgritsenko.userinterface;
  * Класс представляет страницу со списком всех банковских счетов.
  */
 public class AccountPage extends Page {
-
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
@@ -35,7 +34,6 @@ public class AccountPage extends Page {
         super.setMenu(menu);
 
         int option = super.getOptionFromMenu("Введите номер пункта");
-
         switch (option) {
             case 1 -> super.consoleService.showAccountCreatingPage();
             case 2 -> super.consoleService.showAccountListPage();

@@ -4,7 +4,6 @@ package ru.dgritsenko.userinterface;
  * Класс представляет главную страницу банковского приложения.
  */
 public class MainPage extends Page {
-
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
@@ -35,7 +34,6 @@ public class MainPage extends Page {
         super.setMenu(menu);
 
         int option = super.getOptionFromMenu("Введите номер пункта");
-
         switch (option) {
             case 1 -> super.consoleService.showAccountPage();
             case 2 -> super.consoleService.showTransactionPage();

@@ -84,7 +84,6 @@ public class AccountCreatingPage extends Page {
         super.setMenu(menu);
 
         int option = super.getOptionFromMenu("Введите номер пункта");
-
         switch (option) {
             case 1 -> super.consoleService.showAccountCreatingPage();
             case 2 -> super.consoleService.showAccountOperationPage();

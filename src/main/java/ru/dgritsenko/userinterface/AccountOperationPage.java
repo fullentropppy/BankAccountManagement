@@ -78,13 +78,17 @@ public class AccountOperationPage extends Page {
         printOperationHeader(transactionType);
 
         Account currentFromAccount = super.consoleService.getCurrentFromAccount();
-        double amount = super.getAmount("Введите сумму операции");
-        TransactionStatus result = bankService.performTransaction(transactionType, currentFromAccount, amount);
+        double amount = super.getAmount("Введите сумму операции (или 0 для отмены)");
 
-        String resultMessage = MessageFormat.format("\nСтатус транзакции: {0}", result);
-        System.out.println(resultMessage);
+        if (amount > 0) {
+            TransactionStatus result = bankService.performTransaction(transactionType, currentFromAccount, amount);
 
-        super.waitForInputToContinue("Нажмите Enter для продолжения");
+            String resultMessage = MessageFormat.format("\nСтатус транзакции: {0}", result);
+            System.out.println(resultMessage);
+
+            super.waitForInputToContinue("Нажмите Enter для продолжения");
+        }
+
         super.consoleService.showAccountOperationPage();
     }
 
@@ -129,16 +133,18 @@ public class AccountOperationPage extends Page {
 
             if (option < bankService.getNumberOfAccounts()) {
                 Account toAccount = availableAccounts.get(option - 1);
-                double amount = getAmount("Введите сумму операции");
+                double amount = getAmount("Введите сумму операции (или 0 для отмены)");
 
-                TransactionStatus result = bankService.performTransaction(
-                        transactionType, currentFromAccount, amount, toAccount
-                );
+                if (amount > 0) {
+                    TransactionStatus result = bankService.performTransaction(
+                            transactionType, currentFromAccount, amount, toAccount
+                    );
 
-                String resultMessage = MessageFormat.format("\nСтатус транзакции: {0}", result);
-                System.out.println(resultMessage);
+                    String resultMessage = MessageFormat.format("\nСтатус транзакции: {0}", result);
+                    System.out.println(resultMessage);
 
-                super.waitForInputToContinue("Нажмите Enter для продолжения");
+                    super.waitForInputToContinue("Нажмите Enter для продолжения");
+                }
             }
         }
 

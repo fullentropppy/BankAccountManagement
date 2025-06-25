@@ -37,35 +37,59 @@ public class AccountCreatingPage extends Page {
     public void show() {
         super.setHeader("Создание счета");
 
-        System.out.print("\n> Введите на латинице фамилию и первую буку имени владельца нового счета: ");
+        String actionMsg = "\n> Введите на латинице фамилию и первую буку имени владельца счета " +
+                "(или '-' для отмены): ";
+        System.out.print(actionMsg);
+
         Scanner fromAccountHolderNameScanner = new Scanner(System.in);
         String fromAccountHolderName = fromAccountHolderNameScanner.nextLine();
 
-        try {
-            Account account = bankService.createAccount(fromAccountHolderName);
-            super.consoleService.setCurrentFromAccount(account);
+        if (fromAccountHolderName.equals("-")) {
+            super.consoleService.showAccountPage();
+        } else {
+            createAccountAndShowResult(fromAccountHolderName);
+        }
+    }
 
-            String menu = MessageFormat.format("""
+    // -----------------------------------------------------------------------------------------------------------------
+    // MISC
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Выполняет попытку создания нового счета и выводит результат в случае успеха.
+     *
+     * @param fromAccountHolderName имя владельца создаваемого счета
+     */
+    private void createAccountAndShowResult(String fromAccountHolderName) {
+        Account account;
+
+        try {
+            account = bankService.createAccount(fromAccountHolderName);
+        } catch (Exception exception) {
+            super.printError(exception.getMessage(), "Нажмите Enter для возврата на страницу счетов");
+            super.consoleService.showAccountPage();
+            return;
+        }
+
+        super.consoleService.setCurrentFromAccount(account);
+
+        String menu = MessageFormat.format("""
                 \n\tСоздан новый счет: {0}
-                
+               
                 \t1. Создать еще
                 \t2. Операции
                 \t3. Список счетов
                 \t4. Главное меню""",
-                    account);
-            super.setMenu(menu);
+                account);
+        super.setMenu(menu);
 
-            int option = super.getOptionFromMenu("Введите номер пункта");
+        int option = super.getOptionFromMenu("Введите номер пункта");
 
-            switch (option) {
-                case 1 -> super.consoleService.showAccountCreatingPage();
-                case 2 -> super.consoleService.showAccountOperationPage();
-                case 3 -> super.consoleService.showAccountListPage();
-                default -> super.consoleService.showMainPage();
-            };
-        } catch (Exception exception) {
-            super.printError(exception.getMessage(), "Нажмите Enter для возврата на страницу счетов");
-            super.consoleService.showAccountPage();
+        switch (option) {
+            case 1 -> super.consoleService.showAccountCreatingPage();
+            case 2 -> super.consoleService.showAccountOperationPage();
+            case 3 -> super.consoleService.showAccountListPage();
+            default -> super.consoleService.showMainPage();
         }
     }
 }

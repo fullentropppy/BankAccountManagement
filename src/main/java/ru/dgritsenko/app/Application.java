@@ -1,9 +1,9 @@
 package ru.dgritsenko.app;
 
 import ru.dgritsenko.bank.BankService;
-import ru.dgritsenko.data.DataStorage;
-import ru.dgritsenko.data.FileService;
-import ru.dgritsenko.userinterface.ConsoleUI;
+import ru.dgritsenko.datastorage.DataStorage;
+import ru.dgritsenko.datastorage.FileService;
+import ru.dgritsenko.userinterface.console.ConsoleUIService;
 import ru.dgritsenko.userinterface.UserInterface;
 
 /**
@@ -23,7 +23,7 @@ public class Application {
         BankService bankService = new BankService(dataStorage);
 
         // Сервис для взаимодействия с пользователем
-        UserInterface userInterface = new ConsoleUI(bankService);
+        UserInterface userInterface = new ConsoleUIService(bankService);
         userInterface.run();
     }
 }

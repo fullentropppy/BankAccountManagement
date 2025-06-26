@@ -1,4 +1,4 @@
-package ru.dgritsenko.userinterface;
+package ru.dgritsenko.userinterface.console;
 
 import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.BankService;
@@ -17,11 +17,11 @@ public class TransactionPage extends Page {
     /**
      * Создает страницу транзакций с указанным сервисом консоли.
      *
-     * @param consoleUI сервис для работы с консолью
+     * @param consoleUIService сервис для работы с консолью
      */
-    public TransactionPage(ConsoleUI consoleUI) {
-        super(consoleUI);
-        this.bankService = consoleUI.getBankService();
+    public TransactionPage(ConsoleUIService consoleUIService) {
+        super(consoleUIService);
+        this.bankService = consoleUIService.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -48,6 +48,6 @@ public class TransactionPage extends Page {
         }
 
         super.waitForInputToContinue("Нажмите Enter для возврата в главное меню");
-        super.consoleUI.showMainPage();
+        super.consoleUIService.showMainPage();
     }
 }

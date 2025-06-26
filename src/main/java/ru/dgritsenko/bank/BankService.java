@@ -1,7 +1,8 @@
 package ru.dgritsenko.bank;
 
-import ru.dgritsenko.data.DataStorage;
+import ru.dgritsenko.datastorage.DataStorage;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -37,13 +38,23 @@ public class BankService {
     // METHODS. MAIN
     // -----------------------------------------------------------------------------------------------------------------
 
-    public void loadAccounts() {
-        List<Account> loadedAccounts = dataStorage.loadedAccounts();
-        //accounts.clear();
+    /**
+     * Загружает данные списка счетов в {@code accounts}.
+     *
+     * @throws IOException если произошла ошибка ввода-вывода при чтении файла
+     * @throws ClassNotFoundException если класс объекта в файле не найден
+     */
+    public void loadAccounts() throws IOException, ClassNotFoundException {
+        List<Account> loadedAccounts = dataStorage.loadAccounts();
         accounts.addAll(loadedAccounts);
     }
 
-    public void saveAccounts() {
+    /**
+     * Сохраняет данные списка счетов {@code accounts}.
+     *
+     * @throws IOException если произошла ошибка ввода-вывода при записи файла
+     */
+    public void saveAccounts() throws IOException {
         dataStorage.saveAccounts(accounts);
     }
 

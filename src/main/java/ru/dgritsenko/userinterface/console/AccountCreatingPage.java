@@ -1,4 +1,4 @@
-package ru.dgritsenko.userinterface;
+package ru.dgritsenko.userinterface.console;
 
 import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.BankService;
@@ -18,11 +18,11 @@ public class AccountCreatingPage extends Page {
     /**
      * Создает страницу создания счета с указанным сервисом консоли.
      *
-     * @param consoleUI сервис для работы с консолью
+     * @param consoleUIService сервис для работы с консолью
      */
-    public AccountCreatingPage(ConsoleUI consoleUI) {
-        super(consoleUI);
-        this.bankService = consoleUI.getBankService();
+    public AccountCreatingPage(ConsoleUIService consoleUIService) {
+        super(consoleUIService);
+        this.bankService = consoleUIService.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public class AccountCreatingPage extends Page {
         String fromAccountHolderName = super.getString(actionMsg, "-");
 
         if (fromAccountHolderName.equals("-")) {
-            super.consoleUI.showAccountPage();
+            super.consoleUIService.showAccountPage();
         } else {
             createAccountAndShowResult(fromAccountHolderName);
         }
@@ -62,11 +62,11 @@ public class AccountCreatingPage extends Page {
             account = bankService.createAccount(fromAccountHolderName);
         } catch (Exception exception) {
             super.printError(exception.getMessage(), "Нажмите Enter для возврата на страницу счетов");
-            super.consoleUI.showAccountPage();
+            super.consoleUIService.showAccountPage();
             return;
         }
 
-        super.consoleUI.setCurrentFromAccount(account);
+        super.consoleUIService.setCurrentFromAccount(account);
 
         String menu = MessageFormat.format("""
                 \n\tСоздан новый счет: {0}
@@ -80,10 +80,10 @@ public class AccountCreatingPage extends Page {
 
         int option = super.getOptionFromMenu("Введите номер пункта");
         switch (option) {
-            case 1 -> super.consoleUI.showAccountCreatingPage();
-            case 2 -> super.consoleUI.showAccountOperationPage();
-            case 3 -> super.consoleUI.showAccountListPage();
-            default -> super.consoleUI.showMainPage();
+            case 1 -> super.consoleUIService.showAccountCreatingPage();
+            case 2 -> super.consoleUIService.showAccountOperationPage();
+            case 3 -> super.consoleUIService.showAccountListPage();
+            default -> super.consoleUIService.showMainPage();
         }
     }
 }

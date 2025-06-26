@@ -1,4 +1,4 @@
-package ru.dgritsenko.userinterface;
+package ru.dgritsenko.userinterface.console;
 
 /**
  * Класс представляет главную страницу банковского приложения.
@@ -11,10 +11,10 @@ public class MainPage extends Page {
     /**
      * Создает главную страницу с указанным сервисом консоли.
      *
-     * @param consoleUI сервис для работы с консолью
+     * @param consoleUIService сервис для работы с консолью
      */
-    public MainPage(ConsoleUI consoleUI) {
-        super(consoleUI);
+    public MainPage(ConsoleUIService consoleUIService) {
+        super(consoleUIService);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -36,8 +36,8 @@ public class MainPage extends Page {
 
         int option = super.getOptionFromMenu("Введите номер пункта");
         switch (option) {
-            case 1 -> super.consoleUI.showAccountPage();
-            case 2 -> super.consoleUI.showTransactionPage();
+            case 1 -> super.consoleUIService.showAccountPage();
+            case 2 -> super.consoleUIService.showTransactionPage();
             default -> {
                 return;
             }

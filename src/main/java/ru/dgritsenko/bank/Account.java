@@ -1,5 +1,7 @@
 package ru.dgritsenko.bank;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.Objects;
 import java.util.Collections;
@@ -14,14 +16,17 @@ import java.util.regex.Pattern;
  * <p>Содержит информацию о владельце счета, номере счета, списке транзакций и балансе.
  * <p>Создание объекта выполняется через {@link Builder}.
  */
-public class Account {
+public class Account implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private final long accountNumber;
     private String holderName;
     private final List<Transaction> transactions;
 
     // Кэширование баланса
-    private double cachedBalance;
-    private boolean balanceIsValid;
+    private transient double cachedBalance;
+    private transient boolean balanceIsValid;
 
     // -----------------------------------------------------------------------------------------------------------------
     // OVERRIDDEN

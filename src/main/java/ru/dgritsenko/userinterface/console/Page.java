@@ -1,4 +1,4 @@
-package ru.dgritsenko.userinterface;
+package ru.dgritsenko.userinterface.console;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * <p>Содержит общие методы для работы с консольным вводом/выводом.
  */
 public abstract class Page {
-    protected final ConsoleService consoleService;
+    protected final ConsoleUIService consoleUIService;
     private final List<Integer> validOptions = new ArrayList<>();
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -23,10 +23,10 @@ public abstract class Page {
     /**
      * Создает базовую страницу с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUIService сервис для работы с консолью
      */
-    public Page(ConsoleService consoleService) {
-        this.consoleService = consoleService;
+    public Page(ConsoleUIService consoleUIService) {
+        this.consoleUIService = consoleUIService;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

@@ -1,5 +1,7 @@
 package ru.dgritsenko.bank;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.text.MessageFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -11,7 +13,10 @@ import java.util.UUID;
  * <p>Содержит информацию о типе, сумме, участниках, статусе и дате транзакции.
  * <p>Создание объекта выполняется через {@link Builder}.
  */
-public class Transaction {
+public class Transaction implements Serializable {
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     private final UUID uuid;
     private final LocalDateTime date;
     private final Account fromAccount;

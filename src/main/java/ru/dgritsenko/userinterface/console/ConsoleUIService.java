@@ -1,15 +1,18 @@
-package ru.dgritsenko.userinterface;
+package ru.dgritsenko.userinterface.console;
 
 import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.BankService;
+import ru.dgritsenko.userinterface.UserInterface;
 
-import java.lang.reflect.Field;
+import java.io.IOException;
+import java.text.MessageFormat;
+import java.util.Scanner;
 
 /**
  * Класс для обработки взаимодействия с пользователем через консоль.
  * <p>Реализует пользовательский интерфейс банковского приложения.
  */
-public class ConsoleService {
+public class ConsoleUIService implements UserInterface {
     private final BankService bankService;
     private Account currentFromAccount;
 
@@ -30,7 +33,7 @@ public class ConsoleService {
      *
      * @param bankService сервис для работы с банковскими операциями
      */
-    public ConsoleService(BankService bankService) {
+    public ConsoleUIService(BankService bankService) {
         this.bankService = bankService;
     }
 
@@ -38,11 +41,6 @@ public class ConsoleService {
     // SETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Устанавливает текущий обрабатываемый счет.
-     *
-     * @param currentFromAccount счет
-     */
     public void setCurrentFromAccount(Account currentFromAccount) {
         this.currentFromAccount = currentFromAccount;
     }
@@ -51,20 +49,10 @@ public class ConsoleService {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает сервис для работы с банковскими операциями.
-     *
-     * @return сервис банка
-     */
     public BankService getBankService() {
         return bankService;
     }
 
-    /**
-     * Возвращает текущий выбранный счет для операций.
-     *
-     * @return текущий счет
-     */
     public Account getCurrentFromAccount() {
         return currentFromAccount;
     }
@@ -75,9 +63,36 @@ public class ConsoleService {
 
     /**
      * Запускает главный цикл обработки пользовательского ввода.
+     * Перед запуском загружает ранее сохраненные данные,
+     * перед завершением сохраняет измененные данные.
      */
+    @Override
     public void run() {
+        Scanner scanner = new Scanner(System.in);
+
+        try {
+            bankService.loadAccounts();
+        } catch (Exception exception) {
+            String errMsg = MessageFormat.format("Не удалось загрузить сохраненные данные: {0}" +
+                    "\nНажмите Enter чтобы продолжить работу без начальных данных...",
+                    exception.getMessage()
+            );
+            System.out.println(errMsg);
+            scanner.nextLine();
+        }
+
         showMainPage();
+
+        try {
+            bankService.saveAccounts();
+        } catch (IOException exception) {
+            String errMsg = MessageFormat.format("Не удалось сохранить данные: {0}" +
+                    "\nНажмите Enter чтобы завершить работу с потерей данных...",
+                    exception.getMessage()
+            );
+            System.out.println(errMsg);
+            scanner.nextLine();
+        }
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -91,7 +106,6 @@ public class ConsoleService {
         if (mainPage == null) {
             mainPage = new MainPage(this);
         }
-
         mainPage.show();
     }
 
@@ -102,7 +116,6 @@ public class ConsoleService {
         if (accountPage == null) {
             accountPage = new AccountPage(this);
         }
-
         accountPage.show();
     }
 
@@ -113,7 +126,6 @@ public class ConsoleService {
         if (accountCreatingPage == null) {
             accountCreatingPage = new AccountCreatingPage(this);
         }
-
         accountCreatingPage.show();
     }
 
@@ -124,7 +136,6 @@ public class ConsoleService {
         if (accountListPage == null) {
             accountListPage = new AccountListPage(this);
         }
-
         accountListPage.show();
     }
 
@@ -135,7 +146,6 @@ public class ConsoleService {
         if (accountOperationPage == null) {
             accountOperationPage = new AccountOperationPage(this);
         }
-
         accountOperationPage.show();
     }
 
@@ -146,7 +156,6 @@ public class ConsoleService {
         if (accountTransactionPage == null) {
             accountTransactionPage = new AccountTransactionPage(this);
         }
-
         accountTransactionPage.show();
     }
 
@@ -157,7 +166,6 @@ public class ConsoleService {
         if (transactionPage == null) {
             transactionPage = new TransactionPage(this);
         }
-
         transactionPage.show();
     }
 }

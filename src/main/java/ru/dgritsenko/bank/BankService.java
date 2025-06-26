@@ -1,5 +1,8 @@
 package ru.dgritsenko.bank;
 
+import ru.dgritsenko.datastorage.DataStorage;
+
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -8,11 +11,52 @@ import java.util.List;
  * Сервис для управления банковскими счетами и транзакциями.
  */
 public class BankService {
-    private final List<Account> accounts = new ArrayList<>();
+    private final DataStorage dataStorage;
+    private final List<Account> accounts;
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Создает сервис банковского приложения и загружает сохраненные данные.
+     */
+    public BankService(DataStorage dataStorage) {
+        this.dataStorage = dataStorage;
+        this.accounts = new ArrayList<>();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public List<Account> getAccounts() {
+        return Collections.unmodifiableList(accounts);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. MAIN
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Загружает данные списка счетов в {@code accounts}.
+     *
+     * @throws IOException если произошла ошибка ввода-вывода при чтении файла
+     * @throws ClassNotFoundException если класс объекта в файле не найден
+     */
+    public void loadAccounts() throws IOException, ClassNotFoundException {
+        List<Account> loadedAccounts = dataStorage.loadAccounts();
+        accounts.addAll(loadedAccounts);
+    }
+
+    /**
+     * Сохраняет данные списка счетов {@code accounts}.
+     *
+     * @throws IOException если произошла ошибка ввода-вывода при записи файла
+     */
+    public void saveAccounts() throws IOException {
+        dataStorage.saveAccounts(accounts);
+    }
 
     /**
      * Создает новый счет, добавляет в список и возвращает его.
@@ -26,14 +70,6 @@ public class BankService {
         Account account = new Account.Builder().setHolderName(holderName).build();
         accounts.add(account);
         return account;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    public List<Account> getAccounts() {
-        return Collections.unmodifiableList(accounts);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

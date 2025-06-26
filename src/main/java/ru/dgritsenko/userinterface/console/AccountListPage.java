@@ -1,4 +1,4 @@
-package ru.dgritsenko.userinterface;
+package ru.dgritsenko.userinterface.console;
 
 import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.BankService;
@@ -18,11 +18,11 @@ public class AccountListPage extends Page {
     /**
      * Создает страницу списка счетов с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUIService сервис для работы с консолью
      */
-    public AccountListPage(ConsoleService consoleService) {
-        super(consoleService);
-        this.bankService = consoleService.getBankService();
+    public AccountListPage(ConsoleUIService consoleUIService) {
+        super(consoleUIService);
+        this.bankService = consoleUIService.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ public class AccountListPage extends Page {
         if (pageMenuOptions.isEmpty()) {
             System.out.println("\n\tСписок счетов пуст...");
             super.waitForInputToContinue("Нажмите Enter для возврата в меню счетов");
-            super.consoleService.showAccountPage();
+            super.consoleUIService.showAccountPage();
         } else {
             String goToMainMenuOption = MessageFormat.format("\n\n\t{0}. Меню счетов", i);
             pageMenuOptions.append(goToMainMenuOption);
@@ -61,10 +61,10 @@ public class AccountListPage extends Page {
 
             if (option < optionsAmount) {
                 Account currentFromAccount = bankService.getAccount(option - 1);
-                super.consoleService.setCurrentFromAccount(currentFromAccount);
-                super.consoleService.showAccountOperationPage();
+                super.consoleUIService.setCurrentFromAccount(currentFromAccount);
+                super.consoleUIService.showAccountOperationPage();
             } else if (option == optionsAmount) {
-                super.consoleService.showAccountPage();
+                super.consoleUIService.showAccountPage();
             }
         }
     }

@@ -1,6 +1,5 @@
 package ru.dgritsenko.userinterface.console;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ public abstract class Page {
      * @param title заголовок страницы
      */
     protected void setHeader(String title) {
-        clearText();
+        consoleUIService.clearText();
         printNewPageHeader(title);
     }
 
@@ -125,7 +124,7 @@ public abstract class Page {
      * @return введенная сумма
      */
     protected double getAmount(String actionTitle, boolean isCancellationAvail) {
-        double amount = 0;
+        double amount = -1;
 
         String cancellationOption = isCancellationAvail ? "0" : null;
         String actionMsg = getFormattedActionTitle(actionTitle, cancellationOption);
@@ -139,7 +138,7 @@ public abstract class Page {
                 amount = scanner.nextDouble();
             }
 
-            if (isCancellationAvail && amount < 0 || !isCancellationAvail && amount <= 0) {
+            if (!isCancellationAvail || amount < 0) {
                 System.out.println("\n! Ошибка: введите корректную сумму");
 
                 if (!hasNextDouble) {
@@ -215,7 +214,7 @@ public abstract class Page {
      * @param title заголовок страницы
      */
     private void printNewPageHeader(String title) {
-        clearText();
+        consoleUIService.clearText();
 
         String header = MessageFormat.format(
                 """
@@ -229,19 +228,6 @@ public abstract class Page {
     // -----------------------------------------------------------------------------------------------------------------
     // METHODS. CONSOLE. MISC
     // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Очищает консоль.
-     */
-    protected void clearText() {
-        try {
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                Runtime.getRuntime().exec("clear");
-            }
-        } catch (IOException | InterruptedException _) {}
-    }
 
     /**
      * Возвращает форматированную строку с предложением ввода.

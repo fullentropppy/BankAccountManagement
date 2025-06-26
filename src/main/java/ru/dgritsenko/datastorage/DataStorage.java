@@ -2,7 +2,6 @@ package ru.dgritsenko.datastorage;
 
 import ru.dgritsenko.bank.Account;
 
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.List;
 
@@ -18,12 +17,17 @@ public interface DataStorage {
      * Сохраняет список банковских счетов.
      *
      * @param accounts список счетов для сохранения
+     *
+     * @throws IOException если произошла ошибка ввода-вывода при записи файла
      */
     void saveAccounts(List<Account> accounts) throws IOException;
     /**
      * Загружает список банковских счетов.
      *
      * @return список загруженных счетов
+     *
+     * @throws IOException если произошла ошибка ввода-вывода при чтении файла
+     * @throws ClassNotFoundException если класс объекта в файле не найден
      */
     List<Account> loadAccounts() throws IOException, ClassNotFoundException;
 }

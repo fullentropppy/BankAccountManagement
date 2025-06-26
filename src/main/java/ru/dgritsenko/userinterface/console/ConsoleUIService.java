@@ -68,31 +68,9 @@ public class ConsoleUIService implements UserInterface {
      */
     @Override
     public void run() {
-        Scanner scanner = new Scanner(System.in);
-
-        try {
-            bankService.loadAccounts();
-        } catch (Exception exception) {
-            String errMsg = MessageFormat.format("Не удалось загрузить сохраненные данные: {0}" +
-                    "\nНажмите Enter чтобы продолжить работу без начальных данных...",
-                    exception.getMessage()
-            );
-            System.out.println(errMsg);
-            scanner.nextLine();
-        }
-
+        loadData();
         showMainPage();
-
-        try {
-            bankService.saveAccounts();
-        } catch (IOException exception) {
-            String errMsg = MessageFormat.format("Не удалось сохранить данные: {0}" +
-                    "\nНажмите Enter чтобы завершить работу с потерей данных...",
-                    exception.getMessage()
-            );
-            System.out.println(errMsg);
-            scanner.nextLine();
-        }
+        saveData();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -167,5 +145,62 @@ public class ConsoleUIService implements UserInterface {
             transactionPage = new TransactionPage(this);
         }
         transactionPage.show();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. MISC
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Очищает консоль.
+     */
+    protected void clearText() {
+        try {
+            if (System.getProperty("os.name").contains("Windows")) {
+                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+            } else {
+                Runtime.getRuntime().exec("clear");
+            }
+        } catch (IOException | InterruptedException _) {}
+    }
+
+    /**
+     * Загружает данные для работы.
+     */
+    private void loadData() {
+        clearText();
+
+        try {
+            bankService.loadAccounts();
+        } catch (Exception exception) {
+            String errMsg = MessageFormat.format("Не удалось загрузить сохраненные данные: {0}" +
+                            "\nНажмите Enter чтобы продолжить работу без начальных данных...",
+                    exception.getMessage()
+            );
+
+            System.out.println(errMsg);
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine();
+        }
+    }
+
+    /**
+     * Сохраняет данные по результату работы.
+     */
+    private void saveData() {
+        clearText();
+
+        try {
+            bankService.saveAccounts();
+        } catch (IOException exception) {
+            String errMsg = MessageFormat.format("Не удалось сохранить данные: {0}" +
+                            "\nНажмите Enter чтобы завершить работу с потерей данных...",
+                    exception.getMessage()
+            );
+
+            System.out.println(errMsg);
+            Scanner scanner = new Scanner(System.in);
+            scanner.nextLine();
+        }
     }
 }

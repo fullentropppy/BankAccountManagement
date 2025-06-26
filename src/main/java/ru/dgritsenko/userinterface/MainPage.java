@@ -11,10 +11,10 @@ public class MainPage extends Page {
     /**
      * Создает главную страницу с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUI сервис для работы с консолью
      */
-    public MainPage(ConsoleService consoleService) {
-        super(consoleService);
+    public MainPage(ConsoleUI consoleUI) {
+        super(consoleUI);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -36,11 +36,10 @@ public class MainPage extends Page {
 
         int option = super.getOptionFromMenu("Введите номер пункта");
         switch (option) {
-            case 1 -> super.consoleService.showAccountPage();
-            case 2 -> super.consoleService.showTransactionPage();
+            case 1 -> super.consoleUI.showAccountPage();
+            case 2 -> super.consoleUI.showTransactionPage();
             default -> {
-                super.consoleService.getBankService().saveData();
-                System.exit(0);
+                return;
             }
         };
     }

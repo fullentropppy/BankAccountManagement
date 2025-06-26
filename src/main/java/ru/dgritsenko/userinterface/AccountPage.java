@@ -11,10 +11,10 @@ public class AccountPage extends Page {
     /**
      * Создает страницу меню счетов с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUI сервис для работы с консолью
      */
-    public AccountPage(ConsoleService consoleService) {
-        super(consoleService);
+    public AccountPage(ConsoleUI consoleUI) {
+        super(consoleUI);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -36,9 +36,9 @@ public class AccountPage extends Page {
 
         int option = super.getOptionFromMenu("Введите номер пункта");
         switch (option) {
-            case 1 -> super.consoleService.showAccountCreatingPage();
-            case 2 -> super.consoleService.showAccountListPage();
-            default -> super.consoleService.showMainPage();
+            case 1 -> super.consoleUI.showAccountCreatingPage();
+            case 2 -> super.consoleUI.showAccountListPage();
+            default -> super.consoleUI.showMainPage();
         };
     }
 }

@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * <p>Содержит общие методы для работы с консольным вводом/выводом.
  */
 public abstract class Page {
-    protected final ConsoleService consoleService;
+    protected final ConsoleUI consoleUI;
     private final List<Integer> validOptions = new ArrayList<>();
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -23,10 +23,10 @@ public abstract class Page {
     /**
      * Создает базовую страницу с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUI сервис для работы с консолью
      */
-    public Page(ConsoleService consoleService) {
-        this.consoleService = consoleService;
+    public Page(ConsoleUI consoleUI) {
+        this.consoleUI = consoleUI;
     }
 
     // -----------------------------------------------------------------------------------------------------------------

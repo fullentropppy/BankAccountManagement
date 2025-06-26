@@ -18,11 +18,11 @@ public class AccountListPage extends Page {
     /**
      * Создает страницу списка счетов с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUI сервис для работы с консолью
      */
-    public AccountListPage(ConsoleService consoleService) {
-        super(consoleService);
-        this.bankService = consoleService.getBankService();
+    public AccountListPage(ConsoleUI consoleUI) {
+        super(consoleUI);
+        this.bankService = consoleUI.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ public class AccountListPage extends Page {
         if (pageMenuOptions.isEmpty()) {
             System.out.println("\n\tСписок счетов пуст...");
             super.waitForInputToContinue("Нажмите Enter для возврата в меню счетов");
-            super.consoleService.showAccountPage();
+            super.consoleUI.showAccountPage();
         } else {
             String goToMainMenuOption = MessageFormat.format("\n\n\t{0}. Меню счетов", i);
             pageMenuOptions.append(goToMainMenuOption);
@@ -61,10 +61,10 @@ public class AccountListPage extends Page {
 
             if (option < optionsAmount) {
                 Account currentFromAccount = bankService.getAccount(option - 1);
-                super.consoleService.setCurrentFromAccount(currentFromAccount);
-                super.consoleService.showAccountOperationPage();
+                super.consoleUI.setCurrentFromAccount(currentFromAccount);
+                super.consoleUI.showAccountOperationPage();
             } else if (option == optionsAmount) {
-                super.consoleService.showAccountPage();
+                super.consoleUI.showAccountPage();
             }
         }
     }

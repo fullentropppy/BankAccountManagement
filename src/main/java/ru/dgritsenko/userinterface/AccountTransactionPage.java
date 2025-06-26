@@ -16,10 +16,10 @@ public class AccountTransactionPage extends Page {
     /**
      * Создает страницу транзакций счета с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUI сервис для работы с консолью
      */
-    public AccountTransactionPage(ConsoleService consoleService) {
-        super(consoleService);
+    public AccountTransactionPage(ConsoleUI consoleUI) {
+        super(consoleUI);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -31,7 +31,7 @@ public class AccountTransactionPage extends Page {
      */
     @Override
     public void show() {
-        Account currentFromAccount = super.consoleService.getCurrentFromAccount();
+        Account currentFromAccount = super.consoleUI.getCurrentFromAccount();
         String title = MessageFormat.format("Транзакции счета {0}", currentFromAccount);
         super.setHeader(title);
 
@@ -39,6 +39,6 @@ public class AccountTransactionPage extends Page {
         AccountPrinter.printTransactions(currentFromAccount);
 
         super.waitForInputToContinue("Нажмите Enter для возврата в меню операций со счетом");
-        super.consoleService.showAccountOperationPage();
+        super.consoleUI.showAccountOperationPage();
     }
 }

@@ -1,7 +1,8 @@
 package ru.dgritsenko.bank;
 
-import ru.dgritsenko.data.FileService;
+import ru.dgritsenko.data.DataStorage;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * Сервис для управления банковскими счетами и транзакциями.
  */
 public class BankService {
+    private final DataStorage dataStorage;
     private final List<Account> accounts;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -18,8 +20,9 @@ public class BankService {
     /**
      * Создает сервис банковского приложения и загружает сохраненные данные.
      */
-    public BankService() {
-        accounts = FileService.loadedAccounts();
+    public BankService(DataStorage dataStorage) {
+        this.dataStorage = dataStorage;
+        this.accounts = new ArrayList<>();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -34,8 +37,14 @@ public class BankService {
     // METHODS. MAIN
     // -----------------------------------------------------------------------------------------------------------------
 
-    public void saveData() {
-        FileService.saveAccounts(accounts);
+    public void loadAccounts() {
+        List<Account> loadedAccounts = dataStorage.loadedAccounts();
+        //accounts.clear();
+        accounts.addAll(loadedAccounts);
+    }
+
+    public void saveAccounts() {
+        dataStorage.saveAccounts(accounts);
     }
 
     /**

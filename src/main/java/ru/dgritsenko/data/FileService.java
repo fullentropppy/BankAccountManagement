@@ -10,13 +10,18 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FileService {
-    private static final String USER_DIR = System.getProperty("user.home");
-    private static final String DATA_DIR = USER_DIR + File.separator + "BAM" + File.separator + "Data";
-    private static final String ACCOUNTS_FILE = "accounts.data";
-    private static final String ACCOUNTS_DIR = DATA_DIR + File.separator + ACCOUNTS_FILE;
+public class FileService implements DataStorage {
+    private static final String DATA_DIR;
+    private static final String ACCOUNTS_DIR;
 
-    public static void saveAccounts(List<Account> accounts) {
+    static {
+        String homeDir = System.getProperty("user.home") + File.separator + "Documents";
+        DATA_DIR = homeDir + File.separator + "BAM" + File.separator + "Data";
+        ACCOUNTS_DIR = DATA_DIR + File.separator + "accounts.data";
+    }
+
+    @Override
+    public void saveAccounts(List<Account> accounts) {
         printProgress("Сохранение данных");
 
         try {
@@ -40,12 +45,13 @@ public class FileService {
         }
     }
 
-    public static List<Account> loadedAccounts() {
+    @Override
+    public List<Account> loadedAccounts() {
         List<Account> accounts = new ArrayList<>();
         printProgress("Загрузка данных из: " + DATA_DIR);
 
         try {
-            Path path = Paths.get(ACCOUNTS_DIR);
+            Path path = Paths.get(DATA_DIR);
             if (Files.exists(path) && Files.isReadable(path)) {
                 FileInputStream fis = new FileInputStream(ACCOUNTS_DIR);
                 ObjectInputStream ois = new ObjectInputStream(fis);

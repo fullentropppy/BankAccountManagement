@@ -17,11 +17,11 @@ public class TransactionPage extends Page {
     /**
      * Создает страницу транзакций с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUI сервис для работы с консолью
      */
-    public TransactionPage(ConsoleService consoleService) {
-        super(consoleService);
-        this.bankService = consoleService.getBankService();
+    public TransactionPage(ConsoleUI consoleUI) {
+        super(consoleUI);
+        this.bankService = consoleUI.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -48,6 +48,6 @@ public class TransactionPage extends Page {
         }
 
         super.waitForInputToContinue("Нажмите Enter для возврата в главное меню");
-        super.consoleService.showMainPage();
+        super.consoleUI.showMainPage();
     }
 }

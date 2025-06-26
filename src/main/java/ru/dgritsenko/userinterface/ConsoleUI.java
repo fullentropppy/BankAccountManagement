@@ -2,14 +2,13 @@ package ru.dgritsenko.userinterface;
 
 import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.BankService;
-
-import java.lang.reflect.Field;
+import ru.dgritsenko.data.DataStorage;
 
 /**
  * Класс для обработки взаимодействия с пользователем через консоль.
  * <p>Реализует пользовательский интерфейс банковского приложения.
  */
-public class ConsoleService {
+public class ConsoleUI implements UserInterface {
     private final BankService bankService;
     private Account currentFromAccount;
 
@@ -30,7 +29,7 @@ public class ConsoleService {
      *
      * @param bankService сервис для работы с банковскими операциями
      */
-    public ConsoleService(BankService bankService) {
+    public ConsoleUI(BankService bankService) {
         this.bankService = bankService;
     }
 
@@ -38,11 +37,6 @@ public class ConsoleService {
     // SETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Устанавливает текущий обрабатываемый счет.
-     *
-     * @param currentFromAccount счет
-     */
     public void setCurrentFromAccount(Account currentFromAccount) {
         this.currentFromAccount = currentFromAccount;
     }
@@ -51,20 +45,10 @@ public class ConsoleService {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает сервис для работы с банковскими операциями.
-     *
-     * @return сервис банка
-     */
     public BankService getBankService() {
         return bankService;
     }
 
-    /**
-     * Возвращает текущий выбранный счет для операций.
-     *
-     * @return текущий счет
-     */
     public Account getCurrentFromAccount() {
         return currentFromAccount;
     }
@@ -76,8 +60,11 @@ public class ConsoleService {
     /**
      * Запускает главный цикл обработки пользовательского ввода.
      */
+    @Override
     public void run() {
+        bankService.loadAccounts();
         showMainPage();
+        bankService.saveAccounts();
     }
 
     // -----------------------------------------------------------------------------------------------------------------

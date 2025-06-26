@@ -4,7 +4,6 @@ import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.BankService;
 
 import java.text.MessageFormat;
-import java.util.Scanner;
 
 /**
  * Класс представляет страницу создания нового банковского счета.
@@ -19,11 +18,11 @@ public class AccountCreatingPage extends Page {
     /**
      * Создает страницу создания счета с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUI сервис для работы с консолью
      */
-    public AccountCreatingPage(ConsoleService consoleService) {
-        super(consoleService);
-        this.bankService = consoleService.getBankService();
+    public AccountCreatingPage(ConsoleUI consoleUI) {
+        super(consoleUI);
+        this.bankService = consoleUI.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -41,7 +40,7 @@ public class AccountCreatingPage extends Page {
         String fromAccountHolderName = super.getString(actionMsg, "-");
 
         if (fromAccountHolderName.equals("-")) {
-            super.consoleService.showAccountPage();
+            super.consoleUI.showAccountPage();
         } else {
             createAccountAndShowResult(fromAccountHolderName);
         }
@@ -63,11 +62,11 @@ public class AccountCreatingPage extends Page {
             account = bankService.createAccount(fromAccountHolderName);
         } catch (Exception exception) {
             super.printError(exception.getMessage(), "Нажмите Enter для возврата на страницу счетов");
-            super.consoleService.showAccountPage();
+            super.consoleUI.showAccountPage();
             return;
         }
 
-        super.consoleService.setCurrentFromAccount(account);
+        super.consoleUI.setCurrentFromAccount(account);
 
         String menu = MessageFormat.format("""
                 \n\tСоздан новый счет: {0}
@@ -81,10 +80,10 @@ public class AccountCreatingPage extends Page {
 
         int option = super.getOptionFromMenu("Введите номер пункта");
         switch (option) {
-            case 1 -> super.consoleService.showAccountCreatingPage();
-            case 2 -> super.consoleService.showAccountOperationPage();
-            case 3 -> super.consoleService.showAccountListPage();
-            default -> super.consoleService.showMainPage();
+            case 1 -> super.consoleUI.showAccountCreatingPage();
+            case 2 -> super.consoleUI.showAccountOperationPage();
+            case 3 -> super.consoleUI.showAccountListPage();
+            default -> super.consoleUI.showMainPage();
         }
     }
 }

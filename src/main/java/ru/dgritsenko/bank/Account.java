@@ -56,29 +56,14 @@ public class Account {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает номер счета.
-     *
-     * @return номер счета
-     */
     public long getAccountNumber() {
         return accountNumber;
     }
 
-    /**
-     * Возвращает имя владельца счета.
-     *
-     * @return имя владельца счета
-     */
     public String getHolderName() {
         return holderName;
     }
 
-    /**
-     * Возвращает неизменяемый список транзакций по счету.
-     *
-     * @return неизменяемый список транзакций
-     */
     public List<Transaction> getTransactions() {
         return Collections.unmodifiableList(transactions);
     }
@@ -308,86 +293,13 @@ public class Account {
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. PRINTING
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Выводит информацию о текущем балансе счета.
-     */
-    public void printBalance() {
-        double balance = getBalance();
-        String msg = MessageFormat.format("Счет: {0}, баланс: {1}", this, balance);
-        System.out.println(msg);
-    }
-
-    /**
-     * Выводит список всех транзакций по счету.
-     */
-    public void printTransactions() {
-        String msg;
-
-        if (transactions.isEmpty()) {
-            msg = MessageFormat.format("Счет: {0}, список транзакций пуст...", this);
-        } else {
-            StringBuilder transactionsView = new StringBuilder();
-
-            String title = MessageFormat.format("Счет: {0}, транзакции:\n", this);
-            transactionsView.append(title);
-
-            int i = 1;
-
-            for (Transaction transaction : this.transactions) {
-                String transactionView = transactionView(transaction);
-
-                String transactionInfoTemplate = (i == 1)
-                        ? "\t{0} - {1}, операция: {2}, сумма {3}"
-                        : "\n\t{0} - {1}, операция: {2}, сумма {3}";
-                String transactionInfo = MessageFormat.format(transactionInfoTemplate,
-                        i, transaction, transactionView, transaction.getAmount()
-                );
-                transactionsView.append(transactionInfo);
-                i++;
-            }
-            msg = transactionsView.toString();
-        }
-        System.out.println(msg);
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // METHODS. MISC
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Формирует строковое представление операции транзакции.
-     *
-     * @param transaction транзакция для обработки
-     *
-     * @return строковое представление операции
-     */
-    private String transactionView(Transaction transaction) {
-        String operationView = transaction.getTransactionType().getTitle();
-
-        String extOperationViewTemplate = switch (transaction.getTransactionType()) {
-            case CREDIT -> "{0} (от: {1})";
-            case TRANSFER -> "{0} (кому: {1})";
-            default -> "";
-        };
-
-        if (!extOperationViewTemplate.isBlank()) {
-            operationView = MessageFormat.format(
-                    extOperationViewTemplate,
-                    operationView, transaction.getToAccount());
-        }
-
-        return operationView;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
     // BUILDER NESTED CLASS
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Вложенный статичный класс, представляющий построитель родительского класса {@link Account}.
+     * <p>Содержит поля идентичные полям родительского класса.
+     * Каждое поле имеет set-метод для установки значения.
      */
     public static class Builder {
         private long accountNumber;
@@ -409,49 +321,21 @@ public class Account {
         // BUILDER. SETTERS
         // -------------------------------------------------------------------------------------------------------------
 
-        /**
-         * Устанавливает номер счета.
-         *
-         * @param accountNumber номер счета
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setAccountNumber(long accountNumber) {
             this.accountNumber = accountNumber;
             return this;
         }
 
-        /**
-         * Устанавливает имя владельца.
-         *
-         * @param holderName имя владельца
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setHolderName(String holderName) {
             this.holderName = holderName;
             return this;
         }
 
-        /**
-         * Устанавливает список транзакций.
-         *
-         * @param transactions список транзакций
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setTransactions(List<Transaction> transactions) {
             this.transactions = transactions;
             return this;
         }
 
-        /**
-         * Добавляет транзакцию в список транзакций.
-         *
-         * @param transaction транзакция
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder addTransaction(Transaction transaction) {
             transactions.add(transaction);
             return this;
@@ -464,7 +348,7 @@ public class Account {
         /**
          * Валидирует значения полей и создает экземпляр основного класса {@link Account}.
          *
-         * @return новый счет
+         * @return новая транзакция
          */
         public Account build() {
             validate();
@@ -474,7 +358,7 @@ public class Account {
         /**
          * Создает без валидации экземпляр основного класса {@link Account}.
          *
-         * @return новый счет
+         * @return новая транзакция
          */
         public Account buildWithoutValidations() {
             return new Account(this);

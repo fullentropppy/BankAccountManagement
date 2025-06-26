@@ -97,7 +97,7 @@ public class AccountOperationPage extends Page {
     }
 
     private void processOperation(TransactionType transactionType, Account toAccount) {
-        double amount = getAmount("Введите сумму операции (или 0 для отмены)");
+        double amount = getAmount("Введите сумму операции", true);
         if (amount > 0) {
             Account currentFromAccount = super.consoleService.getCurrentFromAccount();
             TransactionStatus result;
@@ -166,8 +166,7 @@ public class AccountOperationPage extends Page {
         }
 
         if (toAccountOptions.isEmpty()) {
-            String missingMsg = "\n\tСписок получателей пуст...";
-            System.out.println(missingMsg);
+            System.out.println("\n\tСписок получателей пуст...");
             super.waitForInputToContinue("Нажмите Enter для продолжения");
         } else {
             String cancellationOption = MessageFormat.format("\n\n\t{0}. Отмена", i);

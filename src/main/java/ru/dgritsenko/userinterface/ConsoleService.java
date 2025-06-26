@@ -3,6 +3,8 @@ package ru.dgritsenko.userinterface;
 import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.BankService;
 
+import java.lang.reflect.Field;
+
 /**
  * Класс для обработки взаимодействия с пользователем через консоль.
  * <p>Реализует пользовательский интерфейс банковского приложения.

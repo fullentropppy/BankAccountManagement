@@ -32,11 +32,6 @@ public class BankService {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает неизменяемый список счетов.
-     *
-     * @return список счетов
-     */
     public List<Account> getAccounts() {
         return Collections.unmodifiableList(accounts);
     }

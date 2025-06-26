@@ -190,13 +190,6 @@ public class TransactionService {
     {
         TransactionStatus status;
 
-        Transaction transaction = new Transaction.Builder()
-                .setFromAccount(fromAccount)
-                .setTransactionType(transactionType)
-                .setAmount(amount)
-                .setToAccount(toAccount)
-                .build();
-
         if (fromAccount.getBalance() >= amount) {
             if (transactionType.hasToAccount()) {
                 status = credit(toAccount, amount, fromAccount);
@@ -207,7 +200,14 @@ public class TransactionService {
             status = TransactionStatus.CANCELED;
         }
 
-        transaction.setStatus(status);
+        Transaction transaction = new Transaction.Builder()
+                .setFromAccount(fromAccount)
+                .setTransactionType(transactionType)
+                .setAmount(amount)
+                .setToAccount(toAccount)
+                .setStatus(status)
+                .build();
+        
         fromAccount.addTransaction(transaction);
 
         return transaction.getStatus();

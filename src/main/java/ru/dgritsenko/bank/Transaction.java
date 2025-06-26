@@ -57,20 +57,10 @@ public class Transaction {
     // GETTERS
     // -----------------------------------------------------------------------------------------------------------------
 
-    /**
-     * Возвращает уникальный идентификатор транзакции.
-     *
-     * @return UUID транзакции
-     */
     public UUID getUuid() {
         return uuid;
     }
 
-    /**
-     * Возвращает дату и время транзакции.
-     *
-     * @return дата транзакции
-     */
     public LocalDateTime getDate() {
         return date;
     }
@@ -85,47 +75,22 @@ public class Transaction {
         return date.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 
-    /**
-     * Возвращает счет отправителя средств.
-     *
-     * @return счет отправителя
-     */
     public Account getFromAccount() {
         return fromAccount;
     }
 
-    /**
-     * Возвращает тип операции транзакции.
-     *
-     * @return тип транзакции
-     */
     public TransactionType getTransactionType() {
         return transactionType;
     }
 
-    /**
-     * Возвращает сумму транзакции.
-     *
-     * @return сумма транзакции
-     */
     public double getAmount() {
         return amount;
     }
 
-    /**
-     * Возвращает счет получателя средств.
-     *
-     * @return счет получателя (может быть {@code null})
-     */
     public Account getToAccount() {
         return toAccount;
     }
 
-    /**
-     * Возвращает текущий статус транзакции.
-     *
-     * @return статус транзакции
-     */
     public TransactionStatus getStatus() {
         return status;
     }
@@ -198,6 +163,8 @@ public class Transaction {
 
     /**
      * Вложенный статичный класс, представляющий построитель родительского класса {@link Transaction}.
+     * <p>Содержит поля идентичные полям родительского класса.
+     * Каждое поле имеет set-метод для установки значения.
      */
     public static class Builder {
         private UUID uuid;
@@ -219,85 +186,36 @@ public class Transaction {
             super();
         }
 
-        /**
-         * Устанавливает UUID транзакции.
-         *
-         * @param uuid UUID транзакции
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setUUID(UUID uuid) {
             this.uuid = uuid;
             return this;
         }
 
-        /**
-         * Устанавливает дату транзакции.
-         *
-         * @param date дата транзакции
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setDate(LocalDateTime date) {
             this.date = date;
             return this;
         }
 
-        /**
-         * Устанавливает счет отправителя в транзакции.
-         *
-         * @param fromAccount счет отправителя
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setFromAccount(Account fromAccount) {
             this.fromAccount = fromAccount;
             return this;
         }
 
-        /**
-         * Устанавливает тип транзакции.
-         *
-         * @param transactionType тип транзакции
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setTransactionType(TransactionType transactionType) {
             this.transactionType = transactionType;
             return this;
         }
 
-        /**
-         * Устанавливает сумму транзакции.
-         *
-         * @param amount сумма транзакции
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setAmount(double amount) {
             this.amount = amount;
             return this;
         }
 
-        /**
-         * Устанавливает счет получателя в транзакции.
-         *
-         * @param toAccount счет получателя в транзакции
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setToAccount(Account toAccount) {
             this.toAccount = toAccount;
             return this;
         }
 
-        /**
-         * Устанавливает статус транзакции.
-         *
-         * @param status статус транзакции
-         *
-         * @return экземпляр текущего класса
-         */
         public Builder setStatus(TransactionStatus status) {
             this.status = status;
             return this;

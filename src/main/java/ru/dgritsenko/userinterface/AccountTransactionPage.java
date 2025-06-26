@@ -1,6 +1,7 @@
 package ru.dgritsenko.userinterface;
 
 import ru.dgritsenko.bank.Account;
+import ru.dgritsenko.printer.AccountPrinter;
 
 import java.text.MessageFormat;
 
@@ -35,7 +36,7 @@ public class AccountTransactionPage extends Page {
         super.setHeader(title);
 
         System.out.println();
-        currentFromAccount.printTransactions();
+        AccountPrinter.printTransactions(currentFromAccount);
 
         super.waitForInputToContinue("Нажмите Enter для возврата в меню операций со счетом");
         super.consoleService.showAccountOperationPage();

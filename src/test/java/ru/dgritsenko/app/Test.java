@@ -2,6 +2,7 @@ package ru.dgritsenko.app;
 
 import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.TransactionService;
+import ru.dgritsenko.printer.AccountPrinter;
 
 import java.util.*;
 
@@ -82,8 +83,8 @@ public class Test {
      */
     private static void printAccountsInfo() {
         for (Account account : accounts.values()) {
-            account.printTransactions();
-            account.printBalance();
+            AccountPrinter.printTransactions(account);
+            AccountPrinter.printBalance(account);
             System.out.println();
         }
     }

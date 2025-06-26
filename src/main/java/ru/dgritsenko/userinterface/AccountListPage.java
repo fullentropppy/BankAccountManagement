@@ -46,9 +46,7 @@ public class AccountListPage extends Page {
         }
 
         if (pageMenuOptions.isEmpty()) {
-            String missingMsg = "\n\tСписок счетов пуст...";
-            System.out.println(missingMsg);
-
+            System.out.println("\n\tСписок счетов пуст...");
             super.waitForInputToContinue("Нажмите Enter для возврата в меню счетов");
             super.consoleService.showAccountPage();
         } else {

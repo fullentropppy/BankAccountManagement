@@ -37,12 +37,8 @@ public class AccountCreatingPage extends Page {
     public void show() {
         super.setHeader("Создание счета");
 
-        String actionMsg = "\n> Введите на латинице фамилию и первую буку имени владельца счета " +
-                "(или '-' для отмены): ";
-        System.out.print(actionMsg);
-
-        Scanner fromAccountHolderNameScanner = new Scanner(System.in);
-        String fromAccountHolderName = fromAccountHolderNameScanner.nextLine();
+        String actionMsg = "Введите на латинице фамилию и первую буку имени владельца счета";
+        String fromAccountHolderName = super.getString(actionMsg, "-");
 
         if (fromAccountHolderName.equals("-")) {
             super.consoleService.showAccountPage();

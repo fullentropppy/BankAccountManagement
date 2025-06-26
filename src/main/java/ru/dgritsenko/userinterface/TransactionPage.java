@@ -2,6 +2,7 @@ package ru.dgritsenko.userinterface;
 
 import ru.dgritsenko.bank.Account;
 import ru.dgritsenko.bank.BankService;
+import ru.dgritsenko.printer.AccountPrinter;
 
 /**
  * Класс представляет страницу просмотра всех транзакций по всем счетам.
@@ -41,7 +42,7 @@ public class TransactionPage extends Page {
             System.out.println();
 
             for (Account account : bankService.getAccounts()) {
-                account.printTransactions();
+                AccountPrinter.printTransactions(account);
                 System.out.println();
             }
         }

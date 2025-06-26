@@ -38,7 +38,10 @@ public class MainPage extends Page {
         switch (option) {
             case 1 -> super.consoleService.showAccountPage();
             case 2 -> super.consoleService.showTransactionPage();
-            default -> System.exit(0);
+            default -> {
+                super.consoleService.getBankService().saveData();
+                System.exit(0);
+            }
         };
     }
 }

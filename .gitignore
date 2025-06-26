@@ -34,5 +34,5 @@ log/
 target/
 
 # App
-data/
+!**/data/
 changelog.txt

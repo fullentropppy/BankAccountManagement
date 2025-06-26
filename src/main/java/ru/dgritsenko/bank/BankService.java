@@ -1,6 +1,7 @@
 package ru.dgritsenko.bank;
 
-import java.util.ArrayList;
+import ru.dgritsenko.data.FileService;
+
 import java.util.Collections;
 import java.util.List;
 
@@ -8,11 +9,34 @@ import java.util.List;
  * Сервис для управления банковскими счетами и транзакциями.
  */
 public class BankService {
-    private final List<Account> accounts = new ArrayList<>();
+    private final List<Account> accounts;
 
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
+
+    /**
+     * Создает сервис банковского приложения и загружает сохраненные данные.
+     */
+    public BankService() {
+        accounts = FileService.loadedAccounts();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // GETTERS
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public List<Account> getAccounts() {
+        return Collections.unmodifiableList(accounts);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // METHODS. MAIN
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public void saveData() {
+        FileService.saveAccounts(accounts);
+    }
 
     /**
      * Создает новый счет, добавляет в список и возвращает его.
@@ -26,14 +50,6 @@ public class BankService {
         Account account = new Account.Builder().setHolderName(holderName).build();
         accounts.add(account);
         return account;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // GETTERS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    public List<Account> getAccounts() {
-        return Collections.unmodifiableList(accounts);
     }
 
     // -----------------------------------------------------------------------------------------------------------------

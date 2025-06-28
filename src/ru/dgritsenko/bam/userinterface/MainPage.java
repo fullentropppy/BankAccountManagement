@@ -1,9 +1,10 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface;
 
 /**
  * Класс представляет главную страницу банковского приложения.
  */
 public class MainPage extends Page {
+
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
@@ -11,10 +12,10 @@ public class MainPage extends Page {
     /**
      * Создает главную страницу с указанным сервисом консоли.
      *
-     * @param consoleUIService сервис для работы с консолью
+     * @param consoleService сервис для работы с консолью
      */
-    public MainPage(ConsoleUIService consoleUIService) {
-        super(consoleUIService);
+    public MainPage(ConsoleService consoleService) {
+        super(consoleService);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -27,7 +28,6 @@ public class MainPage extends Page {
     @Override
     public void show() {
         super.setHeader("Главное меню");
-
         String menu = """
                 \n\t1. Счета
                 \t2. Транзакции
@@ -36,12 +36,11 @@ public class MainPage extends Page {
         super.setMenu(menu);
 
         int option = super.getOptionFromMenu("Введите номер пункта");
+
         switch (option) {
-            case 1 -> super.consoleUIService.showAccountPage();
-            case 2 -> super.consoleUIService.showTransactionPage();
-            default -> {
-                return;
-            }
+            case 1 -> super.consoleService.showAccountPage();
+            case 2 -> super.consoleService.showTransactionPage();
+            default -> System.exit(0);
         };
     }
 }

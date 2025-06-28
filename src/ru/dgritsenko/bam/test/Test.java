@@ -1,14 +1,16 @@
-package ru.dgritsenko.app;
+package ru.dgritsenko.bam.test;
 
-import ru.dgritsenko.bank.Account;
-import ru.dgritsenko.bank.TransactionService;
-import ru.dgritsenko.printer.AccountPrinter;
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.bank.TransactionService;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
  * Тестовый класс для проверки функциональности банковского приложения.
- * <p>Содержит предопределенный набор операций для демонстрации работы системы.
+ * <p>
+ * Содержит предопределенный набор операций для демонстрации работы системы.
  */
 public class Test {
     private static final Map<String, Account> accounts = new HashMap<>();
@@ -83,8 +85,8 @@ public class Test {
      */
     private static void printAccountsInfo() {
         for (Account account : accounts.values()) {
-            AccountPrinter.printTransactions(account);
-            AccountPrinter.printBalance(account);
+            account.printTransactions();
+            account.printBalance();
             System.out.println();
         }
     }
@@ -100,7 +102,7 @@ public class Test {
      * @param holderName имя владельца счета
      */
     private static void addAccount(String accountKey, String holderName) {
-        Account account = new Account.Builder().setHolderName(holderName).build();
+        Account account = new Account(holderName);
         accounts.put(accountKey, account);
     }
 }

@@ -1,7 +1,6 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface;
 
-import ru.dgritsenko.bank.Account;
-import ru.dgritsenko.printer.AccountPrinter;
+import ru.dgritsenko.bam.bank.Account;
 
 import java.text.MessageFormat;
 
@@ -9,6 +8,7 @@ import java.text.MessageFormat;
  * Класс представляет страницу просмотра транзакций конкретного счета.
  */
 public class AccountTransactionPage extends Page {
+
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
@@ -16,10 +16,10 @@ public class AccountTransactionPage extends Page {
     /**
      * Создает страницу транзакций счета с указанным сервисом консоли.
      *
-     * @param consoleUIService сервис для работы с консолью
+     * @param consoleService сервис для работы с консолью
      */
-    public AccountTransactionPage(ConsoleUIService consoleUIService) {
-        super(consoleUIService);
+    public AccountTransactionPage(ConsoleService consoleService) {
+        super(consoleService);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -31,14 +31,14 @@ public class AccountTransactionPage extends Page {
      */
     @Override
     public void show() {
-        Account currentFromAccount = super.consoleUIService.getCurrentFromAccount();
+        Account currentFromAccount = super.consoleService.getCurrentFromAccount();
         String title = MessageFormat.format("Транзакции счета {0}", currentFromAccount);
         super.setHeader(title);
 
         System.out.println();
-        AccountPrinter.printTransactions(currentFromAccount);
+        currentFromAccount.printTransactions();
 
         super.waitForInputToContinue("Нажмите Enter для возврата в меню операций со счетом");
-        super.consoleUIService.showAccountOperationPage();
+        super.consoleService.showAccountOperationPage();
     }
 }

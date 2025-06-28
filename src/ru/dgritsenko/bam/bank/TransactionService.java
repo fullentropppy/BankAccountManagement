@@ -1,13 +1,11 @@
-package ru.dgritsenko.bank;
+package ru.dgritsenko.bam.bank;
 
 /**
  * Класс-обработчик банковских транзакций.
- * <p>Содержит статические методы для выполнения различных типов операций.
+ * <p>
+ * Содержит статические методы для выполнения различных типов операций.
  */
-public final class TransactionService {
-
-    private TransactionService() {}
-
+public class TransactionService {
     // -----------------------------------------------------------------------------------------------------------------
     // METHODS. OPERATIONS
     // -----------------------------------------------------------------------------------------------------------------
@@ -15,7 +13,7 @@ public final class TransactionService {
     /**
      * Выполняет операцию, не требующую указания счета получателя.
      *
-     * @param transactionType тип операции ({@link TransactionType#DEPOSIT} или {@link TransactionType#WITHDRAW})
+     * @param transactionType тип операции ({@code DEPOSIT} или {@code WITHDRAW})
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      *
@@ -43,7 +41,7 @@ public final class TransactionService {
     /**
      * Выполняет операцию, требующую указания счета получателя.
      *
-     * @param transactionType тип операции ({@link TransactionType#CREDIT}или {@link TransactionType#TRANSFER})
+     * @param transactionType тип операции ({@code CREDIT} или {@code TRANSFER})
      * @param fromAccount счет отправителя
      * @param amount сумма операции
      * @param toAccount счет получателя
@@ -141,9 +139,9 @@ public final class TransactionService {
      * Автоматически подтверждает транзакцию и добавляет её в историю.
      *
      * @param fromAccount счет, на который зачисляются средства
-     * @param transactionType тип операции ({@link TransactionType#DEPOSIT})
+     * @param transactionType тип операции ({@code DEPOSIT})
      * @param amount сумма
-     * @param toAccount счет-источник (для {@link TransactionType#CREDIT}) или {@code null} (для {@link TransactionType#DEPOSIT})
+     * @param toAccount счет-источник (для {@code CREDIT}) или {@code null} (для {@code DEPOSIT})
      *
      * @return статус транзакции
      *
@@ -157,14 +155,8 @@ public final class TransactionService {
             double amount,
             Account toAccount)
     {
-        Transaction transaction = new Transaction.Builder()
-                .setFromAccount(fromAccount)
-                .setTransactionType(transactionType)
-                .setAmount(amount)
-                .setToAccount(toAccount)
-                .setStatus(TransactionStatus.COMMITTED)
-                .build();
-
+        Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
+        transaction.setStatus(TransactionStatus.COMMITTED); // Проверки не требуются, транзакция успешна
         fromAccount.addTransaction(transaction);
 
         return transaction.getStatus();
@@ -175,9 +167,9 @@ public final class TransactionService {
      * Проверяет достаточность средств. Если средств недостаточно, транзакция отменяется.
      *
      * @param fromAccount счет, с которого списываются средства
-     * @param transactionType тип операции ({@link TransactionType#TRANSFER} или {@code {@link TransactionType#WITHDRAW}})
+     * @param transactionType тип операции ({@code TRANSFER} или {@code WITHDRAW})
      * @param amount сумма
-     * @param toAccount счет-получатель (для {@link TransactionType#TRANSFER}) или null (для {@link TransactionType#WITHDRAW})
+     * @param toAccount счет-получатель (для {@code TRANSFER}) или null (для {@code WITHDRAW})
      *
      * @return статус транзакции
      *
@@ -192,6 +184,7 @@ public final class TransactionService {
             Account toAccount)
     {
         TransactionStatus status;
+        Transaction transaction = new Transaction(fromAccount, transactionType, amount, toAccount);
 
         if (fromAccount.getBalance() >= amount) {
             if (transactionType.hasToAccount()) {
@@ -203,14 +196,7 @@ public final class TransactionService {
             status = TransactionStatus.CANCELED;
         }
 
-        Transaction transaction = new Transaction.Builder()
-                .setFromAccount(fromAccount)
-                .setTransactionType(transactionType)
-                .setAmount(amount)
-                .setToAccount(toAccount)
-                .setStatus(status)
-                .build();
-        
+        transaction.setStatus(status);
         fromAccount.addTransaction(transaction);
 
         return transaction.getStatus();

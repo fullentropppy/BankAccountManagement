@@ -74,6 +74,7 @@ public class AccountCreatingPage extends Page {
                 \t1. Создать еще
                 \t2. Операции
                 \t3. Список счетов
+                
                 \t4. Главное меню""",
                 account);
         super.setMenu(menu);

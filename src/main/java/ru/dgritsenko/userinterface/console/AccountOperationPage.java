@@ -48,6 +48,7 @@ public class AccountOperationPage extends Page {
                 \t4. Транзакции счета
                 \t5. Список счетов
                 \t6. Меню счетов
+                
                 \t7. Главное меню""";
         super.setMenu(menu);
 

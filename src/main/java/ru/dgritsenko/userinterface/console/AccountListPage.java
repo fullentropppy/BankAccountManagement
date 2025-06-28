@@ -38,7 +38,7 @@ public class AccountListPage extends Page {
 
         StringBuilder pageMenuOptions = new StringBuilder();
 
-        int i = 1;
+        int i = 2;
         for (Account account : bankService.getAccounts()) {
             String accountOption = MessageFormat.format("\n\t{0}. {1}", i, account);
             pageMenuOptions.append(accountOption);
@@ -50,8 +50,7 @@ public class AccountListPage extends Page {
             super.waitForInputToContinue("Нажмите Enter для возврата в меню счетов");
             super.consoleUIService.showAccountPage();
         } else {
-            String goToMainMenuOption = MessageFormat.format("\n\n\t{0}. Меню счетов", i);
-            pageMenuOptions.append(goToMainMenuOption);
+            pageMenuOptions.insert(0, "\n\t1. Меню счетов\n");
 
             String menu = pageMenuOptions.toString();
             super.setMenu(menu);
@@ -59,12 +58,12 @@ public class AccountListPage extends Page {
             int option = super.getOptionFromMenu("Введите номер счета");
             int optionsAmount = bankService.getNumberOfAccounts() + 1;
 
-            if (option < optionsAmount) {
-                Account currentFromAccount = bankService.getAccount(option - 1);
+            if (option == 1) {
+                super.consoleUIService.showAccountPage();
+            } else {
+                Account currentFromAccount = bankService.getAccount(option - 2);
                 super.consoleUIService.setCurrentFromAccount(currentFromAccount);
                 super.consoleUIService.showAccountOperationPage();
-            } else if (option == optionsAmount) {
-                super.consoleUIService.showAccountPage();
             }
         }
     }

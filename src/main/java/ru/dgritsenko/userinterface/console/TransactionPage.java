@@ -34,17 +34,21 @@ public class TransactionPage extends Page {
     @Override
     public void show() {
         super.setHeader("Транзакции");
+        System.out.println();
 
-        if (bankService.getNumberOfAccounts() == 0) {
-            String message = "\n\tСписок транзакций пуст...";
-            System.out.println(message);
-        } else {
-            System.out.println();
+        boolean transactionsExist = false;
 
-            for (Account account : bankService.getAccounts()) {
+        for (Account account : bankService.getAccounts()) {
+            if (!account.getTransactions().isEmpty()) {
+                transactionsExist = true;
                 AccountPrinter.printTransactions(account);
                 System.out.println();
             }
+        }
+
+        if (!transactionsExist) {
+            String message = "\tСписок транзакций пуст...";
+            System.out.println(message);
         }
 
         super.waitForInputToContinue("Нажмите Enter для возврата в главное меню");

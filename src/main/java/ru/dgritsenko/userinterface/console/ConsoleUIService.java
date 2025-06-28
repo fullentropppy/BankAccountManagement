@@ -174,7 +174,7 @@ public class ConsoleUIService implements UserInterface {
             bankService.loadAccounts();
         } catch (Exception exception) {
             String errMsg = MessageFormat.format("Не удалось загрузить сохраненные данные: {0}" +
-                            "\nНажмите Enter чтобы продолжить работу без начальных данных...",
+                            "\n> Нажмите Enter чтобы продолжить работу без начальных данных...",
                     exception.getMessage()
             );
 
@@ -194,7 +194,7 @@ public class ConsoleUIService implements UserInterface {
             bankService.saveAccounts();
         } catch (IOException exception) {
             String errMsg = MessageFormat.format("Не удалось сохранить данные: {0}" +
-                            "\nНажмите Enter чтобы завершить работу с потерей данных...",
+                            "\n> Нажмите Enter чтобы завершить работу с потерей данных...",
                     exception.getMessage()
             );
 

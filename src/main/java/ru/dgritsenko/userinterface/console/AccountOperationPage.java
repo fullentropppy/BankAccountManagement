@@ -155,7 +155,7 @@ public class AccountOperationPage extends Page {
         List<Account> availableAccounts = new ArrayList<>();
         StringBuilder toAccountOptions = new StringBuilder();
 
-        int i = 1;
+        int i = 2;
         for (Account account : bankService.getAccounts()) {
             // Пропуск текущего счета
             if (!(currentFromAccount == account)) {
@@ -170,15 +170,14 @@ public class AccountOperationPage extends Page {
             System.out.println("\n\tСписок получателей пуст...");
             super.waitForInputToContinue("Нажмите Enter для продолжения");
         } else {
-            String cancellationOption = MessageFormat.format("\n\n\t{0}. Отмена", i);
-            toAccountOptions.append(cancellationOption);
+            toAccountOptions.insert(0, "\n\t1. Отмена\n");
 
             String pageMenu = toAccountOptions.toString();
             super.setMenu(pageMenu);
 
             int option = super.getOptionFromMenu("Введите номер получателя");
-            if (option > 0 && option < bankService.getNumberOfAccounts()) {
-                toAccount = availableAccounts.get(option - 1);
+            if (option > 1) {
+                toAccount = availableAccounts.get(option - 2);
             }
         }
 

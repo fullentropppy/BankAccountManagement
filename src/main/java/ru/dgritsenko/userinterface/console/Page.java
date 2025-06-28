@@ -58,11 +58,11 @@ public abstract class Page {
         // Обновление списка доступных опций
         validOptions.clear();
 
-        Pattern pattern = Pattern.compile("\\d+(?=\\.)");
+        Pattern pattern = Pattern.compile("\\b\\d[\\d\\s]*?(?=\\.\\s|\\.$|\\.\\W)");
         Matcher matcher = pattern.matcher(menu);
 
         while (matcher.find()) {
-            int value = Integer.parseInt(matcher.group());
+            int value = Integer.parseInt(matcher.group().trim());
             validOptions.add(value);
         }
     }

@@ -1,6 +1,5 @@
-package ru.dgritsenko.bam.userinterface;
+package ru.dgritsenko.userinterface.console;
 
-import java.io.IOException;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -10,11 +9,10 @@ import java.util.regex.Pattern;
 
 /**
  * Абстрактный класс, представляющий базовую страницу интерфейса.
- *  <p>
- * Содержит общие методы для работы с консольным вводом/выводом.
+ * <p>Содержит общие методы для работы с консольным вводом/выводом.
  */
 public abstract class Page {
-    protected final ConsoleService consoleService;
+    protected final ConsoleUIService consoleUIService;
     private final List<Integer> validOptions = new ArrayList<>();
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -24,10 +22,10 @@ public abstract class Page {
     /**
      * Создает базовую страницу с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUIService сервис для работы с консолью
      */
-    public Page(ConsoleService consoleService) {
-        this.consoleService = consoleService;
+    public Page(ConsoleUIService consoleUIService) {
+        this.consoleUIService = consoleUIService;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -45,7 +43,7 @@ public abstract class Page {
      * @param title заголовок страницы
      */
     protected void setHeader(String title) {
-        clearText();
+        consoleUIService.clearText();
         printNewPageHeader(title);
     }
 
@@ -60,11 +58,11 @@ public abstract class Page {
         // Обновление списка доступных опций
         validOptions.clear();
 
-        Pattern pattern = Pattern.compile("\\d+(?=\\.)");
+        Pattern pattern = Pattern.compile("\\b\\d[\\d\\s]*?(?=\\.\\s|\\.$|\\.\\W)");
         Matcher matcher = pattern.matcher(menu);
 
         while (matcher.find()) {
-            int value = Integer.parseInt(matcher.group());
+            int value = Integer.parseInt(matcher.group().trim());
             validOptions.add(value);
         }
     }
@@ -83,7 +81,7 @@ public abstract class Page {
      * и при необходимости приостанавливает выполнение программы до нажатия Enter пользователем.
      *
      * @param error текст ошибки
-     * @param waitingTitle сообщение, отображаемое при приостановлении выполнения,
+     * @param waitingTitle подсказка при приостановлении выполнения,
      *                     если {@code null}, то приостановления выполнения не будет.
      */
     protected void printError(String error, String waitingTitle) {
@@ -100,29 +98,48 @@ public abstract class Page {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Запрашивает у пользователя ввод суммы (положительное число) через консоль.
+     * Запрашивает у пользователя ввод строки.
      *
      * @param actionTitle подсказка для ввода
+     * @param cancellationOption дополнительная подсказка для отмены операции (на ввод не влияет)
      *
-     * @return введенная пользователем сумма
+     * @return введеная строка
      */
-    protected double getAmount(String actionTitle) {
-        double amount = 0;
+    protected String getString(String actionTitle, String cancellationOption) {
+        String actionMsg = getFormattedActionTitle(actionTitle, cancellationOption);
+        System.out.print(actionMsg);
+        Scanner scanner = new Scanner(System.in);
+        return scanner.nextLine();
+    }
 
-        String actionMsg = MessageFormat.format("\n> {0}: ", actionTitle);
+    /**
+     * Запрашивает у пользователя ввод суммы.
+     *
+     * @param actionTitle подсказка для ввода
+     * @param isCancellationAvail добавление в подсказку информации о возможности отмены операции.
+     *                            Если {@code true} то предлагается опция отмены и введенная сумма может быть {@code 0}.
+     *                            Иначе введенная сумма должна быть > {@code 0}
+     *
+     *
+     * @return введенная сумма
+     */
+    protected double getAmount(String actionTitle, boolean isCancellationAvail) {
+        double amount = -1;
+
+        String cancellationOption = isCancellationAvail ? "0" : null;
+        String actionMsg = getFormattedActionTitle(actionTitle, cancellationOption);
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
             System.out.print(actionMsg);
 
             boolean hasNextDouble = scanner.hasNextDouble();
-
             if (hasNextDouble) {
                 amount = scanner.nextDouble();
             }
 
-            if (amount <= 0) {
-                System.out.println("\n! Ошибка: введите корректную сумму (число > 0)");
+            if (!isCancellationAvail || amount < 0) {
+                System.out.println("\n! Ошибка: введите корректную сумму");
 
                 if (!hasNextDouble) {
                     scanner.next();
@@ -140,7 +157,7 @@ public abstract class Page {
      *
      * @param actionTitle подсказка для ввода
      *
-     * @return выбранный пользователем пункт меню
+     * @return выбранный номер пункта меню
      */
     protected int getOptionFromMenu(String actionTitle) {
         int option = -1;
@@ -152,7 +169,6 @@ public abstract class Page {
             System.out.print(actionMsg);
 
             boolean hasNextInt = scanner.hasNextInt();
-
             if (hasNextInt) {
                 option = scanner.nextInt();
             }
@@ -178,7 +194,7 @@ public abstract class Page {
     /**
      * Приостанавливает выполнение программы до нажатия Enter пользователем.
      *
-     * @param actionTitle сообщение, отображаемое перед ожиданием ввода
+     * @param actionTitle подсказка для ввода
      */
     protected void waitForInputToContinue(String actionTitle) {
         String actionMsg = MessageFormat.format("\n> {0}...", actionTitle);
@@ -198,7 +214,7 @@ public abstract class Page {
      * @param title заголовок страницы
      */
     private void printNewPageHeader(String title) {
-        clearText();
+        consoleUIService.clearText();
 
         String header = MessageFormat.format(
                 """
@@ -214,15 +230,23 @@ public abstract class Page {
     // -----------------------------------------------------------------------------------------------------------------
 
     /**
-     * Очищает консоль.
+     * Возвращает форматированную строку с предложением ввода.
+     *
+     * @param actionTitle подсказка для ввода
+     * @param actionToCancel представление опции для отмены операции.
+     *                       Если {@code null} то информация об опции отмены не будет добавлена
+     *
+     * @return строка с предложением ввода
      */
-    protected void clearText() {
-        try {
-            if (System.getProperty("os.name").contains("Windows")) {
-                new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
-            } else {
-                Runtime.getRuntime().exec("clear");
-            }
-        } catch (IOException | InterruptedException _) {}
+    private String getFormattedActionTitle(String actionTitle, String actionToCancel) {
+        String cancellationHint;
+
+        if (actionToCancel == null) {
+            cancellationHint = "";
+        } else {
+            cancellationHint = MessageFormat.format(" (или ''{0}'' для отмены)", actionToCancel);
+        }
+
+        return MessageFormat.format("\n> {0}{1}: ", actionTitle, cancellationHint);
     }
 }

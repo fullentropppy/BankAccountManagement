@@ -1,7 +1,7 @@
-package ru.dgritsenko.bam.userinterface;
+package ru.dgritsenko.userinterface.console;
 
-import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.bank.BankService;
+import ru.dgritsenko.bank.Account;
+import ru.dgritsenko.bank.BankService;
 
 import java.text.MessageFormat;
 
@@ -18,11 +18,11 @@ public class AccountListPage extends Page {
     /**
      * Создает страницу списка счетов с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUIService сервис для работы с консолью
      */
-    public AccountListPage(ConsoleService consoleService) {
-        super(consoleService);
-        this.bankService = consoleService.getBankService();
+    public AccountListPage(ConsoleUIService consoleUIService) {
+        super(consoleUIService);
+        this.bankService = consoleUIService.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -38,8 +38,7 @@ public class AccountListPage extends Page {
 
         StringBuilder pageMenuOptions = new StringBuilder();
 
-        int i = 1;
-
+        int i = 2;
         for (Account account : bankService.getAccounts()) {
             String accountOption = MessageFormat.format("\n\t{0}. {1}", i, account);
             pageMenuOptions.append(accountOption);
@@ -47,14 +46,11 @@ public class AccountListPage extends Page {
         }
 
         if (pageMenuOptions.isEmpty()) {
-            String missingMsg = "\n\tСписок счетов пуст...";
-            System.out.println(missingMsg);
-
+            System.out.println("\n\tСписок счетов пуст...");
             super.waitForInputToContinue("Нажмите Enter для возврата в меню счетов");
-            super.consoleService.showAccountPage();
+            super.consoleUIService.showAccountPage();
         } else {
-            String goToMainMenuOption = MessageFormat.format("\n\n\t{0}. Главное меню", i);
-            pageMenuOptions.append(goToMainMenuOption);
+            pageMenuOptions.insert(0, "\n\t1. Меню счетов\n");
 
             String menu = pageMenuOptions.toString();
             super.setMenu(menu);
@@ -62,12 +58,12 @@ public class AccountListPage extends Page {
             int option = super.getOptionFromMenu("Введите номер счета");
             int optionsAmount = bankService.getNumberOfAccounts() + 1;
 
-            if (option < optionsAmount) {
-                Account currentFromAccount = bankService.getAccount(option - 1);
-                super.consoleService.setCurrentFromAccount(currentFromAccount);
-                super.consoleService.showAccountOperationPage();
-            } else if (option == optionsAmount) {
-                super.consoleService.showMainPage();
+            if (option == 1) {
+                super.consoleUIService.showAccountPage();
+            } else {
+                Account currentFromAccount = bankService.getAccount(option - 2);
+                super.consoleUIService.setCurrentFromAccount(currentFromAccount);
+                super.consoleUIService.showAccountOperationPage();
             }
         }
     }

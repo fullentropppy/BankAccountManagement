@@ -1,7 +1,8 @@
-package ru.dgritsenko.bam.userinterface;
+package ru.dgritsenko.userinterface.console;
 
-import ru.dgritsenko.bam.bank.Account;
-import ru.dgritsenko.bam.bank.BankService;
+import ru.dgritsenko.bank.Account;
+import ru.dgritsenko.bank.BankService;
+import ru.dgritsenko.printer.AccountPrinter;
 
 /**
  * Класс представляет страницу просмотра всех транзакций по всем счетам.
@@ -16,11 +17,11 @@ public class TransactionPage extends Page {
     /**
      * Создает страницу транзакций с указанным сервисом консоли.
      *
-     * @param consoleService сервис для работы с консолью
+     * @param consoleUIService сервис для работы с консолью
      */
-    public TransactionPage(ConsoleService consoleService) {
-        super(consoleService);
-        this.bankService = consoleService.getBankService();
+    public TransactionPage(ConsoleUIService consoleUIService) {
+        super(consoleUIService);
+        this.bankService = consoleUIService.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -33,20 +34,24 @@ public class TransactionPage extends Page {
     @Override
     public void show() {
         super.setHeader("Транзакции");
+        System.out.println();
 
-        if (bankService.getNumberOfAccounts() == 0) {
-            String message = "\n\tСписок транзакций пуст...";
-            System.out.println(message);
-        } else {
-            System.out.println();
+        boolean transactionsExist = false;
 
-            for (Account account : bankService.getAccounts()) {
-                account.printTransactions();
+        for (Account account : bankService.getAccounts()) {
+            if (!account.getTransactions().isEmpty()) {
+                transactionsExist = true;
+                AccountPrinter.printTransactions(account);
                 System.out.println();
             }
         }
 
+        if (!transactionsExist) {
+            String message = "\tСписок транзакций пуст...";
+            System.out.println(message);
+        }
+
         super.waitForInputToContinue("Нажмите Enter для возврата в главное меню");
-        super.consoleService.showMainPage();
+        super.consoleUIService.showMainPage();
     }
 }

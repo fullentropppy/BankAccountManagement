@@ -31,6 +31,7 @@ public class MainPage extends Page {
         String menu = """
                 \n\t1. Счета
                 \t2. Транзакции
+                
                 \t3. Выход""";
         super.setMenu(menu);
 

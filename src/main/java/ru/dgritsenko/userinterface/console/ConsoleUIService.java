@@ -13,7 +13,7 @@ import java.util.Scanner;
  * <p>Реализует пользовательский интерфейс банковского приложения.
  */
 public class ConsoleUIService implements UserInterface {
-    private final BankService bankService;
+    private BankService bankService;
     private Account currentFromAccount;
 
     private Page mainPage;
@@ -25,21 +25,13 @@ public class ConsoleUIService implements UserInterface {
     private Page transactionPage;
 
     // -----------------------------------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Создаёт обработчик консольного ввода с указанным сервисом банка.
-     *
-     * @param bankService сервис для работы с банковскими операциями
-     */
-    public ConsoleUIService(BankService bankService) {
-        this.bankService = bankService;
-    }
-
-    // -----------------------------------------------------------------------------------------------------------------
     // SETTERS
     // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public void setBankService(BankService bankService) {
+        this.bankService = bankService;
+    }
 
     public void setCurrentFromAccount(Account currentFromAccount) {
         this.currentFromAccount = currentFromAccount;

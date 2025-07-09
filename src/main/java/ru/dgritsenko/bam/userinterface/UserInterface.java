@@ -1,6 +1,6 @@
-package ru.dgritsenko.userinterface;
+package ru.dgritsenko.bam.userinterface;
 
-import ru.dgritsenko.bank.BankService;
+import ru.dgritsenko.bam.bank.BankService;
 
 /**
  * Интерфейс пользовательского интерфейса банковского приложения.

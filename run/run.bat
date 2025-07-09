@@ -4,7 +4,7 @@ setlocal
 :: This file location
 set "PROJECT_ROOT=%~dp0..\"
 set "PROJECT_ROOT=%PROJECT_ROOT:\=\%
-set "JAR_FILE=%PROJECT_ROOT%target\BankAccountManagement.jar"
+set "JAR_FILE=%PROJECT_ROOT%target\bank-account-management.jar"
 
 :: Running the application
 echo Running the application...

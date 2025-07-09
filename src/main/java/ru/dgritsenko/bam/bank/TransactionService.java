@@ -1,4 +1,4 @@
-package ru.dgritsenko.bank;
+package ru.dgritsenko.bam.bank;
 
 /**
  * Класс-обработчик банковских транзакций.

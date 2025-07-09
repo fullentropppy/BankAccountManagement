@@ -1,9 +1,9 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface.console;
 
-import ru.dgritsenko.bank.Account;
-import ru.dgritsenko.bank.TransactionStatus;
-import ru.dgritsenko.bank.TransactionType;
-import ru.dgritsenko.bank.BankService;
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.bank.TransactionStatus;
+import ru.dgritsenko.bam.bank.TransactionType;
+import ru.dgritsenko.bam.bank.BankService;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Класс представляет страницу операций с конкретным банковским счетом.
  */
-public class AccountOperationPage extends Page {
+public class AccountOperationConsolePage extends ConsolePage {
     private final BankService bankService;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -22,11 +22,11 @@ public class AccountOperationPage extends Page {
     /**
      * Создает страницу операций со счетом с указанным сервисом консоли.
      *
-     * @param consoleUIService сервис для работы с консолью
+     * @param consoleUserInterface сервис для работы с консолью
      */
-    public AccountOperationPage(ConsoleUIService consoleUIService) {
-        super(consoleUIService);
-        this.bankService = consoleUIService.getBankService();
+    public AccountOperationConsolePage(ConsoleUserInterface consoleUserInterface) {
+        super(consoleUserInterface);
+        this.bankService = consoleUserInterface.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -57,10 +57,10 @@ public class AccountOperationPage extends Page {
             case 1 -> processOperationWithOnlyFromAccount(TransactionType.DEPOSIT);
             case 2 -> processOperationWithToAccount(TransactionType.TRANSFER);
             case 3 -> processOperationWithOnlyFromAccount(TransactionType.WITHDRAW);
-            case 4 -> super.consoleUIService.showAccountTransactionPage();
-            case 5 -> super.consoleUIService.showAccountListPage();
-            case 6 -> super.consoleUIService.showAccountPage();
-            default -> super.consoleUIService.showMainPage();
+            case 4 -> super.consoleUserInterface.showAccountTransactionPage();
+            case 5 -> super.consoleUserInterface.showAccountListPage();
+            case 6 -> super.consoleUserInterface.showAccountPage();
+            default -> super.consoleUserInterface.showMainPage();
         };
     }
 
@@ -77,7 +77,7 @@ public class AccountOperationPage extends Page {
         printNewPageHeader();
         printOperationHeader(transactionType);
         processOperation(transactionType, null);
-        super.consoleUIService.showAccountOperationPage();
+        super.consoleUserInterface.showAccountOperationPage();
     }
 
     /**
@@ -94,13 +94,13 @@ public class AccountOperationPage extends Page {
             processOperation(transactionType, toAccount);
         }
 
-        super.consoleUIService.showAccountOperationPage();
+        super.consoleUserInterface.showAccountOperationPage();
     }
 
     private void processOperation(TransactionType transactionType, Account toAccount) {
         double amount = getAmount("Введите сумму операции", true);
         if (amount > 0) {
-            Account currentFromAccount = super.consoleUIService.getCurrentFromAccount();
+            Account currentFromAccount = super.consoleUserInterface.getCurrentFromAccount();
             TransactionStatus result;
 
             if (toAccount == null) {
@@ -123,7 +123,7 @@ public class AccountOperationPage extends Page {
      * Выводит заголовок страницы операций со счетом.
      */
     private void printNewPageHeader() {
-        Account currentFromAccount = super.consoleUIService.getCurrentFromAccount();
+        Account currentFromAccount = super.consoleUserInterface.getCurrentFromAccount();
 
         String title = MessageFormat.format(
                 "Операции со счетом: {0}, баланс: {1}",
@@ -151,7 +151,7 @@ public class AccountOperationPage extends Page {
     private Account getToAccount() {
         Account toAccount = null;
 
-        Account currentFromAccount = super.consoleUIService.getCurrentFromAccount();
+        Account currentFromAccount = super.consoleUserInterface.getCurrentFromAccount();
         List<Account> availableAccounts = new ArrayList<>();
         StringBuilder toAccountOptions = new StringBuilder();
 

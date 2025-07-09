@@ -1,6 +1,6 @@
-package ru.dgritsenko.bank;
+package ru.dgritsenko.bam.bank;
 
-import ru.dgritsenko.datastorage.DataStorage;
+import ru.dgritsenko.bam.datastorage.DataStorage;
 
 import java.io.IOException;
 import java.util.ArrayList;

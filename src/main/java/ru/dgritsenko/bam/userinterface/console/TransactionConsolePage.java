@@ -1,13 +1,13 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface.console;
 
-import ru.dgritsenko.bank.Account;
-import ru.dgritsenko.bank.BankService;
-import ru.dgritsenko.printer.AccountPrinter;
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.bank.BankService;
+import ru.dgritsenko.bam.printer.AccountConsolePrinter;
 
 /**
  * Класс представляет страницу просмотра всех транзакций по всем счетам.
  */
-public class TransactionPage extends Page {
+public class TransactionConsolePage extends ConsolePage {
     private final BankService bankService;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -17,11 +17,11 @@ public class TransactionPage extends Page {
     /**
      * Создает страницу транзакций с указанным сервисом консоли.
      *
-     * @param consoleUIService сервис для работы с консолью
+     * @param consoleUserInterface сервис для работы с консолью
      */
-    public TransactionPage(ConsoleUIService consoleUIService) {
-        super(consoleUIService);
-        this.bankService = consoleUIService.getBankService();
+    public TransactionConsolePage(ConsoleUserInterface consoleUserInterface) {
+        super(consoleUserInterface);
+        this.bankService = consoleUserInterface.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -41,7 +41,7 @@ public class TransactionPage extends Page {
         for (Account account : bankService.getAccounts()) {
             if (!account.getTransactions().isEmpty()) {
                 transactionsExist = true;
-                AccountPrinter.printTransactions(account);
+                AccountConsolePrinter.printTransactions(account);
                 System.out.println();
             }
         }
@@ -52,6 +52,6 @@ public class TransactionPage extends Page {
         }
 
         super.waitForInputToContinue("Нажмите Enter для возврата в главное меню");
-        super.consoleUIService.showMainPage();
+        super.consoleUserInterface.showMainPage();
     }
 }

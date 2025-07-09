@@ -1,14 +1,14 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface.console;
 
-import ru.dgritsenko.bank.Account;
-import ru.dgritsenko.bank.BankService;
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.bank.BankService;
 
 import java.text.MessageFormat;
 
 /**
  * Класс представляет страницу создания нового банковского счета.
  */
-public class AccountCreatingPage extends Page {
+public class AccountCreatingConsolePage extends ConsolePage {
     private final BankService bankService;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -18,11 +18,11 @@ public class AccountCreatingPage extends Page {
     /**
      * Создает страницу создания счета с указанным сервисом консоли.
      *
-     * @param consoleUIService сервис для работы с консолью
+     * @param consoleUserInterface сервис для работы с консолью
      */
-    public AccountCreatingPage(ConsoleUIService consoleUIService) {
-        super(consoleUIService);
-        this.bankService = consoleUIService.getBankService();
+    public AccountCreatingConsolePage(ConsoleUserInterface consoleUserInterface) {
+        super(consoleUserInterface);
+        this.bankService = consoleUserInterface.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ public class AccountCreatingPage extends Page {
         String fromAccountHolderName = super.getString(actionMsg, "-");
 
         if (fromAccountHolderName.equals("-")) {
-            super.consoleUIService.showAccountPage();
+            super.consoleUserInterface.showAccountPage();
         } else {
             createAccountAndShowResult(fromAccountHolderName);
         }
@@ -62,11 +62,11 @@ public class AccountCreatingPage extends Page {
             account = bankService.createAccount(fromAccountHolderName);
         } catch (Exception exception) {
             super.printError(exception.getMessage(), "Нажмите Enter для возврата на страницу счетов");
-            super.consoleUIService.showAccountPage();
+            super.consoleUserInterface.showAccountPage();
             return;
         }
 
-        super.consoleUIService.setCurrentFromAccount(account);
+        super.consoleUserInterface.setCurrentFromAccount(account);
 
         String menu = MessageFormat.format("""
                 \n\tСоздан новый счет: {0}
@@ -81,10 +81,10 @@ public class AccountCreatingPage extends Page {
 
         int option = super.getOptionFromMenu("Введите номер пункта");
         switch (option) {
-            case 1 -> super.consoleUIService.showAccountCreatingPage();
-            case 2 -> super.consoleUIService.showAccountOperationPage();
-            case 3 -> super.consoleUIService.showAccountListPage();
-            default -> super.consoleUIService.showMainPage();
+            case 1 -> super.consoleUserInterface.showAccountCreatingPage();
+            case 2 -> super.consoleUserInterface.showAccountOperationPage();
+            case 3 -> super.consoleUserInterface.showAccountListPage();
+            default -> super.consoleUserInterface.showMainPage();
         }
     }
 }

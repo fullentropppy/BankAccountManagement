@@ -1,7 +1,7 @@
-package ru.dgritsenko.printer;
+package ru.dgritsenko.bam.printer;
 
-import ru.dgritsenko.bank.Account;
-import ru.dgritsenko.bank.Transaction;
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.bank.Transaction;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Класс-обработчик вывода данных класса {@link Account} в консоль.
  */
-public class AccountPrinter {
+public class AccountConsolePrinter {
 
     /**
      * Выводит информацию о текущем балансе счета.

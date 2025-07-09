@@ -1,14 +1,14 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface.console;
 
-import ru.dgritsenko.bank.Account;
-import ru.dgritsenko.bank.BankService;
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.bank.BankService;
 
 import java.text.MessageFormat;
 
 /**
  * Класс представляет страницу со списком всех банковских счетов.
  */
-public class AccountListPage extends Page {
+public class AccountListConsolePage extends ConsolePage {
     private final BankService bankService;
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -18,11 +18,11 @@ public class AccountListPage extends Page {
     /**
      * Создает страницу списка счетов с указанным сервисом консоли.
      *
-     * @param consoleUIService сервис для работы с консолью
+     * @param consoleUserInterface сервис для работы с консолью
      */
-    public AccountListPage(ConsoleUIService consoleUIService) {
-        super(consoleUIService);
-        this.bankService = consoleUIService.getBankService();
+    public AccountListConsolePage(ConsoleUserInterface consoleUserInterface) {
+        super(consoleUserInterface);
+        this.bankService = consoleUserInterface.getBankService();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -48,7 +48,7 @@ public class AccountListPage extends Page {
         if (pageMenuOptions.isEmpty()) {
             System.out.println("\n\tСписок счетов пуст...");
             super.waitForInputToContinue("Нажмите Enter для возврата в меню счетов");
-            super.consoleUIService.showAccountPage();
+            super.consoleUserInterface.showAccountPage();
         } else {
             pageMenuOptions.insert(0, "\n\t1. Меню счетов\n");
 
@@ -59,11 +59,11 @@ public class AccountListPage extends Page {
             int optionsAmount = bankService.getNumberOfAccounts() + 1;
 
             if (option == 1) {
-                super.consoleUIService.showAccountPage();
+                super.consoleUserInterface.showAccountPage();
             } else {
                 Account currentFromAccount = bankService.getAccount(option - 2);
-                super.consoleUIService.setCurrentFromAccount(currentFromAccount);
-                super.consoleUIService.showAccountOperationPage();
+                super.consoleUserInterface.setCurrentFromAccount(currentFromAccount);
+                super.consoleUserInterface.showAccountOperationPage();
             }
         }
     }

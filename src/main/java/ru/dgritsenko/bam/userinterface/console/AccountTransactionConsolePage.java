@@ -1,14 +1,14 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface.console;
 
-import ru.dgritsenko.bank.Account;
-import ru.dgritsenko.printer.AccountPrinter;
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.printer.AccountConsolePrinter;
 
 import java.text.MessageFormat;
 
 /**
  * Класс представляет страницу просмотра транзакций конкретного счета.
  */
-public class AccountTransactionPage extends Page {
+public class AccountTransactionConsolePage extends ConsolePage {
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
@@ -16,10 +16,10 @@ public class AccountTransactionPage extends Page {
     /**
      * Создает страницу транзакций счета с указанным сервисом консоли.
      *
-     * @param consoleUIService сервис для работы с консолью
+     * @param consoleUserInterface сервис для работы с консолью
      */
-    public AccountTransactionPage(ConsoleUIService consoleUIService) {
-        super(consoleUIService);
+    public AccountTransactionConsolePage(ConsoleUserInterface consoleUserInterface) {
+        super(consoleUserInterface);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -31,14 +31,14 @@ public class AccountTransactionPage extends Page {
      */
     @Override
     public void show() {
-        Account currentFromAccount = super.consoleUIService.getCurrentFromAccount();
+        Account currentFromAccount = super.consoleUserInterface.getCurrentFromAccount();
         String title = MessageFormat.format("Транзакции счета {0}", currentFromAccount);
         super.setHeader(title);
 
         System.out.println();
-        AccountPrinter.printTransactions(currentFromAccount);
+        AccountConsolePrinter.printTransactions(currentFromAccount);
 
         super.waitForInputToContinue("Нажмите Enter для возврата в меню операций со счетом");
-        super.consoleUIService.showAccountOperationPage();
+        super.consoleUserInterface.showAccountOperationPage();
     }
 }

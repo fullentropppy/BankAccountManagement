@@ -1,4 +1,4 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface.console;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -11,8 +11,8 @@ import java.util.regex.Pattern;
  * Абстрактный класс, представляющий базовую страницу интерфейса.
  * <p>Содержит общие методы для работы с консольным вводом/выводом.
  */
-public abstract class Page {
-    protected final ConsoleUIService consoleUIService;
+public abstract class ConsolePage {
+    protected final ConsoleUserInterface consoleUserInterface;
     private final List<Integer> validOptions = new ArrayList<>();
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -22,10 +22,10 @@ public abstract class Page {
     /**
      * Создает базовую страницу с указанным сервисом консоли.
      *
-     * @param consoleUIService сервис для работы с консолью
+     * @param consoleUserInterface сервис для работы с консолью
      */
-    public Page(ConsoleUIService consoleUIService) {
-        this.consoleUIService = consoleUIService;
+    public ConsolePage(ConsoleUserInterface consoleUserInterface) {
+        this.consoleUserInterface = consoleUserInterface;
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -43,7 +43,7 @@ public abstract class Page {
      * @param title заголовок страницы
      */
     protected void setHeader(String title) {
-        consoleUIService.clearText();
+        consoleUserInterface.clearText();
         printNewPageHeader(title);
     }
 
@@ -214,7 +214,7 @@ public abstract class Page {
      * @param title заголовок страницы
      */
     private void printNewPageHeader(String title) {
-        consoleUIService.clearText();
+        consoleUserInterface.clearText();
 
         String header = MessageFormat.format(
                 """

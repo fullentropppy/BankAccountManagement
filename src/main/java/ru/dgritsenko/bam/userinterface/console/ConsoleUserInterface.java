@@ -1,8 +1,8 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface.console;
 
-import ru.dgritsenko.bank.Account;
-import ru.dgritsenko.bank.BankService;
-import ru.dgritsenko.userinterface.UserInterface;
+import ru.dgritsenko.bam.bank.Account;
+import ru.dgritsenko.bam.bank.BankService;
+import ru.dgritsenko.bam.userinterface.UserInterface;
 
 import java.io.IOException;
 import java.text.MessageFormat;
@@ -12,34 +12,26 @@ import java.util.Scanner;
  * Класс для обработки взаимодействия с пользователем через консоль.
  * <p>Реализует пользовательский интерфейс банковского приложения.
  */
-public class ConsoleUIService implements UserInterface {
-    private final BankService bankService;
+public class ConsoleUserInterface implements UserInterface {
+    private BankService bankService;
     private Account currentFromAccount;
 
-    private Page mainPage;
-    private Page accountPage;
-    private Page accountCreatingPage;
-    private Page accountListPage;
-    private Page accountOperationPage;
-    private Page accountTransactionPage;
-    private Page transactionPage;
-
-    // -----------------------------------------------------------------------------------------------------------------
-    // CONSTRUCTORS
-    // -----------------------------------------------------------------------------------------------------------------
-
-    /**
-     * Создаёт обработчик консольного ввода с указанным сервисом банка.
-     *
-     * @param bankService сервис для работы с банковскими операциями
-     */
-    public ConsoleUIService(BankService bankService) {
-        this.bankService = bankService;
-    }
+    private ConsolePage mainConsolePage;
+    private ConsolePage accountConsolePage;
+    private ConsolePage accountCreatingConsolePage;
+    private ConsolePage accountListConsolePage;
+    private ConsolePage accountOperationConsolePage;
+    private ConsolePage accountTransactionConsolePage;
+    private ConsolePage transactionConsolePage;
 
     // -----------------------------------------------------------------------------------------------------------------
     // SETTERS
     // -----------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public void setBankService(BankService bankService) {
+        this.bankService = bankService;
+    }
 
     public void setCurrentFromAccount(Account currentFromAccount) {
         this.currentFromAccount = currentFromAccount;
@@ -81,70 +73,70 @@ public class ConsoleUIService implements UserInterface {
      * Отображает главное меню приложения.
      */
     protected void showMainPage() {
-        if (mainPage == null) {
-            mainPage = new MainPage(this);
+        if (mainConsolePage == null) {
+            mainConsolePage = new MainConsolePage(this);
         }
-        mainPage.show();
+        mainConsolePage.show();
     }
 
     /**
      * Отображает меню работы со счетами.
      */
     protected void showAccountPage() {
-        if (accountPage == null) {
-            accountPage = new AccountPage(this);
+        if (accountConsolePage == null) {
+            accountConsolePage = new AccountConsolePage(this);
         }
-        accountPage.show();
+        accountConsolePage.show();
     }
 
     /**
      * Отображает страницу создания нового счета.
      */
     protected void showAccountCreatingPage() {
-        if (accountCreatingPage == null) {
-            accountCreatingPage = new AccountCreatingPage(this);
+        if (accountCreatingConsolePage == null) {
+            accountCreatingConsolePage = new AccountCreatingConsolePage(this);
         }
-        accountCreatingPage.show();
+        accountCreatingConsolePage.show();
     }
 
     /**
      * Отображает список всех созданных счетов с возможностью выбора.
      */
     protected void showAccountListPage() {
-        if (accountListPage == null) {
-            accountListPage = new AccountListPage(this);
+        if (accountListConsolePage == null) {
+            accountListConsolePage = new AccountListConsolePage(this);
         }
-        accountListPage.show();
+        accountListConsolePage.show();
     }
 
     /**
      * Отображает меню операций со счетом.
      */
     protected void showAccountOperationPage() {
-        if (accountOperationPage == null) {
-            accountOperationPage = new AccountOperationPage(this);
+        if (accountOperationConsolePage == null) {
+            accountOperationConsolePage = new AccountOperationConsolePage(this);
         }
-        accountOperationPage.show();
+        accountOperationConsolePage.show();
     }
 
     /**
      * Отображает список всех транзакции текущего выбранного счета.
      */
     protected void showAccountTransactionPage() {
-        if (accountTransactionPage == null) {
-            accountTransactionPage = new AccountTransactionPage(this);
+        if (accountTransactionConsolePage == null) {
+            accountTransactionConsolePage = new AccountTransactionConsolePage(this);
         }
-        accountTransactionPage.show();
+        accountTransactionConsolePage.show();
     }
 
     /**
      * Отображает список всех транзакции по всем счетам.
      */
     protected void showTransactionPage() {
-        if (transactionPage == null) {
-            transactionPage = new TransactionPage(this);
+        if (transactionConsolePage == null) {
+            transactionConsolePage = new TransactionConsolePage(this);
         }
-        transactionPage.show();
+        transactionConsolePage.show();
     }
 
     // -----------------------------------------------------------------------------------------------------------------

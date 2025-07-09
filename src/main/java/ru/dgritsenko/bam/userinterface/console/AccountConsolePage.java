@@ -1,9 +1,9 @@
-package ru.dgritsenko.userinterface.console;
+package ru.dgritsenko.bam.userinterface.console;
 
 /**
  * Класс представляет страницу со списком всех банковских счетов.
  */
-public class AccountPage extends Page {
+public class AccountConsolePage extends ConsolePage {
     // -----------------------------------------------------------------------------------------------------------------
     // CONSTRUCTORS
     // -----------------------------------------------------------------------------------------------------------------
@@ -11,10 +11,10 @@ public class AccountPage extends Page {
     /**
      * Создает страницу меню счетов с указанным сервисом консоли.
      *
-     * @param consoleUIService сервис для работы с консолью
+     * @param consoleUserInterface сервис для работы с консолью
      */
-    public AccountPage(ConsoleUIService consoleUIService) {
-        super(consoleUIService);
+    public AccountConsolePage(ConsoleUserInterface consoleUserInterface) {
+        super(consoleUserInterface);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -37,9 +37,9 @@ public class AccountPage extends Page {
 
         int option = super.getOptionFromMenu("Введите номер пункта");
         switch (option) {
-            case 1 -> super.consoleUIService.showAccountCreatingPage();
-            case 2 -> super.consoleUIService.showAccountListPage();
-            default -> super.consoleUIService.showMainPage();
+            case 1 -> super.consoleUserInterface.showAccountCreatingPage();
+            case 2 -> super.consoleUserInterface.showAccountListPage();
+            default -> super.consoleUserInterface.showMainPage();
         };
     }
 }

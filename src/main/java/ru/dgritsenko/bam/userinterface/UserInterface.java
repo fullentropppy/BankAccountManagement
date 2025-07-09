@@ -1,4 +1,6 @@
-package ru.dgritsenko.userinterface;
+package ru.dgritsenko.bam.userinterface;
+
+import ru.dgritsenko.bam.bank.BankService;
 
 /**
  * Интерфейс пользовательского интерфейса банковского приложения.
@@ -11,4 +13,9 @@ public interface UserInterface {
      * Запускает пользовательский интерфейс приложения.
      */
     void run();
+
+    /**
+     * Устанавливает значение поля bankService, если необходимо.
+     */
+    void setBankService(BankService bankService);
 }

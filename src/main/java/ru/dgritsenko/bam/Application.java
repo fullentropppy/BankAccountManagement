@@ -1,10 +1,10 @@
-package ru.dgritsenko.app;
+package ru.dgritsenko.bam;
 
-import ru.dgritsenko.bank.BankService;
-import ru.dgritsenko.datastorage.DataStorage;
-import ru.dgritsenko.datastorage.FileService;
-import ru.dgritsenko.userinterface.console.ConsoleUIService;
-import ru.dgritsenko.userinterface.UserInterface;
+import ru.dgritsenko.bam.bank.BankService;
+import ru.dgritsenko.bam.datastorage.DataStorage;
+import ru.dgritsenko.bam.datastorage.FileService;
+import ru.dgritsenko.bam.userinterface.console.ConsoleUserInterface;
+import ru.dgritsenko.bam.userinterface.UserInterface;
 
 /**
  * Главный класс приложения, содержащий точку входа.
@@ -12,8 +12,6 @@ import ru.dgritsenko.userinterface.UserInterface;
 public class Application {
     /**
      * Точка входа в приложение.
-     *
-     * @param args аргументы командной строки
      */
     public static void main(String[] args) {
         // Сервис работы с данными
@@ -23,7 +21,8 @@ public class Application {
         BankService bankService = new BankService(dataStorage);
 
         // Сервис для взаимодействия с пользователем
-        UserInterface userInterface = new ConsoleUIService(bankService);
+        UserInterface userInterface = new ConsoleUserInterface();
+        userInterface.setBankService(bankService);
         userInterface.run();
     }
 }

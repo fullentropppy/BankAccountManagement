@@ -1,4 +1,4 @@
-package ru.dgritsenko.bank;
+package ru.dgritsenko.bam.bank;
 
 import java.io.Serial;
 import java.io.Serializable;
